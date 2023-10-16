@@ -1,14 +1,12 @@
 import express from 'express';
+import { ProductRoutes } from '../modules/product/product.route';
 
 const router = express.Router();
 
 const moduleRoutes = [
-  /**
-   * ! Dummy route! Replace with actual routes
-   **/
   {
-    path: '/',
-    route: router.get('/'),
+    path: '/products',
+    route: ProductRoutes,
   },
 ];
 

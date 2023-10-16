@@ -20,6 +20,7 @@ const auth =
         config.jwt.secret as Secret,
       );
 
+      //set user information in req
       req.user = varifiedUser;
 
       if (requiredRoles.length && !requiredRoles.includes(varifiedUser.role)) {

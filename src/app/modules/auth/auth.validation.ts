@@ -44,7 +44,7 @@ const refreshTokenZodSchema = z.object({
   }),
 });
 
-export const UserValidation = {
+export const AuthValidation = {
   createUserZodSchema,
   loginUserZodSchema,
   refreshTokenZodSchema,

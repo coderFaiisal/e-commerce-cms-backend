@@ -1,26 +1,32 @@
 import express from 'express';
-import validateRequest from '../../middlewares/validateRequest';
+import { ENUM_USER_ROLE } from '../../../enums/user';
+import auth from '../../middlewares/auth';
 import { UserController } from './user.controller';
-import { UserValidation } from './user.validation';
 
 const router = express.Router();
 
-router.post(
-  '/create-user',
-  validateRequest(UserValidation.createUserZodSchema),
-  UserController.createUser,
+router.get('/', auth(ENUM_USER_ROLE.ADMIN), UserController.getAllUsers);
+
+router.get(
+  '/my-profile',
+  auth(ENUM_USER_ROLE.USER),
+  UserController.getUserProfile,
 );
 
-router.post(
-  '/login',
-  validateRequest(UserValidation.loginUserZodSchema),
-  UserController.loginUser,
+router.get(
+  '/reviews',
+  auth(ENUM_USER_ROLE.USER),
+  UserController.getUserReviews,
 );
 
-router.post(
-  '/refresh-token',
-  validateRequest(UserValidation.refreshTokenZodSchema),
-  UserController.refreshToken,
+router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), UserController.getSingleUser);
+
+router.patch(
+  '/my-profile',
+  auth(ENUM_USER_ROLE.USER),
+  UserController.updateUserProfile,
 );
+
+router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), UserController.deleteUser);
 
 export const UserRoutes = router;

@@ -1,67 +1,86 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import config from '../../../config';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
-import { ILoginResponse, IRefreshTokenResponse, IUser } from './user.interface';
+import { IUser } from './user.interface';
 import { UserService } from './user.service';
 
-const createUser = catchAsync(async (req: Request, res: Response) => {
-  const { ...userData } = req.body;
-
-  const result = await UserService.createUser(userData);
-
-  sendResponse<IUser>(res, {
+const getAllUsers = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getAllUsers();
+  sendResponse<IUser[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User created successfully',
+    message: 'All users recieved successfully',
     data: result,
   });
 });
 
-const loginUser = catchAsync(async (req: Request, res: Response) => {
-  const { ...loginData } = req.body;
-  const result = await UserService.loginUser(loginData);
-
-  const { refreshToken, ...others } = result;
-
-  const cookieOptions = {
-    secure: config.env === 'production',
-    httpOnly: true,
-  };
-
-  res.cookie('refreshToken', refreshToken, cookieOptions);
-
-  sendResponse<ILoginResponse>(res, {
+const getSingleUser = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const result = await UserService.getSingleUser(id);
+  sendResponse<IUser>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User logged in successfully',
-    data: others,
+    message: 'User recieved successfully',
+    data: result,
   });
 });
 
-const refreshToken = catchAsync(async (req: Request, res: Response) => {
-  const { refreshToken } = req.cookies;
+const getUserProfile = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
 
-  const cookieOptions = {
-    secure: config.env === 'production',
-    httpOnly: true,
-  };
+  const result = await UserService.getUserProfile(user);
 
-  res.cookie('refreshToken', refreshToken, cookieOptions);
-
-  const result = await UserService.refreshToken(refreshToken);
-
-  sendResponse<IRefreshTokenResponse>(res, {
+  sendResponse<IUser>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'New access token generated successfully!',
+    message: "User's information retrieved successfully",
+    data: result,
+  });
+});
+
+const getUserReviews = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
+  const result = await UserService.getUserReviews(user);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User's reviews information retrieved successfully",
+    data: result,
+  });
+});
+
+const updateUserProfile = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const { ...updatedData } = req.body;
+  const result = await UserService.updateUserProfile(user, updatedData);
+
+  sendResponse<Partial<IUser>>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User's information retrieved successfully",
+    data: result,
+  });
+});
+
+const deleteUser = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const result = await UserService.deleteUser(id);
+  sendResponse<IUser>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User deleted successfully',
     data: result,
   });
 });
 
 export const UserController = {
-  createUser,
-  loginUser,
-  refreshToken,
+  getSingleUser,
+  getAllUsers,
+  getUserProfile,
+  getUserReviews,
+  deleteUser,
+  updateUserProfile,
 };

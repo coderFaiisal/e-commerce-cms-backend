@@ -1,113 +1,82 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
-import { Secret } from 'jsonwebtoken';
+import { JwtPayload } from 'jsonwebtoken';
 import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
-import { jwtHelper } from '../../../helpers/jwtHelper';
-import {
-  ILoginResponse,
-  ILoginUser,
-  IRefreshTokenResponse,
-  IUser,
-} from './user.interface';
+import { IUser } from './user.interface';
 import { User } from './user.model';
 
-const createUser = async (payload: IUser): Promise<IUser> => {
-  const isUserExist = await User.isUserExist(payload.email);
-
-  if (isUserExist) {
-    throw new ApiError(httpStatus.CONFLICT, 'User already exist!');
-  }
-
-  //set role
-  payload.role = 'user';
-
-  const result = await User.create(payload);
+const getAllUsers = async (): Promise<IUser[]> => {
+  const result = await User.find({ role: 'user' });
   return result;
 };
 
-const loginUser = async (payload: ILoginUser): Promise<ILoginResponse> => {
-  const { email, password } = payload;
-
-  //check user
-  const isUserExist = await User.isUserExist(email!);
-
-  if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User does not found!');
-  }
-
-  //check password
-  const isPasswordMatched = await User.isPasswordMatched(
-    password!,
-    isUserExist.password,
-  );
-
-  if (!isPasswordMatched) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect password!');
-  }
-
-  //create token
-  const accessToken = jwtHelper.createToken(
-    {
-      email,
-      role: isUserExist.role,
-    },
-    config.jwt.secret as Secret,
-    config.jwt.expires_in as string,
-  );
-
-  const refreshToken = jwtHelper.createToken(
-    {
-      email,
-      role: isUserExist.role,
-    },
-    config.jwt.refresh_secret as Secret,
-    config.jwt.refresh_expires_in as string,
-  );
-
-  return {
-    accessToken,
-    refreshToken,
-  };
+const getSingleUser = async (id: string): Promise<IUser | null> => {
+  const result = await User.findById(id);
+  return result;
 };
 
-const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
-  //verify refreshToken
-  let verifiedToken = null;
-  try {
-    verifiedToken = jwtHelper.verifyToken(
-      token,
-      config.jwt.refresh_secret as Secret,
+const getUserProfile = async (
+  user: JwtPayload | null,
+): Promise<IUser | null> => {
+  const result = await User.findOne({ email: user?.email });
+  return result;
+};
+
+const getUserReviews = async (
+  user: JwtPayload | null,
+): Promise<IUser | null> => {
+  const result = await User.findOne({ email: user?.email }, { reviews: 1 });
+  return result;
+};
+
+const updateUserProfile = async (
+  user: JwtPayload | null,
+  payload: Partial<IUser>,
+): Promise<Partial<IUser> | null> => {
+  const isExist = await User.findOne({ email: user?.email });
+
+  if (!isExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User does not found!');
+  }
+
+  const { password, ...userData } = payload;
+
+  const updatedUserData: Partial<IUser> = { ...userData };
+  //hashing password
+  if (password) {
+    updatedUserData.password = await bcrypt.hash(
+      password,
+      Number(config.bcrypt_salt_rounds),
     );
-  } catch (error) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token!');
   }
 
-  const { email } = verifiedToken;
-
-  //check user
-  const isUserExist = await User.isUserExist(email);
-
-  if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User Doesn't Exist!");
-  }
-
-  //generate accessToken
-  const newAccessToken = jwtHelper.createToken(
-    {
-      email,
-      role: isUserExist.role,
-    },
-    config.jwt.secret as Secret,
-    config.jwt.expires_in as string,
+  const result = await User.findOneAndUpdate(
+    { email: user?.email },
+    updatedUserData,
+    { new: true },
   );
 
-  return {
-    accessToken: newAccessToken,
-  };
+  return result;
+};
+
+const deleteUser = async (id: string): Promise<IUser | null> => {
+  const isExist = await User.findById(id);
+
+  if (!isExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User is not found!');
+  }
+
+  const result = await User.findByIdAndDelete(id);
+  return result;
 };
 
 export const UserService = {
-  createUser,
-  loginUser,
-  refreshToken,
+  getSingleUser,
+  getAllUsers,
+  getUserProfile,
+  getUserReviews,
+  updateUserProfile,
+  deleteUser,
 };

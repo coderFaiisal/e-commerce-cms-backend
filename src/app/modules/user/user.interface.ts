@@ -1,11 +1,17 @@
 /* eslint-disable no-unused-vars */
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 export type IUser = {
   name: string;
   email: string;
   password: string;
-  role: string;
+  role?: string;
+  phoneNumber?: string;
+  photoURL?: string;
+  reviews?: {
+    productId?: Types.ObjectId;
+    review?: string;
+  }[];
 };
 
 export type UserModel = {

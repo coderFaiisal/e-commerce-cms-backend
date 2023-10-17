@@ -21,11 +21,11 @@ const createProduct = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const productReview = catchAsync(async (req: Request, res: Response) => {
+const addProductReview = catchAsync(async (req: Request, res: Response) => {
   const productId = req.params.id;
   const review = req.body;
 
-  const result = await ProductService.productReview(productId, review);
+  const result = await ProductService.addProductReview(productId, review);
 
   sendResponse<IProduct>(res, {
     statusCode: httpStatus.OK,
@@ -101,7 +101,7 @@ const deleteProduct = catchAsync(async (req: Request, res: Response) => {
 
 export const ProductController = {
   createProduct,
-  productReview,
+  addProductReview,
   getSingleProduct,
   getAllProducts,
   updateProduct,

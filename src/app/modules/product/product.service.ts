@@ -22,7 +22,7 @@ const createProduct = async (payload: IProduct): Promise<IProduct> => {
   return result;
 };
 
-const productReview = async (
+const addProductReview = async (
   productId: string,
   review: IReview,
 ): Promise<IProduct | null> => {
@@ -149,7 +149,7 @@ const deleteProduct = async (
 
 export const ProductService = {
   createProduct,
-  productReview,
+  addProductReview,
   getSingleProduct,
   getAllProducts,
   updateProduct,

@@ -4,20 +4,25 @@ import { Schema, Types, model } from 'mongoose';
 import config from '../../../config';
 import { IUser, UserModel } from './user.interface';
 
-const userSchema = new Schema<IUser, UserModel>({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true, select: 0 },
-  role: { type: String },
-  phoneNumber: { type: String },
-  photoURL: { type: String },
-  reviews: [
-    {
-      productId: { type: Types.ObjectId, ref: 'Product' },
-      review: { type: String },
-    },
-  ],
-});
+const userSchema = new Schema<IUser, UserModel>(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true, select: 0 },
+    role: { type: String },
+    phoneNumber: { type: String },
+    photoURL: { type: String },
+    reviews: [
+      {
+        productId: { type: Types.ObjectId, ref: 'Product' },
+        review: { type: String },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  },
+);
 
 userSchema.statics.isUserExist = async function (
   email: string,

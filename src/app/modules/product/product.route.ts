@@ -11,7 +11,7 @@ router.post(
   ProductController.createProduct,
 );
 
-router.post('/add-review/:id', ProductController.productReview);
+router.post('/add-review/:id', ProductController.addProductReview);
 
 router.get('/:id', ProductController.getSingleProduct);
 

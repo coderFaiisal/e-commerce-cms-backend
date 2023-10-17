@@ -10,9 +10,9 @@ import { IProduct, IProductFilter, IReview } from './product.interface';
 import { Product } from './product.model';
 
 const createProduct = async (payload: IProduct): Promise<IProduct> => {
-  const { title } = payload;
+  const { name } = payload;
 
-  const isExist = await Product.findOne({ title });
+  const isExist = await Product.findOne({ name });
 
   if (isExist) {
     throw new ApiError(httpStatus.CONFLICT, 'This Product already added');
@@ -98,7 +98,7 @@ const getAllProducts = async (
     .skip(skip)
     .limit(limit);
 
-  const total = await Product.countDocuments(whereConditions);
+  const total = await Product.countDocuments();
 
   return {
     meta: {
@@ -120,7 +120,7 @@ const updateProduct = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found!');
   }
 
-  if (user?.email !== 'admin') {
+  if (user?.role !== 'admin') {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
   }
 
@@ -139,7 +139,7 @@ const deleteProduct = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found!');
   }
 
-  if (user?.email !== 'admin') {
+  if (user?.role !== 'admin') {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
   }
 

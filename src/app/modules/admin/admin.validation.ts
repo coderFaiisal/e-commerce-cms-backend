@@ -12,16 +12,14 @@ const createAdminZodSchema = z.object({
       required_error: 'Password is required',
     }),
     role: z.string().optional(),
-    phoneNumber: z.string().optional(),
     image: z.string().optional(),
-    reviews: z
-      .array(
-        z.object({
-          productId: z.string().optional(),
-          review: z.string().optional(),
-        }),
-      )
-      .optional(),
+  }),
+});
+
+const updateAdminZodSchema = z.object({
+  body: z.object({
+    name: z.string().optional(),
+    image: z.string().optional(),
   }),
 });
 
@@ -46,6 +44,7 @@ const refreshTokenZodSchema = z.object({
 
 export const AdminValidation = {
   createAdminZodSchema,
+  updateAdminZodSchema,
   signInAdinZodSchema,
   refreshTokenZodSchema,
 };

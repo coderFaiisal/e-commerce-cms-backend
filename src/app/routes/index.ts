@@ -13,12 +13,12 @@ const moduleRoutes = [
     route: AuthRoutes,
   },
   {
-    path: '/admins',
-    route: AdminRoutes,
-  },
-  {
     path: '/users',
     route: UserRoutes,
+  },
+  {
+    path: '/admins',
+    route: AdminRoutes,
   },
   {
     path: '/products',

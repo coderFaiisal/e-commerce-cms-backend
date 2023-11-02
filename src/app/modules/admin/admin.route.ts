@@ -26,7 +26,7 @@ router.post(
   AdminController.refreshToken,
 );
 
-router.get('/', auth(ENUM_USER_ROLE.ADMIN));
+router.get('/', auth(ENUM_USER_ROLE.ADMIN), AdminController.getAllAdmins);
 
 router.get(
   '/my-profile',

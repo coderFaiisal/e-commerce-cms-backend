@@ -7,8 +7,11 @@ import {
   ISignInResponse,
 } from '../../../interfaces/common';
 import catchAsync from '../../../shared/catchAsync';
+import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
+import { paginationFields } from '../../constant/pagination';
 import { IUser } from '../user/user.interface';
+import { IAdmin } from './admin.interface';
 import { AdminService } from './admin.service';
 
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
@@ -72,12 +75,26 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllAdmins = catchAsync(async (req: Request, res: Response) => {
+  const paginationOptions = pick(req.query, paginationFields);
+
+  const result = await AdminService.getAllAdmins(paginationOptions);
+
+  sendResponse<IAdmin[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Admins data retrieved successfully',
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 const getAdminProfile = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user;
+  const admin = req.user;
 
-  const result = await AdminService.getAdminProfile(user);
+  const result = await AdminService.getAdminProfile(admin);
 
-  sendResponse<IUser>(res, {
+  sendResponse<IAdmin>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Admin's information retrieved successfully",
@@ -102,6 +119,7 @@ export const AdminController = {
   createAdmin,
   signInAdmin,
   refreshToken,
+  getAllAdmins,
   getAdminProfile,
   updateAdminProfile,
 };

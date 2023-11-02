@@ -2,15 +2,19 @@
 import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
 import { JwtPayload, Secret } from 'jsonwebtoken';
+import { SortOrder } from 'mongoose';
 import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
 import { jwtHelper } from '../../../helpers/jwtHelper';
+import { paginationHelpers } from '../../../helpers/paginationHelper';
 import {
   IAdminSignUpResponse,
+  IGenericResponse,
   IRefreshTokenResponse,
   ISignIn,
   ISignInResponse,
 } from '../../../interfaces/common';
+import { IPaginationOptions } from '../../../interfaces/pagination';
 import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
 import { IAdmin } from './admin.interface';
@@ -139,10 +143,46 @@ const refreshToken = async (
   };
 };
 
+const getAllAdmins = async (
+  paginationOptions: IPaginationOptions,
+): Promise<IGenericResponse<IAdmin[]>> => {
+  //pagination logic
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(paginationOptions);
+
+  const sortConditions: { [key: string]: SortOrder } = {};
+
+  if (sortBy && sortOrder) {
+    sortConditions[sortBy] = sortOrder;
+  }
+
+  const result = await Admin.find({})
+    .lean()
+    .sort(sortConditions)
+    .skip(skip)
+    .limit(limit);
+
+  const total = await Admin.countDocuments();
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  };
+};
+
 const getAdminProfile = async (
-  user: JwtPayload | null,
-): Promise<IUser | null> => {
-  const result = await User.findOne({ email: user?.email });
+  admin: JwtPayload | null,
+): Promise<IAdmin | null> => {
+  const result = await Admin.findOne({ email: admin?.email }).lean();
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Profile not found!');
+  }
+
   return result;
 };
 
@@ -181,6 +221,7 @@ export const AdminService = {
   createAdmin,
   signInAdmin,
   refreshToken,
+  getAllAdmins,
   getAdminProfile,
   updateAdminProfile,
 };

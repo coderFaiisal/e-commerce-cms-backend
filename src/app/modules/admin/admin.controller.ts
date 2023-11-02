@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import config from '../../../config';
-import { IAdminSignUpResponse } from '../../../interfaces/common';
+import {
+  IAdminSignUpResponse,
+  ISignInResponse,
+} from '../../../interfaces/common';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { IUser } from '../user/user.interface';
@@ -23,6 +26,27 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Admin created successfully',
+    data: others,
+  });
+});
+
+const signInAdmin = catchAsync(async (req: Request, res: Response) => {
+  const { ...signInData } = req.body;
+
+  const result = await AdminService.signInAdmin(signInData);
+
+  const { refreshToken, ...others } = result;
+
+  const cookieOptions = {
+    secure: config.env === 'production',
+    httpOnly: true,
+  };
+  res.cookie('refreshToken', refreshToken, cookieOptions);
+
+  sendResponse<Partial<ISignInResponse>>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Sign in successfully',
     data: others,
   });
 });
@@ -55,6 +79,7 @@ const updateAdminProfile = catchAsync(async (req: Request, res: Response) => {
 
 export const AdminController = {
   createAdmin,
+  signInAdmin,
   getAdminProfile,
   updateAdminProfile,
 };

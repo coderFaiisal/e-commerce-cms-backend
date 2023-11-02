@@ -14,7 +14,11 @@ router.post(
   AdminController.createAdmin,
 );
 
-router.post('/sign-in', validateRequest(AdminValidation.signInAdinZodSchema));
+router.post(
+  '/sign-in',
+  validateRequest(AdminValidation.signInAdinZodSchema),
+  AdminController.signInAdmin,
+);
 
 router.post(
   '/refresh-token',

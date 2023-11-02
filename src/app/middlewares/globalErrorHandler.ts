@@ -38,9 +38,9 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   //check mongoose cast error
   else if (error?.name === 'CastError') {
     const simplifiedError = handleCastError(error);
-    statusCode = simplifiedError.statusCode;
-    message = simplifiedError.message;
-    errorMessages = simplifiedError.errorMessages;
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorMessages = simplifiedError?.errorMessages;
   }
 
   // check custom ApiError

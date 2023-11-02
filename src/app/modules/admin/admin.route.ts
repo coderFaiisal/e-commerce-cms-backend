@@ -2,14 +2,15 @@ import express from 'express';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
-import { UserValidation } from '../user/user.validation';
+
 import { AdminController } from './admin.controller';
+import { AdminValidation } from './admin.validation';
 
 const router = express.Router();
 
 router.post(
   '/create-admin',
-  validateRequest(UserValidation.createUserZodSchema),
+  validateRequest(AdminValidation.createAdminZodSchema),
   AdminController.createAdmin,
 );
 

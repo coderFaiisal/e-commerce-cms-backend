@@ -4,27 +4,57 @@ import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
 import { jwtHelper } from '../../../helpers/jwtHelper';
 import {
-  ILoginResponse,
-  ILoginUser,
   IRefreshTokenResponse,
-  IUser,
-} from '../user/user.interface';
+  ISignIn,
+  ISignInResponse,
+  ISignUpUserResponse,
+} from '../../../interfaces/common';
+import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
 
-const signUpUser = async (user: IUser): Promise<IUser> => {
+const signUpUser = async (user: IUser): Promise<ISignUpUserResponse> => {
+  //set user role
+  user.role = 'user';
+
   const isExist = await User.findOne({
     email: user.email,
-  });
+  }).lean();
 
   if (isExist) {
     throw new ApiError(httpStatus.CONFLICT, 'User already exist!');
   }
 
-  const result = await User.create(user);
-  return result;
+  const createdUser = await User.create(user);
+
+  //create jwt token
+  const { email, role } = createdUser;
+
+  const accessToken = jwtHelper.createToken(
+    {
+      email,
+      role,
+    },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string,
+  );
+
+  const refreshToken = jwtHelper.createToken(
+    {
+      email,
+      role,
+    },
+    config.jwt.refresh_secret as Secret,
+    config.jwt.refresh_expires_in as string,
+  );
+
+  return {
+    createdUser,
+    accessToken,
+    refreshToken,
+  };
 };
 
-const signInUser = async (payload: ILoginUser): Promise<ILoginResponse> => {
+const signInUser = async (payload: ISignIn): Promise<ISignInResponse> => {
   const { email: userEmail, password } = payload;
 
   //check user
@@ -37,7 +67,7 @@ const signInUser = async (payload: ILoginUser): Promise<ILoginResponse> => {
   //check password
   const isPasswordMatched = await User.isPasswordMatched(
     password,
-    isUserExist.password as string,
+    isUserExist?.password as string,
   );
 
   if (!isPasswordMatched) {

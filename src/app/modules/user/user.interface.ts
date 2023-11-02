@@ -21,17 +21,3 @@ export type UserModel = {
     savedPassword: string,
   ): Promise<boolean>;
 } & Model<IUser>;
-
-export type ILoginUser = {
-  email: string;
-  password: string;
-};
-
-export type ILoginResponse = {
-  accessToken: string;
-  refreshToken?: string;
-};
-
-export type IRefreshTokenResponse = {
-  accessToken: string;
-};

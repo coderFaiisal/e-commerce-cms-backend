@@ -9,7 +9,7 @@ router.get('/', auth(ENUM_USER_ROLE.ADMIN), UserController.getAllUsers);
 
 router.get(
   '/my-profile',
-  auth(ENUM_USER_ROLE.USER),
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
   UserController.getUserProfile,
 );
 

@@ -225,6 +225,12 @@ const updateAdminProfile = async (
   return result;
 };
 
+const deleteAdmin = async (adminId: string): Promise<IAdmin | null> => {
+  const result = await Admin.findByIdAndDelete(adminId).lean();
+
+  return result;
+};
+
 export const AdminService = {
   createAdmin,
   signInAdmin,
@@ -233,4 +239,5 @@ export const AdminService = {
   getAdminProfile,
   getSingleAdmin,
   updateAdminProfile,
+  deleteAdmin,
 };

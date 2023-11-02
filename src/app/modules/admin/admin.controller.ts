@@ -127,6 +127,19 @@ const updateAdminProfile = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const deleteAdmin = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const result = await AdminService.deleteAdmin(id);
+
+  sendResponse<IAdmin>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Admin deleted successfully',
+    data: result,
+  });
+});
+
 export const AdminController = {
   createAdmin,
   signInAdmin,
@@ -135,4 +148,5 @@ export const AdminController = {
   getAdminProfile,
   getSingleAdmin,
   updateAdminProfile,
+  deleteAdmin,
 };

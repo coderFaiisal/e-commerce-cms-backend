@@ -4,6 +4,7 @@ import config from '../../../config';
 import {
   IRefreshTokenResponse,
   ISignInResponse,
+  ISignUpUserResponse,
 } from '../../../interfaces/common';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
@@ -22,7 +23,7 @@ const signUpUser = catchAsync(async (req: Request, res: Response) => {
 
   res.cookie('refreshToken', refreshToken, cookieOptions);
 
-  sendResponse(res, {
+  sendResponse<Partial<ISignUpUserResponse>>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'User created Successfully',

@@ -9,7 +9,7 @@ const userSchema = new Schema<IUser, UserModel>(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: 0 },
-    role: { type: String },
+    role: { type: String, default: 'user' },
     phoneNumber: { type: String },
     image: { type: String },
     reviews: [

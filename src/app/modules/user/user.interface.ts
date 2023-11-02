@@ -7,7 +7,7 @@ export type IUser = {
   password: string;
   role?: string;
   phoneNumber?: string;
-  photoURL?: string;
+  image?: string;
   reviews?: {
     productId?: Types.ObjectId;
     review?: string;

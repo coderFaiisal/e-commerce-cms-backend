@@ -11,7 +11,7 @@ const userSchema = new Schema<IUser, UserModel>(
     password: { type: String, required: true, select: 0 },
     role: { type: String },
     phoneNumber: { type: String },
-    photoURL: { type: String },
+    image: { type: String },
     reviews: [
       {
         productId: { type: Types.ObjectId, ref: 'Product' },

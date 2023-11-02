@@ -1,8 +1,15 @@
+import { IAdmin } from '../app/modules/admin/admin.interface';
 import { IUser } from '../app/modules/user/user.interface';
 import { IGenericErrorMessage } from './error';
 
-export type ISignUpUserResponse = {
+export type IUserSignUpResponse = {
   createdUser: IUser;
+  accessToken: string;
+  refreshToken?: string;
+};
+
+export type IAdminSignUpResponse = {
+  createdAdmin: IAdmin;
   accessToken: string;
   refreshToken?: string;
 };

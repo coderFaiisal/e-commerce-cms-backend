@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.post(
   '/create-admin',
+  auth(ENUM_USER_ROLE.ADMIN),
   validateRequest(AdminValidation.createAdminZodSchema),
   AdminController.createAdmin,
 );

@@ -7,12 +7,12 @@ import {
   IRefreshTokenResponse,
   ISignIn,
   ISignInResponse,
-  ISignUpUserResponse,
+  IUserSignUpResponse,
 } from '../../../interfaces/common';
 import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
 
-const signUpUser = async (user: IUser): Promise<ISignUpUserResponse> => {
+const signUpUser = async (user: IUser): Promise<IUserSignUpResponse> => {
   //set user role
   user.role = 'user';
 

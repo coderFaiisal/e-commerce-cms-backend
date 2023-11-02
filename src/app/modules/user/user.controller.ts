@@ -29,7 +29,7 @@ const getUserProfile = catchAsync(async (req: Request, res: Response) => {
   sendResponse<IUser>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "User's information retrieved successfully",
+    message: 'User profile retrieved successfully',
     data: result,
   });
 });
@@ -42,13 +42,13 @@ const getUserReviews = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "User's reviews information retrieved successfully",
+    message: 'User reviews retrieved successfully',
     data: result,
   });
 });
 
 const getSingleUser = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id;
+  const { id } = req.params;
 
   const result = await UserService.getSingleUser(id);
   sendResponse<IUser>(res, {
@@ -67,13 +67,13 @@ const updateUserProfile = catchAsync(async (req: Request, res: Response) => {
   sendResponse<Partial<IUser>>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "User's information retrieved successfully",
+    message: 'User information updated successfully',
     data: result,
   });
 });
 
 const deleteUser = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id;
+  const { id } = req.params;
   const result = await UserService.deleteUser(id);
   sendResponse<IUser>(res, {
     statusCode: httpStatus.OK,

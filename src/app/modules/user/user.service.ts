@@ -6,10 +6,10 @@ import { SortOrder } from 'mongoose';
 import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
+import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { IUser } from './user.interface';
 import { User } from './user.model';
-import { IGenericResponse } from '../../../interfaces/common';
 
 const getAllUsers = async (
   paginationOptions: IPaginationOptions,
@@ -61,6 +61,10 @@ const getUserReviews = async (
 const getSingleUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findById(id);
 
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
+  }
+
   return result;
 };
 
@@ -68,7 +72,7 @@ const updateUserProfile = async (
   user: JwtPayload | null,
   payload: Partial<IUser>,
 ): Promise<Partial<IUser> | null> => {
-  const isExist = await User.findOne({ email: user?.email }).lean();
+  const isExist = await User.isUserExist(user?.email);
 
   if (!isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'User does not found!');

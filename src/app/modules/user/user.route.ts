@@ -11,7 +11,7 @@ router.get('/', auth(ENUM_USER_ROLE.ADMIN), UserController.getAllUsers);
 
 router.get(
   '/my-profile',
-  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.USER),
   UserController.getUserProfile,
 );
 
@@ -30,10 +30,6 @@ router.patch(
   UserController.updateUserProfile,
 );
 
-router.delete(
-  '/:id',
-  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
-  UserController.deleteUser,
-);
+router.delete('/:id', auth(ENUM_USER_ROLE.USER), UserController.deleteUser);
 
 export const UserRoutes = router;

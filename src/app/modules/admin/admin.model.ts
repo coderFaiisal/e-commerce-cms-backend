@@ -8,7 +8,7 @@ const adminSchema = new Schema<IAdmin, AdminModel>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: 0 },
     role: { type: String, default: 'admin' },
     image: { type: String },
   },

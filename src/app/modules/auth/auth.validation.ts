@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const createUserZodSchema = z.object({
+const signUpZodSchema = z.object({
   body: z.object({
     name: z.string({
       required_error: 'Name is required',
@@ -13,7 +13,7 @@ const createUserZodSchema = z.object({
     }),
     role: z.string().optional(),
     phoneNumber: z.string().optional(),
-    photoURL: z.string().optional(),
+    image: z.string().optional(),
     reviews: z
       .array(
         z.object({
@@ -25,7 +25,7 @@ const createUserZodSchema = z.object({
   }),
 });
 
-const loginUserZodSchema = z.object({
+const signInZodSchema = z.object({
   body: z.object({
     email: z.string({
       required_error: 'Email is required',
@@ -45,7 +45,7 @@ const refreshTokenZodSchema = z.object({
 });
 
 export const AuthValidation = {
-  createUserZodSchema,
-  loginUserZodSchema,
+  signUpZodSchema,
+  signInZodSchema,
   refreshTokenZodSchema,
 };

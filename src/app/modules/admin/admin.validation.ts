@@ -19,6 +19,7 @@ const createAdminZodSchema = z.object({
 const updateAdminZodSchema = z.object({
   body: z.object({
     name: z.string().optional(),
+    password: z.string().optional(),
     image: z.string().optional(),
   }),
 });

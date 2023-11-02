@@ -34,7 +34,7 @@ router.get(
   AdminController.getAdminProfile,
 );
 
-router.get('/:id', auth(ENUM_USER_ROLE.ADMIN));
+router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), AdminController.getSingleAdmin);
 
 router.patch(
   '/my-profile',

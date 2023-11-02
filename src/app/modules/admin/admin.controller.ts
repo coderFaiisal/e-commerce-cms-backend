@@ -10,7 +10,6 @@ import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
 import { paginationFields } from '../../constant/pagination';
-import { IUser } from '../user/user.interface';
 import { IAdmin } from './admin.interface';
 import { AdminService } from './admin.service';
 
@@ -97,20 +96,33 @@ const getAdminProfile = catchAsync(async (req: Request, res: Response) => {
   sendResponse<IAdmin>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Admin's information retrieved successfully",
+    message: 'Admin profile retrieved successfully',
+    data: result,
+  });
+});
+
+const getSingleAdmin = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const result = await AdminService.getSingleAdmin(id);
+
+  sendResponse<IAdmin>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Admin information retrieved successfully',
     data: result,
   });
 });
 
 const updateAdminProfile = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user;
+  const admin = req.user;
   const { ...updatedData } = req.body;
-  const result = await AdminService.updateAdminProfile(user, updatedData);
+  const result = await AdminService.updateAdminProfile(admin, updatedData);
 
-  sendResponse<Partial<IUser>>(res, {
+  sendResponse<Partial<IAdmin>>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Admin's information retrieved successfully",
+    message: 'Admin profile updated successfully',
     data: result,
   });
 });
@@ -121,5 +133,6 @@ export const AdminController = {
   refreshToken,
   getAllAdmins,
   getAdminProfile,
+  getSingleAdmin,
   updateAdminProfile,
 };

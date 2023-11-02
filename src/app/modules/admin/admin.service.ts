@@ -15,8 +15,6 @@ import {
   ISignInResponse,
 } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
-import { IUser } from '../user/user.interface';
-import { User } from '../user/user.model';
 import { IAdmin } from './admin.interface';
 import { Admin } from './admin.model';
 
@@ -186,11 +184,21 @@ const getAdminProfile = async (
   return result;
 };
 
+const getSingleAdmin = async (adminId: string): Promise<IAdmin | null> => {
+  const result = await Admin.findById(adminId).lean();
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Admin not found!');
+  }
+
+  return result;
+};
+
 const updateAdminProfile = async (
-  user: JwtPayload | null,
-  payload: Partial<IUser>,
-): Promise<Partial<IUser> | null> => {
-  const isExist = await User.findOne({ email: user?.email });
+  admin: JwtPayload | null,
+  payload: Partial<IAdmin>,
+): Promise<Partial<IAdmin> | null> => {
+  const isExist = await Admin.findOne({ email: admin?.email });
 
   if (!isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Admin does not found!');
@@ -198,7 +206,7 @@ const updateAdminProfile = async (
 
   const { password, ...adminData } = payload;
 
-  const updatedAdminData: Partial<IUser> = { ...adminData };
+  const updatedAdminData: Partial<IAdmin> = { ...adminData };
 
   //hashing password
   if (password) {
@@ -208,8 +216,8 @@ const updateAdminProfile = async (
     );
   }
 
-  const result = await User.findOneAndUpdate(
-    { email: user?.email },
+  const result = await Admin.findOneAndUpdate(
+    { email: admin?.email },
     updatedAdminData,
     { new: true },
   );
@@ -223,5 +231,6 @@ export const AdminService = {
   refreshToken,
   getAllAdmins,
   getAdminProfile,
+  getSingleAdmin,
   updateAdminProfile,
 };

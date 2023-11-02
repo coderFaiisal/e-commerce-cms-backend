@@ -1,27 +1,34 @@
 /* eslint-disable no-unused-vars */
-/* eslintdisable no-unused-vars */
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import { ICarat } from '../carat/carat.interface';
+import { ICategory } from '../category/category.interface';
+import { IMaterial } from '../material/material.interface';
+import { IStore } from '../store/store.interface';
+import { IUser } from '../user/user.interface';
 
 export type IProduct = {
+  _id?: string;
+  storeId: Types.ObjectId | IStore;
+  categoryId: Types.ObjectId | ICategory;
+  materialId: Types.ObjectId | IMaterial;
+  caratId: Types.ObjectId | ICarat;
   name: string;
-  category: string;
+  price: number;
   productCode: string;
   description: string;
-  photoURL: string;
-  price: string;
+  images: string[];
+  isFeatured: boolean;
+  isArchived: boolean;
   status: 'stock' | 'stock out';
-  stockQuantity: string;
-  materials: string;
+  stockQuantity: number;
+  materials: string[];
   dimensions: string;
   metalType: string;
   discounts: string;
-  ratings: string;
+  ratings: number;
   returnPolicy: string;
-  customizable: string;
-  reviews?: {
-    userName: string;
-    review: string;
-  }[];
+  customizable: boolean;
+  reviews?: IProductReview[];
 };
 
 export type ProductModel = {
@@ -30,15 +37,17 @@ export type ProductModel = {
 
 export type IProductFilter = {
   searchTerm?: string;
-  category?: string;
   price?: string;
   title?: string;
   status?: string;
   materials?: string;
   discounts?: string;
+  customizable?: string;
 };
 
-export type IReview = {
+export type IProductReview = {
+  userId: Types.ObjectId | IUser;
   userName: string;
   review: string;
+  rating: number;
 };

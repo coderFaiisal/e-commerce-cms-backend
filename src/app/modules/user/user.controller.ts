@@ -7,21 +7,11 @@ import { UserService } from './user.service';
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.getAllUsers();
+
   sendResponse<IUser[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'All users recieved successfully',
-    data: result,
-  });
-});
-
-const getSingleUser = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const result = await UserService.getSingleUser(id);
-  sendResponse<IUser>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User recieved successfully',
+    message: 'All users retrieved successfully',
     data: result,
   });
 });
@@ -48,6 +38,18 @@ const getUserReviews = catchAsync(async (req: Request, res: Response) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "User's reviews information retrieved successfully",
+    data: result,
+  });
+});
+
+const getSingleUser = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  const result = await UserService.getSingleUser(id);
+  sendResponse<IUser>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User retrieved successfully',
     data: result,
   });
 });

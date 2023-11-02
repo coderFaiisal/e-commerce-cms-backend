@@ -8,19 +8,16 @@ import { IUser } from './user.interface';
 import { User } from './user.model';
 
 const getAllUsers = async (): Promise<IUser[]> => {
-  const result = await User.find({ role: 'user' });
-  return result;
-};
+  const result = await User.find({}).lean();
 
-const getSingleUser = async (id: string): Promise<IUser | null> => {
-  const result = await User.findById(id);
   return result;
 };
 
 const getUserProfile = async (
   user: JwtPayload | null,
 ): Promise<IUser | null> => {
-  const result = await User.findOne({ email: user?.email });
+  const result = await User.findOne({ email: user?.email }).lean();
+
   return result;
 };
 
@@ -28,6 +25,13 @@ const getUserReviews = async (
   user: JwtPayload | null,
 ): Promise<IUser | null> => {
   const result = await User.findOne({ email: user?.email }, { reviews: 1 });
+
+  return result;
+};
+
+const getSingleUser = async (id: string): Promise<IUser | null> => {
+  const result = await User.findById(id);
+
   return result;
 };
 
@@ -35,7 +39,7 @@ const updateUserProfile = async (
   user: JwtPayload | null,
   payload: Partial<IUser>,
 ): Promise<Partial<IUser> | null> => {
-  const isExist = await User.findOne({ email: user?.email });
+  const isExist = await User.findOne({ email: user?.email }).lean();
 
   if (!isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'User does not found!');
@@ -62,7 +66,7 @@ const updateUserProfile = async (
 };
 
 const deleteUser = async (id: string): Promise<IUser | null> => {
-  const isExist = await User.findById(id);
+  const isExist = await User.findById(id).lean();
 
   if (!isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'User is not found!');

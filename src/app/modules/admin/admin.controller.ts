@@ -49,7 +49,7 @@ const signInAdmin = catchAsync(async (req: Request, res: Response) => {
   sendResponse<Partial<ISignInResponse>>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Sign in successfully',
+    message: 'Admin sign in successfully',
     data: others,
   });
 });

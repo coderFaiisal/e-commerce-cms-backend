@@ -47,7 +47,7 @@ const signInUser = catchAsync(async (req: Request, res: Response) => {
   sendResponse<Partial<ISignInResponse>>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Logged in Successfully',
+    message: 'User logged in Successfully',
     data: others,
   });
 });

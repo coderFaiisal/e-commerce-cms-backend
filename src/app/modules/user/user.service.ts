@@ -2,15 +2,44 @@
 import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
+import { SortOrder } from 'mongoose';
 import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
+import { paginationHelpers } from '../../../helpers/paginationHelper';
+import { IPaginationOptions } from '../../../interfaces/pagination';
 import { IUser } from './user.interface';
 import { User } from './user.model';
+import { IGenericResponse } from '../../../interfaces/common';
 
-const getAllUsers = async (): Promise<IUser[]> => {
-  const result = await User.find({}).lean();
+const getAllUsers = async (
+  paginationOptions: IPaginationOptions,
+): Promise<IGenericResponse<IUser[]>> => {
+  //pagination logic
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(paginationOptions);
 
-  return result;
+  const sortConditions: { [key: string]: SortOrder } = {};
+
+  if (sortBy && sortOrder) {
+    sortConditions[sortBy] = sortOrder;
+  }
+
+  const result = await User.find({})
+    .lean()
+    .sort(sortConditions)
+    .skip(skip)
+    .limit(limit);
+
+  const total = await User.countDocuments();
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  };
 };
 
 const getUserProfile = async (

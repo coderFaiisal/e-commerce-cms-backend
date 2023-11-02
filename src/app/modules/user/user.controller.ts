@@ -1,18 +1,23 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
+import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
+import { paginationFields } from '../../constant/pagination';
 import { IUser } from './user.interface';
 import { UserService } from './user.service';
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserService.getAllUsers();
+  const paginationOptions = pick(req.query, paginationFields);
+
+  const result = await UserService.getAllUsers(paginationOptions);
 
   sendResponse<IUser[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'All users retrieved successfully',
-    data: result,
+    message: 'Users retrieved successfully',
+    meta: result.meta,
+    data: result.data,
   });
 });
 

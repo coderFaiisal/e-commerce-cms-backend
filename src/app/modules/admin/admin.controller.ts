@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import config from '../../../config';
 import {
   IAdminSignUpResponse,
+  IRefreshTokenResponse,
   ISignInResponse,
 } from '../../../interfaces/common';
 import catchAsync from '../../../shared/catchAsync';
@@ -51,6 +52,26 @@ const signInAdmin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const refreshToken = catchAsync(async (req: Request, res: Response) => {
+  const { refreshToken } = req.cookies;
+
+  const cookieOptions = {
+    secure: config.env === 'production',
+    httpOnly: true,
+  };
+
+  res.cookie('refreshToken', refreshToken, cookieOptions);
+
+  const result = await AdminService.refreshToken(refreshToken);
+
+  sendResponse<IRefreshTokenResponse>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Access token created Successfully',
+    data: result,
+  });
+});
+
 const getAdminProfile = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
 
@@ -80,6 +101,7 @@ const updateAdminProfile = catchAsync(async (req: Request, res: Response) => {
 export const AdminController = {
   createAdmin,
   signInAdmin,
+  refreshToken,
   getAdminProfile,
   updateAdminProfile,
 };

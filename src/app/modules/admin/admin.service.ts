@@ -7,6 +7,7 @@ import ApiError from '../../../errors/ApiError';
 import { jwtHelper } from '../../../helpers/jwtHelper';
 import {
   IAdminSignUpResponse,
+  IRefreshTokenResponse,
   ISignIn,
   ISignInResponse,
 } from '../../../interfaces/common';
@@ -102,6 +103,42 @@ const signInAdmin = async (payload: ISignIn): Promise<ISignInResponse> => {
   };
 };
 
+const refreshToken = async (
+  payload: string,
+): Promise<IRefreshTokenResponse> => {
+  let verifiedAdmin = null;
+
+  try {
+    verifiedAdmin = jwtHelper.verifyToken(
+      payload,
+      config.jwt.refresh_secret as Secret,
+    );
+  } catch (error) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token!');
+  }
+
+  const { email, role } = verifiedAdmin;
+
+  const isAdminExist = await Admin.isAdminExist(email);
+
+  if (!isAdminExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Admin does not exist!');
+  }
+
+  const accessToken = jwtHelper.createToken(
+    {
+      email,
+      role,
+    },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string,
+  );
+
+  return {
+    accessToken,
+  };
+};
+
 const getAdminProfile = async (
   user: JwtPayload | null,
 ): Promise<IUser | null> => {
@@ -143,6 +180,7 @@ const updateAdminProfile = async (
 export const AdminService = {
   createAdmin,
   signInAdmin,
+  refreshToken,
   getAdminProfile,
   updateAdminProfile,
 };

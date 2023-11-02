@@ -23,6 +23,7 @@ router.post(
 router.post(
   '/refresh-token',
   validateRequest(AdminValidation.refreshTokenZodSchema),
+  AdminController.refreshToken,
 );
 
 router.get('/', auth(ENUM_USER_ROLE.ADMIN));

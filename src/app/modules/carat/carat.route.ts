@@ -4,4 +4,4 @@ const router = express.Router();
 
 router.post('/');
 
-export const AddReviewRoutes = router;
+export const CaratRoutes = router;

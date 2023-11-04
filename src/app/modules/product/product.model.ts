@@ -25,8 +25,8 @@ const productSchema = new Schema<IProduct, ProductModel>(
     customizable: { type: Boolean, default: false },
     reviews: [
       {
-        userId: { type: Types.ObjectId, ref: 'User', required: true },
         userName: { type: String, required: true },
+        userEmail: { type: String, required: true },
         review: { type: String, required: true },
         rating: { type: Number },
       },

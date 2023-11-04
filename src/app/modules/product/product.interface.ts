@@ -4,7 +4,6 @@ import { ICarat } from '../carat/carat.interface';
 import { ICategory } from '../category/category.interface';
 import { IMaterial } from '../material/material.interface';
 import { IStore } from '../store/store.interface';
-import { IUser } from '../user/user.interface';
 
 export type IProduct = {
   _id?: string;
@@ -46,8 +45,8 @@ export type IProductFilter = {
 };
 
 export type IProductReview = {
-  userId: Types.ObjectId | IUser;
   userName: string;
+  userEmail: string;
   review: string;
   rating?: number;
 };

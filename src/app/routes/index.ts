@@ -1,5 +1,4 @@
 import express from 'express';
-import { AddReviewRoutes } from '../modules/addReview/addReview.route';
 import { AdminRoutes } from '../modules/admin/admin.route';
 import { AuthRoutes } from '../modules/auth/auth.route';
 import { BillboardRoutes } from '../modules/billboard/billboard.route';
@@ -8,6 +7,7 @@ import { CategoryRoutes } from '../modules/category/category.route';
 import { MaterialRoutes } from '../modules/material/material.route';
 import { OrderRoutes } from '../modules/order/order.route';
 import { ProductRoutes } from '../modules/product/product.route';
+import { productReviewRoutes } from '../modules/productReview/productReview.route';
 import { StoreRoutes } from '../modules/store/store.route';
 import { UserRoutes } from '../modules/user/user.route';
 
@@ -43,6 +43,10 @@ const moduleRoutes = [
     route: ProductRoutes,
   },
   {
+    path: '/productReviews',
+    route: productReviewRoutes,
+  },
+  {
     path: '/carats',
     route: CaratRoutes,
   },
@@ -53,10 +57,6 @@ const moduleRoutes = [
   {
     path: '/orders',
     route: OrderRoutes,
-  },
-  {
-    path: '/addReviews',
-    route: AddReviewRoutes,
   },
 ];
 

@@ -1,12 +1,20 @@
 import { Model, Types } from 'mongoose';
+import { IProduct } from '../product/product.interface';
+import { IStore } from '../store/store.interface';
 
 export type IOrder = {
+  _id?: string;
   userEmail: string;
-  productId: Types.ObjectId;
-  quantity: string;
-  orderStatus: string;
-  paymentStatus: string;
-  totalCost: string;
+  storeId: Types.ObjectId | IStore;
+  orderItems: [
+    {
+      productId: Types.ObjectId | IProduct;
+      quantity: number;
+    },
+  ];
+  isPaid: boolean;
+  orderStatus: 'pending' | 'deliverd';
+  totalCost: number;
   paymentMethod: string;
   contactInformation: {
     name: string;
@@ -16,11 +24,11 @@ export type IOrder = {
   };
   shippingAddress: string;
   deliveryMethod: string;
-  trackingNumber: string;
-  discounts: string;
-  giftMessage: string;
-  giftWrapping: string;
-  returnPolicy: string;
+  trackingNumber?: string;
+  discounts?: string;
+  giftMessage?: string;
+  giftWrapping?: string;
+  returnPolicy?: string;
 };
 
-export type IOrderModel = Model<IOrder, Record<string, unknown>>;
+export type OrderModel = Model<IOrder, Record<string, undefined>>;

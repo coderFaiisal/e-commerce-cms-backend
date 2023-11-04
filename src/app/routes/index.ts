@@ -5,6 +5,7 @@ import { AuthRoutes } from '../modules/auth/auth.route';
 import { BillboardRoutes } from '../modules/billboard/billboard.route';
 import { CaratRoutes } from '../modules/carat/carat.route';
 import { CategoryRoutes } from '../modules/category/category.route';
+import { MaterialRoutes } from '../modules/material/material.route';
 import { OrderRoutes } from '../modules/order/order.route';
 import { ProductRoutes } from '../modules/product/product.route';
 import { StoreRoutes } from '../modules/store/store.route';
@@ -44,6 +45,10 @@ const moduleRoutes = [
   {
     path: '/carats',
     route: CaratRoutes,
+  },
+  {
+    path: '/materials',
+    route: MaterialRoutes,
   },
   {
     path: '/orders',

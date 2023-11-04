@@ -2,4 +2,11 @@
 // 2. mongodb indexing on email of user and admin
 // 3. productCode incremental id functionality
 
-// !Fist Complete all interface and model
+// ! Start with
+// store
+
+// !Done List
+// auth
+// user
+// admin
+//

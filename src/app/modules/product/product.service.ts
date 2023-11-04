@@ -6,7 +6,7 @@ import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { productSearchableFields } from './product.constant';
-import { IProduct, IProductFilter, IReview } from './product.interface';
+import { IProduct, IProductFilter } from './product.interface';
 import { Product } from './product.model';
 
 const createProduct = async (payload: IProduct): Promise<IProduct> => {
@@ -19,27 +19,6 @@ const createProduct = async (payload: IProduct): Promise<IProduct> => {
   }
 
   const result = await Product.create(payload);
-  return result;
-};
-
-const addProductReview = async (
-  productId: string,
-  review: IReview,
-): Promise<IProduct | null> => {
-  const isProductExist = await Product.isProductExist(productId);
-
-  if (!isProductExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found!');
-  }
-
-  const result = await Product.findByIdAndUpdate(
-    productId,
-    {
-      $push: { reviews: review },
-    },
-    { new: true },
-  );
-
   return result;
 };
 
@@ -149,7 +128,6 @@ const deleteProduct = async (
 
 export const ProductService = {
   createProduct,
-  addProductReview,
   getSingleProduct,
   getAllProducts,
   updateProduct,

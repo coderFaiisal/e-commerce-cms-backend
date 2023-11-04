@@ -6,6 +6,7 @@ import { IStore } from '../store/store.interface';
 export type ICategory = {
   _id?: string;
   name: string;
+  code: string;
   storeId: Types.ObjectId | IStore;
   billboardId: Types.ObjectId | IBillboard;
   products?: Types.ObjectId[] | IProduct[];

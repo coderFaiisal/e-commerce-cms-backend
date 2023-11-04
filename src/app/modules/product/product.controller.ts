@@ -21,20 +21,6 @@ const createProduct = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const addProductReview = catchAsync(async (req: Request, res: Response) => {
-  const productId = req.params.id;
-  const review = req.body;
-
-  const result = await ProductService.addProductReview(productId, review);
-
-  sendResponse<IProduct>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Review added successfully',
-    data: result,
-  });
-});
-
 const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
   const productId = req.params.id;
 
@@ -101,7 +87,6 @@ const deleteProduct = catchAsync(async (req: Request, res: Response) => {
 
 export const ProductController = {
   createProduct,
-  addProductReview,
   getSingleProduct,
   getAllProducts,
   updateProduct,

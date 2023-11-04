@@ -5,17 +5,12 @@ const storeSchema = new Schema<IStore, StoreModel>({
   _id: { type: String },
   name: { type: String, required: true, unique: true },
 
-  billboards: [{ type: Types.ObjectId, ref: 'Billboard', required: true }],
-
-  categories: [{ type: Types.ObjectId, ref: 'Category', required: true }],
-
-  products: [{ type: Types.ObjectId, ref: 'Product', required: true }],
-
-  carats: [{ type: Types.ObjectId, ref: 'Carat', required: true }],
-
-  materials: [{ type: Types.ObjectId, ref: 'Material', required: true }],
-
-  orders: [{ type: Types.ObjectId, ref: 'Order', required: true }],
+  billboards: [{ type: Types.ObjectId, ref: 'Billboard' }],
+  categories: [{ type: Types.ObjectId, ref: 'Category' }],
+  products: [{ type: Types.ObjectId, ref: 'Product' }],
+  carats: [{ type: Types.ObjectId, ref: 'Carat' }],
+  materials: [{ type: Types.ObjectId, ref: 'Material' }],
+  orders: [{ type: Types.ObjectId, ref: 'Order' }],
 });
 
 storeSchema.statics.isStoreExist = async function (

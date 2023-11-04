@@ -10,12 +10,12 @@ import { IProduct } from '../product/product.interface';
 export type IStore = {
   _id?: string;
   name: string;
-  billboards: Types.ObjectId[] | IBillboard[];
-  categories: Types.ObjectId[] | ICategory[];
-  products: Types.ObjectId[] | IProduct[];
-  carats: Types.ObjectId[] | ICarat[];
-  materials: Types.ObjectId[] | IMaterial[];
-  orders: Types.ObjectId[] | IOrder[];
+  billboards?: Types.ObjectId[] | IBillboard[];
+  categories?: Types.ObjectId[] | ICategory[];
+  products?: Types.ObjectId[] | IProduct[];
+  carats?: Types.ObjectId[] | ICarat[];
+  materials?: Types.ObjectId[] | IMaterial[];
+  orders?: Types.ObjectId[] | IOrder[];
 };
 
 export type StoreModel = {

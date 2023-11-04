@@ -21,13 +21,13 @@ export type IProduct = {
   isArchived: boolean;
   status: 'stock' | 'stock out';
   stockQuantity: number;
-  materials: string[];
-  dimensions: string;
-  metalType: string;
-  discounts: string;
-  ratings: number;
-  returnPolicy: string;
-  customizable: boolean;
+  materials?: string[];
+  dimensions?: string;
+  metalType?: string;
+  discounts?: string;
+  ratings?: number;
+  returnPolicy?: string;
+  customizable?: boolean;
   reviews?: IProductReview[];
 };
 
@@ -38,8 +38,8 @@ export type ProductModel = {
 export type IProductFilter = {
   searchTerm?: string;
   price?: string;
-  title?: string;
   status?: string;
+  ratings?: string;
   materials?: string;
   discounts?: string;
   customizable?: string;
@@ -49,5 +49,5 @@ export type IProductReview = {
   userId: Types.ObjectId | IUser;
   userName: string;
   review: string;
-  rating: number;
+  rating?: number;
 };

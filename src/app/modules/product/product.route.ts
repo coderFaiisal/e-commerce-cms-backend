@@ -11,11 +11,9 @@ router.post(
   ProductController.createProduct,
 );
 
-router.post('/add-review/:id', ProductController.addProductReview);
+router.get('/', ProductController.getAllProducts);
 
 router.get('/:id', ProductController.getSingleProduct);
-
-router.get('/', ProductController.getAllProducts);
 
 router.patch(
   '/:id',

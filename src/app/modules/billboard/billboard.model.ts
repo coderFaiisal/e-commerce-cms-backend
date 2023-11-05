@@ -1,4 +1,4 @@
-import { Schema, Types, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { BillboardModel, IBillboard } from './billboard.interface';
 
 const billboardSchema = new Schema<IBillboard, BillboardModel>(
@@ -6,7 +6,7 @@ const billboardSchema = new Schema<IBillboard, BillboardModel>(
     _id: { type: String },
     label: { type: String, required: true },
     imageURL: { type: String, required: true },
-    categories: [{ type: Types.ObjectId, ref: 'Category' }],
+    categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
   },
   {
     timestamps: true,

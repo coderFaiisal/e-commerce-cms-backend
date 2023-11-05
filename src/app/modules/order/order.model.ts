@@ -1,16 +1,16 @@
-import { Schema, Types, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IOrder, OrderModel } from './order.interface';
 
 const orderSchema = new Schema<IOrder, OrderModel>(
   {
     _id: { type: String },
     userEmail: { type: String, required: true },
-    storeId: { type: Types.ObjectId, ref: 'Store', required: true },
+    storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
 
     orderItems: [
       {
         productId: {
-          type: Types.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: 'Product',
           required: true,
         },

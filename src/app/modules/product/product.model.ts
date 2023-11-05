@@ -1,12 +1,20 @@
-import { Schema, Types, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IProduct, ProductModel } from './product.interface';
 
 const productSchema = new Schema<IProduct, ProductModel>(
   {
-    storeId: { type: Types.ObjectId, ref: 'Store', required: true },
-    categoryId: { type: Types.ObjectId, ref: 'Category', required: true },
-    materialId: { type: Types.ObjectId, ref: 'Material', required: true },
-    caratId: { type: Types.ObjectId, ref: 'Carat', required: true },
+    storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
+      required: true,
+    },
+    materialId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Material',
+      required: true,
+    },
+    caratId: { type: Schema.Types.ObjectId, ref: 'Carat', required: true },
     name: { type: String, required: true },
     price: { type: Number, required: true },
     productCode: { type: String, required: true },

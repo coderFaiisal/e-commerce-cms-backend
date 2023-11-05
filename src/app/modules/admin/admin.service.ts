@@ -9,6 +9,7 @@ import { jwtHelper } from '../../../helpers/jwtHelper';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import {
   IAdminSignUpResponse,
+  IChangePassword,
   IGenericResponse,
   IRefreshTokenResponse,
   ISignIn,
@@ -103,6 +104,36 @@ const signInAdmin = async (payload: ISignIn): Promise<ISignInResponse> => {
     accessToken,
     refreshToken,
   };
+};
+
+const changePassword = async (
+  admin: JwtPayload | null,
+  payload: IChangePassword,
+): Promise<void> => {
+  const { oldPassword, newPassword } = payload;
+
+  //check admin
+  const isAdminExist = await Admin.findOne({ email: admin?.email }).select(
+    '+password',
+  );
+
+  if (!isAdminExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not found!');
+  }
+
+  //check old password
+  if (
+    isAdminExist.password &&
+    !(await Admin.isPasswordMatched(oldPassword, isAdminExist.password))
+  ) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Old password is incorrect!');
+  }
+
+  //set new password
+  isAdminExist.password = newPassword;
+
+  // updating using save()
+  isAdminExist.save();
 };
 
 const refreshToken = async (
@@ -234,6 +265,7 @@ const deleteAdmin = async (adminId: string): Promise<IAdmin | null> => {
 export const AdminService = {
   createAdmin,
   signInAdmin,
+  changePassword,
   refreshToken,
   getAllAdmins,
   getAdminProfile,

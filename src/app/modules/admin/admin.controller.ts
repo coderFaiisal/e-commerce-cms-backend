@@ -54,6 +54,20 @@ const signInAdmin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const changePassword = catchAsync(async (req: Request, res: Response) => {
+  const admin = req.user;
+  const { ...passwordData } = req.body;
+
+  const result = await AdminService.changePassword(admin, passwordData);
+
+  sendResponse<void>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Password changed successfully',
+    data: result,
+  });
+});
+
 const refreshToken = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.cookies;
 
@@ -143,6 +157,7 @@ const deleteAdmin = catchAsync(async (req: Request, res: Response) => {
 export const AdminController = {
   createAdmin,
   signInAdmin,
+  changePassword,
   refreshToken,
   getAllAdmins,
   getAdminProfile,

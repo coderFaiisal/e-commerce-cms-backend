@@ -21,6 +21,12 @@ router.post(
 );
 
 router.post(
+  '/change-password',
+  validateRequest(AdminValidation.changePasswordZodSchema),
+  AdminController.changePassword,
+);
+
+router.post(
   '/refresh-token',
   validateRequest(AdminValidation.refreshTokenZodSchema),
   AdminController.refreshToken,

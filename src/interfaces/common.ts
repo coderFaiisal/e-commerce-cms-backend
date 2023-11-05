@@ -42,3 +42,8 @@ export type IGenericErrorResponse = {
   message: string;
   errorMessages: IGenericErrorMessage[];
 };
+
+export type IChangePassword = {
+  oldPassword: string;
+  newPassword: string;
+};

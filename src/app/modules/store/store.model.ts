@@ -19,9 +19,9 @@ const storeSchema = new Schema<IStore, StoreModel>(
 );
 
 storeSchema.statics.isStoreExist = async function (
-  storeName: string,
+  storeId: string,
 ): Promise<IStore | null> {
-  return await Store.findOne({ name: storeName }).lean();
+  return await Store.findById(storeId).lean();
 };
 
 export const Store = model<IStore, StoreModel>('Store', storeSchema);

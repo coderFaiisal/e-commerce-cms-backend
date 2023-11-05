@@ -118,7 +118,7 @@ const changePassword = async (
   );
 
   if (!isAdminExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Admin does not found!');
   }
 
   //check old password

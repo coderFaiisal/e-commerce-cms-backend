@@ -19,5 +19,5 @@ export type IStore = {
 };
 
 export type StoreModel = {
-  isStoreExist(storeName: string): boolean;
+  isStoreExist(storeId: string): boolean;
 } & Model<IStore>;

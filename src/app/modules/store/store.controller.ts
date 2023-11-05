@@ -18,6 +18,50 @@ const createStore = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getSingleStore = catchAsync(async (req: Request, res: Response) => {
+  const storeId = req.params.id;
+
+  const result = await StoreService.getSingleStore(storeId);
+
+  sendResponse<IStore>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Store retrieved successfully',
+    data: result,
+  });
+});
+
+const updateStore = catchAsync(async (req: Request, res: Response) => {
+  const storeId = req.params.id;
+
+  const { ...updatedData } = req.body;
+
+  const result = await StoreService.updateStore(storeId, updatedData);
+
+  sendResponse<IStore>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Store updated successfully',
+    data: result,
+  });
+});
+
+const deleteStore = catchAsync(async (req: Request, res: Response) => {
+  const storeId = req.params.id;
+
+  const result = await StoreService.deleteStore(storeId);
+
+  sendResponse<IStore>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Store deleted successfully',
+    data: result,
+  });
+});
+
 export const StoreController = {
   createStore,
+  getSingleStore,
+  updateStore,
+  deleteStore,
 };

@@ -14,10 +14,10 @@ router.post(
   StoreController.createStore,
 );
 
-router.get('/:id', auth(ENUM_USER_ROLE.ADMIN));
+router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), StoreController.getSingleStore);
 
-router.patch('/:id', auth(ENUM_USER_ROLE.ADMIN));
+router.patch('/:id', auth(ENUM_USER_ROLE.ADMIN), StoreController.updateStore);
 
-router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN));
+router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), StoreController.deleteStore);
 
 export const StoreRoutes = router;

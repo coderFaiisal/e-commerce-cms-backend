@@ -52,6 +52,20 @@ const signInUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const changePassword = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const { ...passwordData } = req.body;
+
+  const result = await AuthService.changePassword(user, passwordData);
+
+  sendResponse<void>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Password changed successfully',
+    data: result,
+  });
+});
+
 const refreshToken = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.cookies;
 
@@ -75,5 +89,6 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
 export const AuthController = {
   signUpUser,
   signInUser,
+  changePassword,
   refreshToken,
 };

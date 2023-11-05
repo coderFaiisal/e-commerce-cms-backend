@@ -35,7 +35,7 @@ const signInAdinZodSchema = z.object({
   }),
 });
 
-const changePasswordZodSchema = z.object({
+const changeAdminPasswordZodSchema = z.object({
   body: z.object({
     oldPassword: z.string({
       required_error: 'Old password is required',
@@ -58,6 +58,6 @@ export const AdminValidation = {
   createAdminZodSchema,
   updateAdminZodSchema,
   signInAdinZodSchema,
-  changePasswordZodSchema,
+  changeAdminPasswordZodSchema,
   refreshTokenZodSchema,
 };

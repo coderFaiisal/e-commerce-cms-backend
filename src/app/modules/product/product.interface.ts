@@ -6,7 +6,6 @@ import { IMaterial } from '../material/material.interface';
 import { IStore } from '../store/store.interface';
 
 export type IProduct = {
-  _id?: string;
   storeId: Types.ObjectId | IStore;
   categoryId: Types.ObjectId | ICategory;
   materialId: Types.ObjectId | IMaterial;

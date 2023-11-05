@@ -3,7 +3,6 @@ import { IStore, StoreModel } from './store.interface';
 
 const storeSchema = new Schema<IStore, StoreModel>(
   {
-    _id: { type: String },
     name: { type: String, required: true, unique: true },
 
     billboards: [{ type: Schema.Types.ObjectId, ref: 'Billboard' }],
@@ -19,9 +18,9 @@ const storeSchema = new Schema<IStore, StoreModel>(
 );
 
 storeSchema.statics.isStoreExist = async function (
-  storeId: string,
+  storeName: string,
 ): Promise<IStore | null> {
-  return await Store.findById(storeId).lean();
+  return await Store.findOne({ name: storeName }).lean();
 };
 
 export const Store = model<IStore, StoreModel>('Store', storeSchema);

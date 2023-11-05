@@ -4,7 +4,6 @@ import { IProduct } from '../product/product.interface';
 import { IStore } from '../store/store.interface';
 
 export type ICategory = {
-  _id?: string;
   name: string;
   code: string;
   storeId: Types.ObjectId | IStore;

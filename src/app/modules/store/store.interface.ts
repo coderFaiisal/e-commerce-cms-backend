@@ -8,7 +8,6 @@ import { IOrder } from '../order/order.interface';
 import { IProduct } from '../product/product.interface';
 
 export type IStore = {
-  _id?: string;
   name: string;
   billboards?: Types.ObjectId[] | IBillboard[];
   categories?: Types.ObjectId[] | ICategory[];
@@ -19,5 +18,5 @@ export type IStore = {
 };
 
 export type StoreModel = {
-  isStoreExist(storeId: string): boolean;
+  isStoreExist(storeName: string): boolean;
 } & Model<IStore>;

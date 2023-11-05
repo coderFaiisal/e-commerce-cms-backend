@@ -3,7 +3,6 @@ import { IProduct } from '../product/product.interface';
 import { IStore } from '../store/store.interface';
 
 export type IOrder = {
-  _id?: string;
   userEmail: string;
   storeId: Types.ObjectId | IStore;
   orderItems: [

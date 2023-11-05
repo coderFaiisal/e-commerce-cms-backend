@@ -3,7 +3,6 @@ import { IProduct } from '../product/product.interface';
 import { IStore } from '../store/store.interface';
 
 export type IMaterial = {
-  _id?: string;
   name: string;
   value: string;
   storeId: Types.ObjectId | IStore;

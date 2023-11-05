@@ -3,7 +3,6 @@ import { IOrder, OrderModel } from './order.interface';
 
 const orderSchema = new Schema<IOrder, OrderModel>(
   {
-    _id: { type: String },
     userEmail: { type: String, required: true },
     storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
 

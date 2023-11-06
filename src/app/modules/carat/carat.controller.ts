@@ -43,11 +43,17 @@ const getSingleCarat = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateCarat = catchAsync(async (req: Request, res: Response) => {
-  sendResponse(res, {
+  const caratId = req.params.id;
+
+  const { ...updatedData } = req.body;
+
+  const result = await CaratService.updateCarat(caratId, updatedData);
+
+  sendResponse<ICarat>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Carat created successfully',
-    data: null,
+    message: 'Carat updated successfully',
+    data: result,
   });
 });
 

@@ -27,7 +27,17 @@ const getSingleCarat = async (caratId: string): Promise<ICarat | null> => {
   return result;
 };
 
-const updateCarat = async () => {};
+const updateCarat = async (
+  caratId: string,
+  updatedData: Partial<ICarat>,
+): Promise<ICarat | null> => {
+  const result = await Carat.findByIdAndUpdate(caratId, updatedData, {
+    new: true,
+  });
+
+  return result;
+};
+
 const deleteCarat = async () => {};
 
 export const CaratService = {

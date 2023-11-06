@@ -6,7 +6,7 @@ export type IBillboard = {
   label: string;
   imageURL: string;
   storeId: Types.ObjectId | IStore;
-  categories: Types.ObjectId[] | ICategory[];
+  categories?: Types.ObjectId[] | ICategory[];
 };
 
 export type BillboardModel = Model<IBillboard, Record<string, undefined>>;

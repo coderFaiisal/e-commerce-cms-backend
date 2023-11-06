@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
-import { CaratService } from './carat.service';
 import { ICarat } from './carat.interface';
+import { CaratService } from './carat.service';
 
 const createCarat = catchAsync(async (req: Request, res: Response) => {
   const { ...caratData } = req.body;
@@ -19,11 +19,13 @@ const createCarat = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllCarats = catchAsync(async (req: Request, res: Response) => {
-  sendResponse(res, {
+  const result = await CaratService.getAllCarats();
+
+  sendResponse<ICarat[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Carat created successfully',
-    data: null,
+    message: 'Carats retrieved successfully',
+    data: result,
   });
 });
 

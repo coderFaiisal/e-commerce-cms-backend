@@ -15,7 +15,12 @@ const createCarat = async (payload: ICarat): Promise<ICarat | null> => {
   return result;
 };
 
-const getAllCarats = async () => {};
+const getAllCarats = async (): Promise<ICarat[] | null> => {
+  const result = await Carat.find({});
+
+  return result;
+};
+
 const getSingleCarat = async () => {};
 const updateCarat = async () => {};
 const deleteCarat = async () => {};

@@ -1,5 +1,4 @@
 import httpStatus from 'http-status';
-import { JwtPayload } from 'jsonwebtoken';
 import { SortOrder } from 'mongoose';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
@@ -12,20 +11,13 @@ import { Product } from './product.model';
 const createProduct = async (payload: IProduct): Promise<IProduct> => {
   const { name } = payload;
 
-  const isExist = await Product.findOne({ name });
+  const isExist = await Product.findOne({ name }).lean();
 
   if (isExist) {
     throw new ApiError(httpStatus.CONFLICT, 'This Product already added');
   }
 
   const result = await Product.create(payload);
-  return result;
-};
-
-const getSingleProduct = async (
-  productId: string,
-): Promise<IProduct | null> => {
-  const result = await Product.findById(productId);
   return result;
 };
 
@@ -89,37 +81,34 @@ const getAllProducts = async (
   };
 };
 
+const getSingleProduct = async (
+  productId: string,
+): Promise<IProduct | null> => {
+  const result = await Product.findById(productId).lean();
+  return result;
+};
+
 const updateProduct = async (
   productId: string,
-  user: JwtPayload | null,
-  payload: Partial<IProduct>,
+  updatedData: Partial<IProduct>,
 ): Promise<IProduct | null> => {
   const isProductExist = await Product.isProductExist(productId);
+
   if (!isProductExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found!');
   }
 
-  if (user?.role !== 'admin') {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
-  }
-
-  const result = await Product.findByIdAndUpdate(productId, payload, {
+  const result = await Product.findByIdAndUpdate(productId, updatedData, {
     new: true,
   });
   return result;
 };
 
-const deleteProduct = async (
-  productId: string,
-  user: JwtPayload | null,
-): Promise<IProduct | null> => {
+const deleteProduct = async (productId: string): Promise<IProduct | null> => {
   const isProductExist = await Product.isProductExist(productId);
+
   if (!isProductExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found!');
-  }
-
-  if (user?.role !== 'admin') {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
   }
 
   const result = await Product.findByIdAndDelete(productId);

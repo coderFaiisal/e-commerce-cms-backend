@@ -29,7 +29,12 @@ const updateBillboard = async (
   return result;
 };
 
-const deleteBillboard = async () => {};
+const deleteBillboard = async (
+  billboardId: string,
+): Promise<IBillboard | null> => {
+  const result = await Billboard.findByIdAndDelete(billboardId);
+  return result;
+};
 
 export const BillboardService = {
   createBillboard,

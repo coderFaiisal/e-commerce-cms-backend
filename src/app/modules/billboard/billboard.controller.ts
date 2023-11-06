@@ -49,11 +49,15 @@ const updateBillboard = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteBillboard = catchAsync(async (req: Request, res: Response) => {
-  sendResponse(res, {
+  const billboardId = req.params.id;
+
+  const result = await BillboardService.deleteBillboard(billboardId);
+
+  sendResponse<IBillboard>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Billboard deleted successfully',
-    data: null,
+    data: result,
   });
 });
 

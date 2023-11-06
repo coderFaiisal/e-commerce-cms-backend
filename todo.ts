@@ -3,7 +3,6 @@
 // * Explore and implement Invoice
 
 // !List
-// billboard
 // carat
 // category
 // material

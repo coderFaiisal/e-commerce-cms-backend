@@ -54,7 +54,7 @@ const updateProductZodSchema = z.object({
     isFeatured: z.boolean().optional(),
     isArchived: z.boolean().optional(),
     status: z.string().optional(),
-    stockQuantity: z.number(),
+    stockQuantity: z.number().optional(),
     materials: z.array(z.string()).optional(),
     dimensions: z.string().optional(),
     metalType: z.string().optional(),

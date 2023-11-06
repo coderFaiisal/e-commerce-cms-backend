@@ -23,7 +23,7 @@ const getSingleBillboard = catchAsync(async (req: Request, res: Response) => {
 
   const result = await BillboardService.getSingleBillboard(billboardId);
 
-  sendResponse(res, {
+  sendResponse<IBillboard>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Billboard retrieved successfully',
@@ -32,11 +32,19 @@ const getSingleBillboard = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateBillboard = catchAsync(async (req: Request, res: Response) => {
-  sendResponse(res, {
+  const billboardId = req.params.id;
+  const { ...updatedData } = req.body;
+
+  const result = await BillboardService.updateBillboard(
+    billboardId,
+    updatedData,
+  );
+
+  sendResponse<IBillboard>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Billboard updated successfully',
-    data: null,
+    data: result,
   });
 });
 

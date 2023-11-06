@@ -6,7 +6,7 @@ export type IMaterial = {
   name: string;
   value: string;
   storeId: Types.ObjectId | IStore;
-  products: Types.ObjectId[] | IProduct[];
+  products?: Types.ObjectId[] | IProduct[];
 };
 
 export type MaterialModel = Model<IMaterial, Record<string, undefined>>;

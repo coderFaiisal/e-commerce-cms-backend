@@ -3,7 +3,6 @@
 // * Explore and implement Invoice
 
 // !List
-// category
 // material
 // order
 // product

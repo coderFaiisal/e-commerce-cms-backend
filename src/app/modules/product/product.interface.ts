@@ -12,11 +12,11 @@ export type IProduct = {
   caratId: Types.ObjectId | ICarat;
   name: string;
   price: number;
-  productCode: string;
+  productCode?: string;
   description: string;
   images: string[];
-  isFeatured: boolean;
-  isArchived: boolean;
+  isFeatured?: boolean;
+  isArchived?: boolean;
   status: 'stock' | 'stock out';
   stockQuantity: number;
   materials?: string[];

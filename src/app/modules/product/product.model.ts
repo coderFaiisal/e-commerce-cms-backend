@@ -17,7 +17,7 @@ const productSchema = new Schema<IProduct, ProductModel>(
     caratId: { type: Schema.Types.ObjectId, ref: 'Carat', required: true },
     name: { type: String, required: true },
     price: { type: Number, required: true },
-    productCode: { type: String, required: true },
+    productCode: { type: String },
     description: { type: String, required: true },
     images: { type: [String], required: true },
     isFeatured: { type: Boolean, default: true },

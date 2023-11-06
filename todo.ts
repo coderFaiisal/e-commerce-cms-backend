@@ -3,7 +3,6 @@
 // * Explore and implement Invoice
 
 // !List
-// carat
 // category
 // material
 // order

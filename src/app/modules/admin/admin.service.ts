@@ -8,7 +8,6 @@ import ApiError from '../../../errors/ApiError';
 import { jwtHelper } from '../../../helpers/jwtHelper';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import {
-  IAdminSignUpResponse,
   IChangePassword,
   IGenericResponse,
   IRefreshTokenResponse,
@@ -19,7 +18,7 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import { IAdmin } from './admin.interface';
 import { Admin } from './admin.model';
 
-const createAdmin = async (admin: IAdmin): Promise<IAdminSignUpResponse> => {
+const createAdmin = async (admin: IAdmin): Promise<IAdmin> => {
   //set role
   admin.role = 'admin';
 
@@ -29,34 +28,9 @@ const createAdmin = async (admin: IAdmin): Promise<IAdminSignUpResponse> => {
     throw new ApiError(httpStatus.CONFLICT, 'Admin already exist!');
   }
 
-  const createdAdmin = await Admin.create(admin);
+  const result = await Admin.create(admin);
 
-  // create jwt token
-  const { email, role } = createdAdmin;
-
-  const accessToken = jwtHelper.createToken(
-    {
-      email,
-      role,
-    },
-    config.jwt.secret as Secret,
-    config.jwt.expires_in as string,
-  );
-
-  const refreshToken = jwtHelper.createToken(
-    {
-      email,
-      role,
-    },
-    config.jwt.refresh_secret as Secret,
-    config.jwt.refresh_expires_in as string,
-  );
-
-  return {
-    createdAdmin,
-    accessToken,
-    refreshToken,
-  };
+  return result;
 };
 
 const signInAdmin = async (payload: ISignIn): Promise<ISignInResponse> => {

@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import config from '../../../config';
 import {
-  IAdminSignUpResponse,
   IRefreshTokenResponse,
   ISignInResponse,
 } from '../../../interfaces/common';
@@ -17,19 +16,11 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
   const { ...adminData } = req.body;
   const result = await AdminService.createAdmin(adminData);
 
-  const { refreshToken, ...others } = result;
-
-  const cookieOptions = {
-    secure: config.env === 'production',
-    httpOnly: true,
-  };
-  res.cookie('refreshToken', refreshToken, cookieOptions);
-
-  sendResponse<Partial<IAdminSignUpResponse>>(res, {
+  sendResponse<IAdmin>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Admin created successfully',
-    data: others,
+    data: result,
   });
 });
 

@@ -14,12 +14,20 @@ router.post(
   CategoryController.createCategory,
 );
 
-router.get('/');
+router.get('/', CategoryController.getAllCategories);
 
-router.get('/:id');
+router.get('/:id', CategoryController.getSingleCategory);
 
-router.patch('/:id', auth(ENUM_USER_ROLE.ADMIN));
+router.patch(
+  '/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  CategoryController.updateCategory,
+);
 
-router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN));
+router.delete(
+  '/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  CategoryController.deleteCategory,
+);
 
 export const CategoryRoutes = router;

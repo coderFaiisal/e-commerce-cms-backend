@@ -2,6 +2,5 @@
 // * mongodb indexing on email of user and admin
 // * Explore and implement Invoice
 
-// !List
-// product
-// productReview
+//! Main focus
+// create service logic

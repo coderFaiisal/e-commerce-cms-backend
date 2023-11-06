@@ -58,11 +58,15 @@ const updateCarat = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteCarat = catchAsync(async (req: Request, res: Response) => {
+  const caratId = req.params.id;
+
+  const result = await CaratService.deleteCarat(caratId);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Carat created successfully',
-    data: null,
+    message: 'Carat deleted successfully',
+    data: result,
   });
 });
 

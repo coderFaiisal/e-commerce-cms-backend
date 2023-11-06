@@ -38,7 +38,11 @@ const updateCarat = async (
   return result;
 };
 
-const deleteCarat = async () => {};
+const deleteCarat = async (caratId: string): Promise<ICarat | null> => {
+  const result = await Carat.findByIdAndDelete(caratId);
+
+  return result;
+};
 
 export const CaratService = {
   createCarat,

@@ -29,7 +29,7 @@ const updateStore = async (
   storeId: string,
   updatedData: Partial<IStore>,
 ): Promise<IStore | null> => {
-  //! have implement logic here.
+  //! have to implement some logic here.
 
   const result = await Store.findByIdAndUpdate(storeId, updatedData, {
     new: true,
@@ -39,6 +39,7 @@ const updateStore = async (
 };
 
 const deleteStore = async (storeId: string): Promise<IStore | null> => {
+  //! have to implement some logic here.
   const result = await Store.findByIdAndDelete(storeId);
 
   return result;

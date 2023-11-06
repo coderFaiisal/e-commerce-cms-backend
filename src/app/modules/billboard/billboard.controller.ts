@@ -19,11 +19,15 @@ const createBillboard = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getSingleBillboard = catchAsync(async (req: Request, res: Response) => {
+  const billboardId = req.params.id;
+
+  const result = await BillboardService.getSingleBillboard(billboardId);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Billboard retrieved successfully',
-    data: null,
+    data: result,
   });
 });
 

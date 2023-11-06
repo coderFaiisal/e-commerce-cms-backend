@@ -9,7 +9,13 @@ const createBillboard = async (
   return result;
 };
 
-const getSingleBillboard = async () => {};
+const getSingleBillboard = async (
+  billboardId: string,
+): Promise<IBillboard | null> => {
+  const result = await Billboard.findById(billboardId);
+
+  return result;
+};
 
 const updateBillboard = async () => {};
 

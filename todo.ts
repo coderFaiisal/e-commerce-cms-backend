@@ -1,11 +1,12 @@
 // 1. user, admin password reset / change functionality with email varification
-// 2. mongodb indexing on email of user and admin
+// * mongodb indexing on email of user and admin
+// * Explore and implement Invoice
 
-// ! Start with
-// store
-
-// !Done List
-// auth
-// user
-// admin
-//
+// !List
+// billboard
+// carat
+// category
+// material
+// order
+// product
+// productReview

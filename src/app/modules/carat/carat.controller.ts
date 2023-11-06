@@ -30,11 +30,15 @@ const getAllCarats = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getSingleCarat = catchAsync(async (req: Request, res: Response) => {
-  sendResponse(res, {
+  const caratId = req.params.id;
+
+  const result = await CaratService.getSingleCarat(caratId);
+
+  sendResponse<ICarat>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Carat created successfully',
-    data: null,
+    message: 'Carat retrieved successfully',
+    data: result,
   });
 });
 

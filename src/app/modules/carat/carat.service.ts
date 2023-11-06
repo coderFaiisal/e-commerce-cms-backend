@@ -21,7 +21,12 @@ const getAllCarats = async (): Promise<ICarat[] | null> => {
   return result;
 };
 
-const getSingleCarat = async () => {};
+const getSingleCarat = async (caratId: string): Promise<ICarat | null> => {
+  const result = await Carat.findById(caratId);
+
+  return result;
+};
+
 const updateCarat = async () => {};
 const deleteCarat = async () => {};
 

@@ -12,7 +12,7 @@ export type IOrder = {
     },
   ];
   isPaid: boolean;
-  orderStatus: 'pending' | 'deliverd';
+  orderStatus?: 'pending' | 'deliverd';
   totalCost: number;
   paymentMethod: string;
   contactInformation: {

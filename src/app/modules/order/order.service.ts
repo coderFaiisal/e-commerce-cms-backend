@@ -11,24 +11,24 @@ const createOrder = async (order: IOrder): Promise<IOrder> => {
 
 const getAllOrders = async (user: JwtPayload | null): Promise<IOrder[]> => {
   if (user?.role === 'user') {
-    const userOrders = await Order.find({ userEmail: user.email });
+    const userOrders = await Order.find({ userEmail: user.email }).lean();
 
     return userOrders;
   }
 
-  const allOrders = await Order.find();
+  const allOrders = await Order.find().lean();
 
   return allOrders;
 };
 
 const getSingleOrder = async (
-  id: string,
+  orderId: string,
   user: JwtPayload | null,
 ): Promise<IOrder | null> => {
   let result;
 
   //check order
-  const order = await Order.findById(id);
+  const order = await Order.findById(orderId);
 
   if (!order) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Order does not found!');
@@ -55,9 +55,9 @@ const getSingleOrder = async (
 };
 
 const updateOrder = async (
-  user: JwtPayload | null,
   orderId: string,
-  payload: Partial<IOrder>,
+  user: JwtPayload | null,
+  updatedData: Partial<IOrder>,
 ): Promise<IOrder | null> => {
   //check list
   const isOrderExist = await Order.findById(orderId);
@@ -66,21 +66,33 @@ const updateOrder = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Order does not found!');
   }
 
-  //check authentic user
-  if (isOrderExist?.userEmail !== user?.email) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+  if (user?.role === 'user') {
+    //check authentic user
+    if (isOrderExist?.userEmail !== user?.email) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+    }
+
+    const result = await Order.findByIdAndUpdate(orderId, updatedData, {
+      new: true,
+    });
+
+    return result;
   }
 
-  const result = await Order.findByIdAndUpdate(orderId, payload, {
-    new: true,
-  });
+  if (user?.role === 'admin') {
+    const result = await Order.findByIdAndUpdate(orderId, updatedData, {
+      new: true,
+    });
 
-  return result;
+    return result;
+  }
+
+  return null;
 };
 
 const deleteOrder = async (
-  user: JwtPayload | null,
   orderId: string,
+  user: JwtPayload | null,
 ): Promise<IOrder | null> => {
   //check list
   const isOrderExist = await Order.findOne({ orderId });
@@ -89,14 +101,24 @@ const deleteOrder = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Order does not found!');
   }
 
-  //check authentic user
-  if (isOrderExist?.userEmail !== user?.email) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+  if (user?.role === 'user') {
+    //check authentic user
+    if (isOrderExist?.userEmail !== user?.email) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+    }
+
+    const result = await Order.findOneAndDelete({ orderId });
+
+    return result;
   }
 
-  const result = await Order.findOneAndDelete({ orderId });
+  if (user?.role === 'admin') {
+    const result = await Order.findOneAndDelete({ orderId });
 
-  return result;
+    return result;
+  }
+
+  return null;
 };
 
 export const OrderService = {

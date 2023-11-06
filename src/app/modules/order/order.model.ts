@@ -37,9 +37,6 @@ const orderSchema = new Schema<IOrder, OrderModel>(
   },
   {
     timestamps: true,
-    toJSON: {
-      virtuals: true,
-    },
   },
 );
 

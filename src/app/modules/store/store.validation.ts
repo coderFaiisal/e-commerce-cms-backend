@@ -8,6 +8,15 @@ const createStoreZodSchema = z.object({
   }),
 });
 
+const updateStoreZodSchema = z.object({
+  body: z.object({
+    name: z.string({
+      required_error: 'Store name is required',
+    }),
+  }),
+});
+
 export const StoreValidation = {
   createStoreZodSchema,
+  updateStoreZodSchema,
 };

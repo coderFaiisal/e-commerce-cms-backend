@@ -44,8 +44,6 @@ export type IProductFilter = {
 };
 
 export type IProductReview = {
-  userName: string;
-  userEmail: string;
   review: string;
   rating?: number;
 };

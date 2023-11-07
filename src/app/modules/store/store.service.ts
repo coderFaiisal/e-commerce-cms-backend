@@ -36,6 +36,12 @@ const updateStore = async (
   storeId: string,
   updatedData: Partial<IStore>,
 ): Promise<IStore | null> => {
+  const store = await Store.findById(storeId).lean();
+
+  if (!store) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found!');
+  }
+
   const result = await Store.findByIdAndUpdate(storeId, updatedData, {
     new: true,
   });
@@ -46,76 +52,71 @@ const updateStore = async (
 const deleteStore = async (storeId: string): Promise<IStore | null> => {
   const session = await mongoose.startSession();
 
-  try {
-    session.startTransaction();
+  session.startTransaction();
 
+  try {
     const store = await Store.findById(storeId).session(session);
 
     if (!store) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found!');
     }
 
-    // Retrieve associated IDs
-    const categoryIds = store?.categories;
-    const billboardIds = store?.billboards;
-    const caratIds = store?.carats;
-    const materialIds = store?.materials;
-    const productIds = store?.products;
-    const orderIds = store?.orders;
+    const { billboards, categories, carats, materials, products, orders } =
+      store;
 
     // Delete documents
     const deletionPromises = [];
 
-    if (billboardIds && billboardIds.length > 0) {
+    if (billboards && billboards.length > 0) {
       deletionPromises.push(
-        Billboard.deleteMany({ _id: { $in: billboardIds } }).session(session),
+        Billboard.deleteMany({ _id: { $in: billboards } }).session(session),
       );
     }
 
-    if (categoryIds && categoryIds.length > 0) {
+    if (categories && categories.length > 0) {
       deletionPromises.push(
-        Category.deleteMany({ _id: { $in: categoryIds } }).session(session),
+        Category.deleteMany({ _id: { $in: categories } }).session(session),
       );
     }
 
-    if (caratIds && caratIds.length > 0) {
+    if (carats && carats.length > 0) {
       deletionPromises.push(
-        Carat.deleteMany({ _id: { $in: caratIds } }).session(session),
+        Carat.deleteMany({ _id: { $in: carats } }).session(session),
       );
     }
 
-    if (materialIds && materialIds.length > 0) {
+    if (materials && materials.length > 0) {
       deletionPromises.push(
-        Material.deleteMany({ _id: { $in: materialIds } }).session(session),
+        Material.deleteMany({ _id: { $in: materials } }).session(session),
       );
     }
 
-    if (productIds && productIds.length > 0) {
+    if (products && products.length > 0) {
       deletionPromises.push(
-        Product.deleteMany({ _id: { $in: productIds } }).session(session),
+        Product.deleteMany({ _id: { $in: products } }).session(session),
       );
     }
 
-    if (orderIds && orderIds.length > 0) {
+    if (orders && orders.length > 0) {
       deletionPromises.push(
-        Order.deleteMany({ _id: { $in: orderIds } }).session(session),
+        Order.deleteMany({ _id: { $in: orders } }).session(session),
       );
     }
 
     await Promise.all(deletionPromises);
 
-    // Delete the store
+    // Delete store
     await Store.findByIdAndDelete(storeId).session(session);
 
     await session.commitTransaction();
-    session.endSession();
 
     return store;
   } catch (error) {
     await session.abortTransaction();
-    session.endSession();
 
     throw error;
+  } finally {
+    session.endSession();
   }
 };
 

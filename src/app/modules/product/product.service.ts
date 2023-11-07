@@ -8,8 +8,8 @@ import { productSearchableFields } from './product.constant';
 import { IProduct, IProductFilter } from './product.interface';
 import { Product } from './product.model';
 
-const createProduct = async (payload: IProduct): Promise<IProduct> => {
-  const { name } = payload;
+const createProduct = async (productData: IProduct): Promise<IProduct> => {
+  const { name } = productData;
 
   const isExist = await Product.findOne({ name }).lean();
 
@@ -17,7 +17,7 @@ const createProduct = async (payload: IProduct): Promise<IProduct> => {
     throw new ApiError(httpStatus.CONFLICT, 'This Product already added');
   }
 
-  const result = await Product.create(payload);
+  const result = await Product.create(productData);
   return result;
 };
 

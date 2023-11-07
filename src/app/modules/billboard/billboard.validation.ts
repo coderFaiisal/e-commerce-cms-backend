@@ -15,6 +15,14 @@ const createBillboardZodSchema = z.object({
   }),
 });
 
+const updateBillboardZodSchema = z.object({
+  body: z.object({
+    label: z.string().optional(),
+    imageURL: z.string().optional(),
+  }),
+});
+
 export const BillboardValidation = {
   createBillboardZodSchema,
+  updateBillboardZodSchema,
 };

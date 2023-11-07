@@ -7,7 +7,7 @@ import { Product } from '../product/product.model';
 const createProductReview = async (
   productId: string,
   user: JwtPayload | null,
-  payload: IProductReview[],
+  reviewData: IProductReview[],
 ): Promise<IProduct | null> => {
   const isProductExist = await Product.isProductExist(productId);
 
@@ -15,7 +15,7 @@ const createProductReview = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found!');
   }
 
-  console.log(user, payload);
+  console.log(user, reviewData);
   return null;
 };
 

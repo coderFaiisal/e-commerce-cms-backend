@@ -70,7 +70,7 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
 
 const updateUserProfile = async (
   user: JwtPayload | null,
-  payload: Partial<IUser>,
+  updatedData: Partial<IUser>,
 ): Promise<Partial<IUser> | null> => {
   const isExist = await User.isUserExist(user?.email);
 
@@ -78,7 +78,7 @@ const updateUserProfile = async (
     throw new ApiError(httpStatus.BAD_REQUEST, 'User does not found!');
   }
 
-  const { password, ...userData } = payload;
+  const { password, ...userData } = updatedData;
 
   const updatedUserData: Partial<IUser> = { ...userData };
   //hashing password

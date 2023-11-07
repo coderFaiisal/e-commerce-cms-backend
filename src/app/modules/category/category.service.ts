@@ -4,15 +4,17 @@ import { ICategory } from './category.interface';
 import { Category } from './category.model';
 
 const createCategory = async (
-  payload: ICategory,
+  categoryData: ICategory,
 ): Promise<ICategory | null> => {
-  const isCategoryExist = await Category.findOne({ name: payload.name }).lean();
+  const isCategoryExist = await Category.findOne({
+    name: categoryData.name,
+  }).lean();
 
   if (isCategoryExist) {
     throw new ApiError(httpStatus.CONFLICT, 'Category already exist!');
   }
 
-  const result = await Category.create(payload);
+  const result = await Category.create(categoryData);
 
   return result;
 };

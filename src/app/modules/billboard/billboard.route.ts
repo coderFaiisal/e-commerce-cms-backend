@@ -18,6 +18,7 @@ router.get('/:id', BillboardController.getSingleBillboard);
 
 router.patch(
   '/:id',
+  validateRequest(BillboardValidation.updateBillboardZodSchema),
   auth(ENUM_USER_ROLE.ADMIN),
   BillboardController.updateBillboard,
 );

@@ -4,15 +4,17 @@ import { IMaterial } from './material.interface';
 import { Material } from './material.model';
 
 const createMaterial = async (
-  payload: IMaterial,
+  materialData: IMaterial,
 ): Promise<IMaterial | null> => {
-  const isMaterialExist = await Material.findOne({ name: payload.name }).lean();
+  const isMaterialExist = await Material.findOne({
+    name: materialData.name,
+  }).lean();
 
   if (isMaterialExist) {
     throw new ApiError(httpStatus.CONFLICT, 'Material already exist!');
   }
 
-  const result = await Material.create(payload);
+  const result = await Material.create(materialData);
 
   return result;
 };

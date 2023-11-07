@@ -1,6 +1,10 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
+import { Carat } from '../carat/carat.model';
+import { Category } from '../category/category.model';
+import { Material } from '../material/material.model';
+import { Product } from '../product/product.model';
 import { Store } from '../store/store.model';
 import { IBillboard } from './billboard.interface';
 import { Billboard } from './billboard.model';
@@ -17,6 +21,7 @@ const createBillboard = async (
   try {
     const result = await Billboard.create([billboardData], { session });
 
+    // Add billboardId into associated store
     const store = await Store.findByIdAndUpdate(
       billboardData.storeId,
       {
@@ -71,50 +76,73 @@ const updateBillboard = async (
 const deleteBillboard = async (
   billboardId: string,
 ): Promise<IBillboard | null> => {
-  //store collection থেকে billboard, categories, products delete হবে।
-  // category collection থেকে categoriesId delete হবে।
-  // product collection থেকে products delete হবে।
-  // carat থেকে products delete হবে।
-  // material থেকে products delete হবে।
-  // billboard collection থেকে billboard delete হবে।
+  const session = await mongoose.startSession();
 
-  // billboardId
-  // storeId
-  // categoriesId = []
-  // productsId = []
+  session.startTransaction();
 
-  const result = Billboard.aggregate([
-    {
-      $match: { _id: billboardId },
-    },
-    {
-      $lookup: {
-        from: 'categories',
-        localField: 'categories',
-        foreignField: '_id',
-        as: 'categories',
-      },
-    },
-    {
-      $unwind: '$categories',
-    },
-    {
-      $project: {
-        productIds: '$categories.products',
-      },
-    },
-    {
-      $unwind: '$productIds',
-    },
-    {
-      $group: {
-        _id: null,
-        productIds: { $addToSet: '$productIds' },
-      },
-    },
-  ]);
+  try {
+    const billboard = await Billboard.findById(billboardId).lean();
 
-  console.log(result);
+    if (!billboard) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Billboard does not found');
+    }
+
+    const storeId = billboard.storeId;
+    const categoryIds = billboard.categories || [];
+
+    // Delete the billboard from the associated store
+    await Store.findByIdAndUpdate(
+      storeId,
+      { $pull: { billboards: billboardId } },
+      { session },
+    );
+
+    // Delete categories associated with the billboard
+    await Category.deleteMany({ _id: { $in: categoryIds } }).session(session);
+
+    // Find productIds associated with the categories
+    const productsData = await Category.aggregate([
+      {
+        $match: { _id: { $in: categoryIds } },
+      },
+      {
+        $unwind: '$products',
+      },
+      {
+        $group: {
+          _id: null,
+          productsId: { $addToSet: '$products' },
+        },
+      },
+    ]).session(session);
+
+    const productIds = productsData[0]?.productsId || [];
+
+    // Delete products associated with the categories
+    await Product.deleteMany({ _id: { $in: productIds } }).session(session);
+
+    // Remove product references from carat collection
+    await Carat.updateMany(
+      { products: { $in: productIds } },
+      { $pullAll: { products: productIds } },
+    ).session(session);
+
+    // Remove product references from material collection
+    await Material.updateMany(
+      { products: { $in: productIds } },
+      { $pullAll: { products: productIds } },
+    ).session(session);
+
+    await Billboard.findByIdAndDelete(billboardId).session(session);
+
+    await session.commitTransaction();
+  } catch (error) {
+    await session.abortTransaction();
+
+    throw error;
+  } finally {
+    session.endSession();
+  }
 
   return null;
 };
@@ -126,41 +154,14 @@ export const BillboardService = {
   deleteBillboard,
 };
 
-/* 
-  const session = await mongoose.startSession();
+// billboardId
+// storeId
+// categoriesId = []
+// productsId = [] with aggregate
 
-  session.startTransaction();
-
-  try {
-    const billboard = await Billboard.findById(billboardId).lean();
-
-    if (!billboard) {
-      throw new ApiError(httpStatus.NOT_FOUND, "Billboard doesn't found");
-    }
- 
-
-    // Step 2: Delete associated categories and products
-    // await Promise.all([
-    //   Category.deleteMany({ _id: { $in: categoryIds } }).session(session),
-    //   Product.deleteMany({ _id: { $in: productIds } }).session(session),
-    //   Carat.deleteMany({ products: { $in: productIds } }).session(session),
-    //   Material.deleteMany({ products: { $in: productIds } }).session(session),
-    // ]);
-
-    // Step 3: Remove billboard reference from store
-  //   const storeId = billboard.storeId;
-  //   await Store.findByIdAndUpdate(
-  //     storeId,
-  //     { $pull: { billboards: billboardId } },
-  //     { new: true, session },
-  //   );
-
-  //   await session.commitTransaction();
-  //   session.endSession();
-
-  //   return billboard;
-  // } catch (error) {
-  //   await session.abortTransaction();
-  //   session.endSession();
-  //   throw error;
-  // **/
+// billboard, categories, products wiil be delete from store collection.
+// categories will be delete from category collection
+// products will be delete from product collection
+// products will be delete from carat collection.
+// products will be delete from material collection.
+// billboard will be delete from billboard collection

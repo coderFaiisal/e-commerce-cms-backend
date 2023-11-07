@@ -30,6 +30,10 @@ const getSingleMaterial = async (
 ): Promise<IMaterial | null> => {
   const result = await Material.findById(materialId);
 
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Material does not found');
+  }
+
   return result;
 };
 
@@ -40,6 +44,10 @@ const updateMaterial = async (
   const result = await Material.findByIdAndUpdate(materialId, updatedData, {
     new: true,
   });
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Material does not update');
+  }
 
   return result;
 };

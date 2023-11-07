@@ -22,7 +22,11 @@ const getAllCarats = async (): Promise<ICarat[] | null> => {
 };
 
 const getSingleCarat = async (caratId: string): Promise<ICarat | null> => {
-  const result = await Carat.findById(caratId);
+  const result = await Carat.findById(caratId).lean();
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Carat does not found');
+  }
 
   return result;
 };
@@ -34,6 +38,10 @@ const updateCarat = async (
   const result = await Carat.findByIdAndUpdate(caratId, updatedData, {
     new: true,
   });
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Carat does not update');
+  }
 
   return result;
 };

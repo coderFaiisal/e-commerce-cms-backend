@@ -85,6 +85,11 @@ const getSingleProduct = async (
   productId: string,
 ): Promise<IProduct | null> => {
   const result = await Product.findById(productId).lean();
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found');
+  }
+
   return result;
 };
 
@@ -95,12 +100,17 @@ const updateProduct = async (
   const isProductExist = await Product.isProductExist(productId);
 
   if (!isProductExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found');
   }
 
   const result = await Product.findByIdAndUpdate(productId, updatedData, {
     new: true,
   });
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not update');
+  }
+
   return result;
 };
 

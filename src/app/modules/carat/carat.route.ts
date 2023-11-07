@@ -18,7 +18,12 @@ router.get('/', auth(ENUM_USER_ROLE.ADMIN), CaratController.getAllCarats);
 
 router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), CaratController.getSingleCarat);
 
-router.patch('/:id', auth(ENUM_USER_ROLE.ADMIN), CaratController.updateCarat);
+router.patch(
+  '/:id',
+  validateRequest(CaratValidation.updateCaratZodSchema),
+  auth(ENUM_USER_ROLE.ADMIN),
+  CaratController.updateCarat,
+);
 
 router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), CaratController.deleteCarat);
 

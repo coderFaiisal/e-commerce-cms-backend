@@ -28,6 +28,11 @@ const getSingleCategory = async (
   categoryId: string,
 ): Promise<ICategory | null> => {
   const result = await Category.findById(categoryId);
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Category does not found');
+  }
+
   return result;
 };
 
@@ -38,6 +43,10 @@ const updateCategory = async (
   const result = await Category.findByIdAndUpdate(categoryId, updatedData, {
     new: true,
   });
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Category does not found');
+  }
 
   return result;
 };

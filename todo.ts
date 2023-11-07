@@ -3,10 +3,12 @@
 // * Explore and implement Invoice
 
 //! Main focus
-// biilboard
-// carat
-// category
-// material
-// order
-// product
 // productReview
+
+//! undone thing
+// 0.0 create one collection with multiple collection register
+// 0. implement populate in response
+// 1. deleteCarat service logic
+// 2. deleteCategory service logic
+// 3. deleteMaterial service logic
+// 4. deleteProduct service logic

@@ -15,6 +15,14 @@ const createCaratZodSchema = z.object({
   }),
 });
 
+const updateCaratZodSchema = z.object({
+  body: z.object({
+    name: z.string().optional(),
+    value: z.string().optional(),
+  }),
+});
+
 export const CaratValidation = {
   createCaratZodSchema,
+  updateCaratZodSchema,
 };

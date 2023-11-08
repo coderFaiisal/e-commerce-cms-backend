@@ -11,7 +11,7 @@ const createMaterial = async (
   }).lean();
 
   if (isMaterialExist) {
-    throw new ApiError(httpStatus.CONFLICT, 'Material already exist!');
+    throw new ApiError(httpStatus.CONFLICT, 'Material already exist');
   }
 
   const result = await Material.create(materialData);
@@ -46,7 +46,7 @@ const updateMaterial = async (
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Material does not update');
+    throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update material');
   }
 
   return result;

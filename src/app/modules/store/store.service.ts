@@ -14,7 +14,7 @@ const createStore = async (store: IStore): Promise<IStore | null> => {
   const isStoreExist = await Store.isStoreExist(store.name);
 
   if (isStoreExist) {
-    throw new ApiError(httpStatus.CONFLICT, 'Store already exist!');
+    throw new ApiError(httpStatus.CONFLICT, 'Store already exist');
   }
 
   const result = await Store.create(store);
@@ -26,7 +26,7 @@ const getSingleStore = async (storeId: string): Promise<IStore | null> => {
   const result = await Store.findById(storeId);
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Store doesn't found");
+    throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found');
   }
 
   return result;
@@ -39,7 +39,7 @@ const updateStore = async (
   const store = await Store.findById(storeId).lean();
 
   if (!store) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found');
   }
 
   const result = await Store.findByIdAndUpdate(storeId, updatedData, {
@@ -58,7 +58,7 @@ const deleteStore = async (storeId: string): Promise<IStore | null> => {
     const store = await Store.findById(storeId).session(session);
 
     if (!store) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found!');
+      throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found');
     }
 
     const { billboards, categories, carats, materials, products, orders } =

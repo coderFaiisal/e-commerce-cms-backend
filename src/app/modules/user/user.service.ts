@@ -62,7 +62,7 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findById(id);
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not found');
   }
 
   return result;
@@ -75,7 +75,7 @@ const updateUserProfile = async (
   const isExist = await User.isUserExist(user?.email);
 
   if (!isExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'User does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
   }
 
   const { password, ...userData } = updatedData;
@@ -102,7 +102,7 @@ const deleteUser = async (id: string): Promise<IUser | null> => {
   const isExist = await User.findById(id).lean();
 
   if (!isExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'User is not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
   }
 
   const result = await User.findByIdAndDelete(id);

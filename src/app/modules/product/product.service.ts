@@ -14,7 +14,7 @@ const createProduct = async (productData: IProduct): Promise<IProduct> => {
   const isExist = await Product.findOne({ name }).lean();
 
   if (isExist) {
-    throw new ApiError(httpStatus.CONFLICT, 'This Product already added');
+    throw new ApiError(httpStatus.CONFLICT, 'Product already exist');
   }
 
   const result = await Product.create(productData);
@@ -100,7 +100,7 @@ const updateProduct = async (
   const isProductExist = await Product.isProductExist(productId);
 
   if (!isProductExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Productdoes not exist');
   }
 
   const result = await Product.findByIdAndUpdate(productId, updatedData, {
@@ -108,7 +108,7 @@ const updateProduct = async (
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not update');
+    throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update product');
   }
 
   return result;
@@ -118,7 +118,7 @@ const deleteProduct = async (productId: string): Promise<IProduct | null> => {
   const isProductExist = await Product.isProductExist(productId);
 
   if (!isProductExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not exist');
   }
 
   const result = await Product.findByIdAndDelete(productId);

@@ -31,7 +31,7 @@ const getSingleOrder = async (
   const order = await Order.findById(orderId).lean();
 
   if (!order) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Order does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Order does not found');
   }
 
   if (user?.role === 'user') {
@@ -63,7 +63,7 @@ const updateOrder = async (
   const isOrderExist = await Order.findById(orderId).lean();
 
   if (!isOrderExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Order does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Order does not exist');
   }
 
   if (user?.role === 'user') {
@@ -98,7 +98,7 @@ const deleteOrder = async (
   const isOrderExist = await Order.findById(orderId).lean();
 
   if (!isOrderExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Order does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Order does not exist');
   }
 
   if (user?.role === 'user') {

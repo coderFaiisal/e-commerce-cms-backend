@@ -22,7 +22,7 @@ const signUpUser = async (user: IUser): Promise<IUserSignUpResponse> => {
   }).lean();
 
   if (isExist) {
-    throw new ApiError(httpStatus.CONFLICT, 'User already exist!');
+    throw new ApiError(httpStatus.CONFLICT, 'User already exist');
   }
 
   const createdUser = await User.create(user);
@@ -62,7 +62,7 @@ const signInUser = async (payload: ISignIn): Promise<ISignInResponse> => {
   const isUserExist = await User.isUserExist(userEmail);
 
   if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
   }
 
   //check password
@@ -115,7 +115,7 @@ const changePassword = async (
   );
 
   if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
   }
 
   //check old password
@@ -123,7 +123,7 @@ const changePassword = async (
     isUserExist.password &&
     !(await User.isPasswordMatched(oldPassword, isUserExist.password))
   ) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Old password is incorrect!');
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Old password is incorrect');
   }
 
   //set new password
@@ -144,7 +144,7 @@ const refreshToken = async (
       config.jwt.refresh_secret as Secret,
     );
   } catch (error) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token!');
+    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token');
   }
 
   const { email, role } = verifiedUser;
@@ -152,7 +152,7 @@ const refreshToken = async (
   const isUserExist = await User.isUserExist(email);
 
   if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
   }
 
   const accessToken = jwtHelper.createToken(

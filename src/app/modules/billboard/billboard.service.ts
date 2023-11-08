@@ -31,7 +31,7 @@ const createBillboard = async (
     );
 
     if (!store) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found!');
+      throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found');
     }
 
     await session.commitTransaction();
@@ -52,7 +52,7 @@ const getSingleBillboard = async (
   const result = await Billboard.findById(billboardId).populate('storeId');
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Billboard does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Billboard does not found');
   }
 
   return result;
@@ -67,7 +67,7 @@ const updateBillboard = async (
   }).populate('storeId');
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Billboard does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Billboard does not found');
   }
 
   return result;

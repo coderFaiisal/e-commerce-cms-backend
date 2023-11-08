@@ -40,7 +40,7 @@ const signInAdmin = async (payload: ISignIn): Promise<ISignInResponse> => {
   const isAdminExist = await Admin.isAdminExist(adminEmail);
 
   if (!isAdminExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Admin does not exist!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Admin does not exist');
   }
 
   //check password
@@ -92,7 +92,7 @@ const changePassword = async (
   );
 
   if (!isAdminExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Admin does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Admin does not exist');
   }
 
   //check old password
@@ -129,7 +129,7 @@ const refreshToken = async (
   const isAdminExist = await Admin.isAdminExist(email);
 
   if (!isAdminExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Admin does not exist!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Admin does not exist');
   }
 
   const accessToken = jwtHelper.createToken(
@@ -183,7 +183,7 @@ const getAdminProfile = async (
   const result = await Admin.findOne({ email: admin?.email }).lean();
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Profile not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Profile not found');
   }
 
   return result;
@@ -193,7 +193,7 @@ const getSingleAdmin = async (adminId: string): Promise<IAdmin | null> => {
   const result = await Admin.findById(adminId).lean();
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Admin not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Admin does not found');
   }
 
   return result;
@@ -206,7 +206,7 @@ const updateAdminProfile = async (
   const isExist = await Admin.findOne({ email: admin?.email });
 
   if (!isExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Admin does not found!');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Admin does not exist');
   }
 
   const { password, ...adminData } = payload;

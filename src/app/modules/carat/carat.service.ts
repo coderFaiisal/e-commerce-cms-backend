@@ -7,7 +7,7 @@ const createCarat = async (caratData: ICarat): Promise<ICarat | null> => {
   const isCaratExist = await Carat.findOne({ name: caratData.name }).lean();
 
   if (isCaratExist) {
-    throw new ApiError(httpStatus.CONFLICT, 'Carat already exist!');
+    throw new ApiError(httpStatus.CONFLICT, 'Carat already exist');
   }
 
   const result = await Carat.create(caratData);
@@ -40,7 +40,7 @@ const updateCarat = async (
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Carat does not update');
+    throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update carat');
   }
 
   return result;

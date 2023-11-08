@@ -11,7 +11,7 @@ const createCategory = async (
   }).lean();
 
   if (isCategoryExist) {
-    throw new ApiError(httpStatus.CONFLICT, 'Category already exist!');
+    throw new ApiError(httpStatus.CONFLICT, 'Category already exist');
   }
 
   const result = await Category.create(categoryData);
@@ -45,7 +45,7 @@ const updateCategory = async (
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Category does not found');
+    throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update category');
   }
 
   return result;

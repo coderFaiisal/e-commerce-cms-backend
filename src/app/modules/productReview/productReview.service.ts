@@ -13,13 +13,13 @@ const createProductReview = async (
   const isProductExist = await Product.isProductExist(productId);
 
   if (!isProductExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not exist');
   }
 
   const isUserExist = await User.findOne({ email: user?.email }).lean();
 
   if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
   }
 
   const review = {
@@ -38,7 +38,7 @@ const createProductReview = async (
   );
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_MODIFIED, 'Product does not modified');
+    throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to add product review');
   }
 
   return result;
@@ -52,7 +52,7 @@ const updateProductReview = async (
   const isProductExist = await Product.isProductExist(productId);
 
   if (!isProductExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not exist');
   }
 
   const result = await Product.aggregate([
@@ -78,10 +78,6 @@ const updateProductReview = async (
     },
   ]);
 
-  if (!result[0]) {
-    throw new ApiError(httpStatus.NOT_MODIFIED, 'Product does not modified');
-  }
-
   return result[0];
 };
 
@@ -92,7 +88,7 @@ const deleteProductReview = async (
   const isProductExist = await Product.isProductExist(productId);
 
   if (!isProductExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not exist');
   }
 
   const result = await Product.aggregate([

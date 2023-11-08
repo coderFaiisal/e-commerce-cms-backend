@@ -25,7 +25,7 @@ const createAdmin = async (admin: IAdmin): Promise<IAdmin> => {
   const isAdminExist = await Admin.isAdminExist(admin?.email);
 
   if (isAdminExist) {
-    throw new ApiError(httpStatus.CONFLICT, 'Admin already exist!');
+    throw new ApiError(httpStatus.CONFLICT, 'Admin already exist');
   }
 
   const result = await Admin.create(admin);
@@ -183,7 +183,7 @@ const getAdminProfile = async (
   const result = await Admin.findOne({ email: admin?.email }).lean();
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Profile not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Admin profile not found');
   }
 
   return result;
@@ -206,7 +206,7 @@ const updateAdminProfile = async (
   const isExist = await Admin.findOne({ email: admin?.email });
 
   if (!isExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Admin does not exist');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Admin does not exist');
   }
 
   const { password, ...adminData } = payload;

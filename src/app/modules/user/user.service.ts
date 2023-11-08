@@ -95,6 +95,13 @@ const updateUserProfile = async (
     { new: true },
   );
 
+  if (!result) {
+    throw new ApiError(
+      httpStatus.NOT_MODIFIED,
+      'Failed to update user profile',
+    );
+  }
+
   return result;
 };
 

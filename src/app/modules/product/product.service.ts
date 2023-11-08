@@ -100,7 +100,7 @@ const updateProduct = async (
   const isProductExist = await Product.isProductExist(productId);
 
   if (!isProductExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Productdoes not exist');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not exist');
   }
 
   const result = await Product.findByIdAndUpdate(productId, updatedData, {

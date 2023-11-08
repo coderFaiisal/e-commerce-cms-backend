@@ -76,6 +76,10 @@ const updateOrder = async (
       new: true,
     });
 
+    if (!result) {
+      throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update order');
+    }
+
     return result;
   }
 
@@ -83,6 +87,10 @@ const updateOrder = async (
     const result = await Order.findByIdAndUpdate(orderId, updatedData, {
       new: true,
     });
+
+    if (!result) {
+      throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update order');
+    }
 
     return result;
   }

@@ -46,6 +46,10 @@ const updateStore = async (
     new: true,
   });
 
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update store');
+  }
+
   return result;
 };
 

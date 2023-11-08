@@ -67,7 +67,7 @@ const updateBillboard = async (
   }).populate('storeId');
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Billboard does not found');
+    throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update billboard');
   }
 
   return result;

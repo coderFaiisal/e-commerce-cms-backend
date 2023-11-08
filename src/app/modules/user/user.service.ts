@@ -45,7 +45,13 @@ const getAllUsers = async (
 const getUserProfile = async (
   user: JwtPayload | null,
 ): Promise<IUser | null> => {
-  const result = await User.findOne({ email: user?.email }).lean();
+  const result = await User.findOne({ email: user?.email })
+    .populate('reviews.productId')
+    .lean();
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not found');
+  }
 
   return result;
 };

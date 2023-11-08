@@ -31,7 +31,7 @@ const createBillboard = async (
     );
 
     if (!store) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found');
+      throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update store');
     }
 
     await session.commitTransaction();

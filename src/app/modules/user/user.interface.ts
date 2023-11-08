@@ -8,10 +8,12 @@ export type IUser = {
   role?: 'user';
   phoneNumber?: string;
   image?: string;
-  reviews?: {
-    productId?: Types.ObjectId;
-    review?: string;
-  }[];
+  reviews?: IReview[];
+};
+
+export type IReview = {
+  productId?: Types.ObjectId;
+  review?: string;
 };
 
 export type UserModel = {

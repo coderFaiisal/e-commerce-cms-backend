@@ -3,7 +3,6 @@
 // * Explore and implement Invoice
 
 //! undone thing
-// 0.0 set appropiate httpStatus code in update and other services
 // 0.1 create one collection with multiple collection register
 // 0. implement populate in response
 // 1. deleteCarat service logic

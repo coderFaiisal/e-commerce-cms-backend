@@ -20,6 +20,7 @@ router.get('/:id', CategoryController.getSingleCategory);
 
 router.patch(
   '/:id',
+  validateRequest(CategoryValidation.updateCategoryZodSchema),
   auth(ENUM_USER_ROLE.ADMIN),
   CategoryController.updateCategory,
 );

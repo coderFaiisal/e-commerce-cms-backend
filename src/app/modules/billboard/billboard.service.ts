@@ -1,11 +1,5 @@
 import httpStatus from 'http-status';
-import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
-import { Carat } from '../carat/carat.model';
-import { Category } from '../category/category.model';
-import { Material } from '../material/material.model';
-import { Product } from '../product/product.model';
-import { Store } from '../store/store.model';
 import { IBillboard } from './billboard.interface';
 import { Billboard } from './billboard.model';
 
@@ -14,42 +8,13 @@ const createBillboard = async (
 ): Promise<IBillboard | null> => {
   const isBillboardExist = await Billboard.findOne({
     label: billboardData.label,
-  });
+  }).lean();
 
   if (isBillboardExist) {
     throw new ApiError(httpStatus.CONFLICT, 'Billboard already exist');
   }
 
-  const result = null;
-
-  const session = await mongoose.startSession();
-
-  session.startTransaction();
-
-  try {
-    const result = await Billboard.create([billboardData], { session });
-
-    // Add billboardId into associated store
-    const store = await Store.findByIdAndUpdate(
-      billboardData.storeId,
-      {
-        $push: { billboards: result[0]?._id },
-      },
-      { session },
-    );
-
-    if (!store) {
-      throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update store');
-    }
-
-    await session.commitTransaction();
-  } catch (error) {
-    await session.abortTransaction();
-
-    throw error;
-  } finally {
-    session.endSession();
-  }
+  const result = await Billboard.create(billboardData);
 
   return result;
 };
@@ -57,7 +22,9 @@ const createBillboard = async (
 const getSingleBillboard = async (
   billboardId: string,
 ): Promise<IBillboard | null> => {
-  const result = await Billboard.findById(billboardId).populate('storeId');
+  const result = await Billboard.findById(billboardId)
+    .populate('storeId')
+    .lean();
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Billboard does not found');
@@ -72,7 +39,9 @@ const updateBillboard = async (
 ): Promise<IBillboard | null> => {
   const result = await Billboard.findByIdAndUpdate(billboardId, updatedData, {
     new: true,
-  }).populate('storeId');
+  })
+    .populate('storeId')
+    .lean();
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update billboard');
@@ -84,72 +53,12 @@ const updateBillboard = async (
 const deleteBillboard = async (
   billboardId: string,
 ): Promise<IBillboard | null> => {
-  const session = await mongoose.startSession();
+  //! Have to add functionality
 
-  session.startTransaction();
+  const billboard = await Billboard.findById(billboardId).lean();
 
-  try {
-    const billboard = await Billboard.findById(billboardId).lean();
-
-    if (!billboard) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Billboard does not found');
-    }
-
-    const storeId = billboard.storeId;
-    const categoryIds = billboard.categories || [];
-
-    // Delete the billboard from the associated store
-    await Store.findByIdAndUpdate(
-      storeId,
-      { $pull: { billboards: billboardId } },
-      { session },
-    );
-
-    // Delete categories associated with the billboard
-    await Category.deleteMany({ _id: { $in: categoryIds } }).session(session);
-
-    // Find productIds associated with the categories
-    const productsData = await Category.aggregate([
-      {
-        $match: { _id: { $in: categoryIds } },
-      },
-      {
-        $unwind: '$products',
-      },
-      {
-        $group: {
-          _id: null,
-          productsId: { $addToSet: '$products' },
-        },
-      },
-    ]).session(session);
-
-    const productIds = productsData[0]?.productsId || [];
-
-    // Delete products associated with the categories
-    await Product.deleteMany({ _id: { $in: productIds } }).session(session);
-
-    // Remove product references from carat collection
-    await Carat.updateMany(
-      { products: { $in: productIds } },
-      { $pullAll: { products: productIds } },
-    ).session(session);
-
-    // Remove product references from material collection
-    await Material.updateMany(
-      { products: { $in: productIds } },
-      { $pullAll: { products: productIds } },
-    ).session(session);
-
-    await Billboard.findByIdAndDelete(billboardId).session(session);
-
-    await session.commitTransaction();
-  } catch (error) {
-    await session.abortTransaction();
-
-    throw error;
-  } finally {
-    session.endSession();
+  if (!billboard) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Billboard does not found');
   }
 
   return null;

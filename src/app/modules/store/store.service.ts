@@ -1,12 +1,7 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
-import { Billboard } from '../billboard/billboard.model';
-import { Carat } from '../carat/carat.model';
 import { Category } from '../category/category.model';
-import { Material } from '../material/material.model';
-import { Order } from '../order/order.model';
-import { Product } from '../product/product.model';
 import { IStore } from './store.interface';
 import { Store } from './store.model';
 
@@ -65,45 +60,17 @@ const deleteStore = async (storeId: string): Promise<IStore | null> => {
       throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found');
     }
 
-    const { billboards, categories, carats, materials, products, orders } =
-      store;
+    const { categories } = store;
 
     // Delete documents
-    const deletionPromises = [];
 
-    if (billboards && billboards.length > 0) {
-      deletionPromises.push(
-        Billboard.deleteMany({ _id: { $in: billboards } }).session(session),
-      );
-    }
+    //! Have to add functionality
+
+    const deletionPromises = [];
 
     if (categories && categories.length > 0) {
       deletionPromises.push(
         Category.deleteMany({ _id: { $in: categories } }).session(session),
-      );
-    }
-
-    if (carats && carats.length > 0) {
-      deletionPromises.push(
-        Carat.deleteMany({ _id: { $in: carats } }).session(session),
-      );
-    }
-
-    if (materials && materials.length > 0) {
-      deletionPromises.push(
-        Material.deleteMany({ _id: { $in: materials } }).session(session),
-      );
-    }
-
-    if (products && products.length > 0) {
-      deletionPromises.push(
-        Product.deleteMany({ _id: { $in: products } }).session(session),
-      );
-    }
-
-    if (orders && orders.length > 0) {
-      deletionPromises.push(
-        Order.deleteMany({ _id: { $in: orders } }).session(session),
       );
     }
 

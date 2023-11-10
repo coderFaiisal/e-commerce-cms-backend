@@ -22,6 +22,7 @@ router.post(
 
 router.post(
   '/change-password',
+  auth(ENUM_USER_ROLE.ADMIN),
   validateRequest(AdminValidation.changeAdminPasswordZodSchema),
   AdminController.changePassword,
 );

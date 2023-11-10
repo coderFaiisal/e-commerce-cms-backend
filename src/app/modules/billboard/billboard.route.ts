@@ -14,7 +14,11 @@ router.post(
   BillboardController.createBillboard,
 );
 
-router.get('/:id', BillboardController.getSingleBillboard);
+router.get(
+  '/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  BillboardController.getSingleBillboard,
+);
 
 router.patch(
   '/:id',
@@ -25,7 +29,7 @@ router.patch(
 
 router.delete(
   '/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN),
   BillboardController.deleteBillboard,
 );
 

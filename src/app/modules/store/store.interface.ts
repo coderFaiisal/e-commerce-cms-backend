@@ -1,10 +1,8 @@
 /* eslint-disable no-unused-vars */
-import { Model, Types } from 'mongoose';
-import { ICategory } from '../category/category.interface';
+import { Model } from 'mongoose';
 
 export type IStore = {
   name: string;
-  categories?: Types.ObjectId[] | ICategory[];
 };
 
 export type StoreModel = {

@@ -11,8 +11,9 @@ const createCategoryZodSchema = z.object({
     storeId: z.string({
       required_error: 'Store id is required',
     }),
-    billboardId: z.string().optional(),
-    products: z.array(z.string()).optional(),
+    billboardId: z.string({
+      required_error: 'Store id is required',
+    }),
   }),
 });
 

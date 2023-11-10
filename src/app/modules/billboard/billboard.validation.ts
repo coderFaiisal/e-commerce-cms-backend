@@ -11,7 +11,6 @@ const createBillboardZodSchema = z.object({
     storeId: z.string({
       required_error: 'Store id is required',
     }),
-    categories: z.array(z.string()).optional(),
   }),
 });
 

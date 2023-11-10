@@ -1,7 +1,5 @@
 import httpStatus from 'http-status';
-import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
-import { Category } from '../category/category.model';
 import { IStore } from './store.interface';
 import { Store } from './store.model';
 
@@ -49,46 +47,36 @@ const updateStore = async (
 };
 
 const deleteStore = async (storeId: string): Promise<IStore | null> => {
-  const session = await mongoose.startSession();
+  // const session = await mongoose.startSession();
+  // session.startTransaction();
+  // try {
+  //   const store = await Store.findById(storeId).session(session);
+  //   if (!store) {
+  //     throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found');
+  //   }
+  //   const { categories } = store;
+  //   // Delete documents
+  //   //! Have to add functionality
+  //   const deletionPromises = [];
+  //   if (categories && categories.length > 0) {
+  //     deletionPromises.push(
+  //       Category.deleteMany({ _id: { $in: categories } }).session(session),
+  //     );
+  //   }
+  //   await Promise.all(deletionPromises);
+  //   // Delete store
+  //   await Store.findByIdAndDelete(storeId).session(session);
+  //   await session.commitTransaction();
+  //   return store;
+  // } catch (error) {
+  //   await session.abortTransaction();
+  //   throw error;
+  // } finally {
+  //   session.endSession();
+  // }
 
-  session.startTransaction();
-
-  try {
-    const store = await Store.findById(storeId).session(session);
-
-    if (!store) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Store does not found');
-    }
-
-    const { categories } = store;
-
-    // Delete documents
-
-    //! Have to add functionality
-
-    const deletionPromises = [];
-
-    if (categories && categories.length > 0) {
-      deletionPromises.push(
-        Category.deleteMany({ _id: { $in: categories } }).session(session),
-      );
-    }
-
-    await Promise.all(deletionPromises);
-
-    // Delete store
-    await Store.findByIdAndDelete(storeId).session(session);
-
-    await session.commitTransaction();
-
-    return store;
-  } catch (error) {
-    await session.abortTransaction();
-
-    throw error;
-  } finally {
-    session.endSession();
-  }
+  console.log(storeId);
+  return null;
 };
 
 export const StoreService = {

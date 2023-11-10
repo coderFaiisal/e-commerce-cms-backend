@@ -1,7 +1,5 @@
 import httpStatus from 'http-status';
-import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
-import { Store } from '../store/store.model';
 import { ICategory } from './category.interface';
 import { Category } from './category.model';
 
@@ -16,30 +14,9 @@ const createCategory = async (
     throw new ApiError(httpStatus.CONFLICT, 'Category already exist');
   }
 
-  let result = null;
+  const result = await Category.create(categoryData);
 
-  //start transaction
-  const session = await mongoose.startSession();
-
-  session.startTransaction();
-
-  try {
-    result = await Category.create([categoryData], { session });
-
-    await Store.findByIdAndUpdate(categoryData.storeId, {
-      $push: { categories: result[0]._id },
-    }).session(session);
-
-    await session.commitTransaction();
-  } catch (error) {
-    await session.abortTransaction();
-
-    throw error;
-  } finally {
-    await session.endSession();
-  }
-
-  return result[0];
+  return result;
 };
 
 const getAllCategories = async (): Promise<ICategory[] | null> => {
@@ -86,6 +63,8 @@ const updateCategory = async (
 const deleteCategory = async (
   categoryId: string,
 ): Promise<ICategory | null> => {
+  //! Have to add functionality
+
   const result = await Category.findByIdAndDelete(categoryId);
   return result;
 };

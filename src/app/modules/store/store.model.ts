@@ -4,7 +4,6 @@ import { IStore, StoreModel } from './store.interface';
 const storeSchema = new Schema<IStore, StoreModel>(
   {
     name: { type: String, required: true, unique: true },
-    categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
   },
   {
     timestamps: true,

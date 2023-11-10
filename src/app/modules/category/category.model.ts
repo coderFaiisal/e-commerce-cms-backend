@@ -6,8 +6,11 @@ const categorySchema = new Schema<ICategory, CategoryModel>(
     name: { type: String, required: true },
     code: { type: String, required: true },
     storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
-    billboardId: { type: Schema.Types.ObjectId, ref: 'Billboard' },
-    products: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
+    billboardId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Billboard',
+      required: true,
+    },
   },
   {
     timestamps: true,

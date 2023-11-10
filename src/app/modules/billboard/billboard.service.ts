@@ -12,6 +12,14 @@ import { Billboard } from './billboard.model';
 const createBillboard = async (
   billboardData: IBillboard,
 ): Promise<IBillboard | null> => {
+  const isBillboardExist = await Billboard.findOne({
+    label: billboardData.label,
+  });
+
+  if (isBillboardExist) {
+    throw new ApiError(httpStatus.CONFLICT, 'Billboard already exist');
+  }
+
   const result = null;
 
   const session = await mongoose.startSession();

@@ -21,7 +21,6 @@ export type IProduct = {
   stockQuantity: number;
   materials?: string[];
   dimensions?: string;
-  metalType?: string;
   discounts?: string;
   ratings?: number;
   returnPolicy?: string;

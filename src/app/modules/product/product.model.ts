@@ -26,7 +26,6 @@ const productSchema = new Schema<IProduct, ProductModel>(
     stockQuantity: { type: Number, required: true },
     materials: { type: [String] },
     dimensions: { type: String },
-    metalType: { type: String },
     discounts: { type: String },
     ratings: { type: Number },
     returnPolicy: { type: String },

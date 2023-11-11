@@ -4,20 +4,34 @@ import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
+import { Category } from './../category/category.model';
 import { productSearchableFields } from './product.constant';
 import { IProduct, IProductFilter } from './product.interface';
 import { Product } from './product.model';
+import { generateProductCode } from './product.utils';
 
 const createProduct = async (productData: IProduct): Promise<IProduct> => {
   const { name } = productData;
 
-  const isExist = await Product.findOne({ name }).lean();
+  const isProductExist = await Product.findOne({ name }).lean();
 
-  if (isExist) {
+  if (isProductExist) {
     throw new ApiError(httpStatus.CONFLICT, 'Product already exist');
   }
 
+  const productCategory = await Category.findById(productData.categoryId);
+
+  if (!productCategory) {
+    throw new ApiError(httpStatus.CONFLICT, 'Product category does not found');
+  }
+
+  //generate product code
+  productData.productCode = await generateProductCode(
+    productCategory?.code as string,
+  );
+
   const result = await Product.create(productData);
+
   return result;
 };
 
@@ -25,10 +39,10 @@ const getAllProducts = async (
   filters: IProductFilter,
   paginationOptions: IPaginationOptions,
 ): Promise<IGenericResponse<IProduct[]>> => {
+  const andConditions = [];
+
   //search logic
   const { searchTerm, ...filtersData } = filters;
-
-  const andConditions = [];
 
   if (searchTerm) {
     andConditions.push({
@@ -84,7 +98,12 @@ const getAllProducts = async (
 const getSingleProduct = async (
   productId: string,
 ): Promise<IProduct | null> => {
-  const result = await Product.findById(productId).lean();
+  const result = await Product.findById(productId)
+    .populate('storeId')
+    .populate('categoryId')
+    .populate('materialId')
+    .populate('caratId')
+    .lean();
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found');
@@ -105,7 +124,11 @@ const updateProduct = async (
 
   const result = await Product.findByIdAndUpdate(productId, updatedData, {
     new: true,
-  });
+  })
+    .populate('storeId')
+    .populate('categoryId')
+    .populate('materialId')
+    .populate('caratId');
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update product');
@@ -122,6 +145,7 @@ const deleteProduct = async (productId: string): Promise<IProduct | null> => {
   }
 
   const result = await Product.findByIdAndDelete(productId);
+
   return result;
 };
 

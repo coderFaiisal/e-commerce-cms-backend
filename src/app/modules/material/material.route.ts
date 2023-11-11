@@ -24,13 +24,14 @@ router.get(
 
 router.patch(
   '/:id',
+  validateRequest(MaterialValidation.updateMaterialZodSchema),
   auth(ENUM_USER_ROLE.ADMIN),
   MaterialController.updateMaterial,
 );
 
 router.delete(
   '/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN),
   MaterialController.deleteMaterial,
 );
 

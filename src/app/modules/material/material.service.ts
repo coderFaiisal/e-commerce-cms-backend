@@ -1,7 +1,5 @@
 import httpStatus from 'http-status';
-import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
-import { Store } from '../store/store.model';
 import { IMaterial } from './material.interface';
 import { Material } from './material.model';
 
@@ -16,39 +14,9 @@ const createMaterial = async (
     throw new ApiError(httpStatus.CONFLICT, 'Material already exist');
   }
 
-  //start session
-  let result = null;
+  const result = await Material.create(materialData);
 
-  const session = await mongoose.startSession();
-
-  session.startTransaction();
-
-  try {
-    result = await Material.create([materialData], { session });
-
-    // Add billboardId into associated store
-    const store = await Store.findByIdAndUpdate(
-      materialData.storeId,
-      {
-        $push: { materialss: result[0]?._id },
-      },
-      { session },
-    );
-
-    if (!store) {
-      throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update store');
-    }
-
-    await session.commitTransaction();
-  } catch (error) {
-    await session.abortTransaction();
-
-    throw error;
-  } finally {
-    session.endSession();
-  }
-
-  return result[0];
+  return result;
 };
 
 const getAllMaterials = async (): Promise<IMaterial[] | null> => {
@@ -87,39 +55,8 @@ const updateMaterial = async (
 const deleteMaterial = async (
   materialId: string,
 ): Promise<IMaterial | null> => {
-  let result = null;
-
-  const session = await mongoose.startSession();
-
-  session.startTransaction();
-
-  try {
-    const isMaterialExist = await Material.findById(materialId).lean();
-
-    if (!isMaterialExist) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Material does not found');
-    }
-
-    await Store.findByIdAndUpdate(
-      isMaterialExist.storeId,
-      {
-        $pull: { materials: materialId },
-      },
-      { session },
-    );
-
-    result = await Material.findByIdAndDelete(materialId).session(session);
-
-    await session.commitTransaction();
-  } catch (error) {
-    await session.abortTransaction();
-
-    throw error;
-  } finally {
-    session.endSession();
-  }
-
-  return result;
+  console.log(materialId);
+  return null;
 };
 
 export const MaterialService = {

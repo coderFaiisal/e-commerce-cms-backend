@@ -11,10 +11,20 @@ const createMaterialZodSchema = z.object({
     storeId: z.string({
       required_error: 'Store id is required',
     }),
-    products: z.array(z.string()).optional(),
+    categoryId: z.string({
+      required_error: 'Category id is required',
+    }),
+  }),
+});
+
+const updateMaterialZodSchema = z.object({
+  body: z.object({
+    name: z.string().optional(),
+    value: z.string().optional(),
   }),
 });
 
 export const MaterialValidation = {
   createMaterialZodSchema,
+  updateMaterialZodSchema,
 };

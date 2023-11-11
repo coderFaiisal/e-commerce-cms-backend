@@ -1,12 +1,48 @@
 import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
+import { Product } from '../product/product.model';
 import { IOrder } from './order.interface';
 import { Order } from './order.model';
+import { generateTrackingNumber } from './order.utils';
 
 const createOrder = async (order: IOrder): Promise<IOrder> => {
-  const result = await Order.create(order);
-  return result;
+  const session = await mongoose.startSession();
+
+  session.startTransaction();
+
+  try {
+    // Generate tracking number
+    order.trackingNumber = generateTrackingNumber();
+
+    // Update product quantity
+    await Promise.all(
+      order.orderItems.map(async orderItem => {
+        const product = await Product.findById(orderItem.productId).session(
+          session,
+        );
+
+        if (product && product.stockQuantity) {
+          product.stockQuantity -= orderItem.quantity;
+
+          await product.save({ session });
+        }
+      }),
+    );
+
+    const result = await Order.create([order], { session });
+
+    await session.commitTransaction();
+
+    return result[0];
+  } catch (error) {
+    await session.abortTransaction();
+
+    throw error;
+  } finally {
+    session.endSession();
+  }
 };
 
 const getAllOrders = async (user: JwtPayload | null): Promise<IOrder[]> => {
@@ -16,7 +52,9 @@ const getAllOrders = async (user: JwtPayload | null): Promise<IOrder[]> => {
     return userOrders;
   }
 
-  const allOrders = await Order.find().lean();
+  const allOrders = await Order.find({})
+    .populate('orderItems.productId')
+    .lean();
 
   return allOrders;
 };
@@ -25,8 +63,6 @@ const getSingleOrder = async (
   orderId: string,
   user: JwtPayload | null,
 ): Promise<IOrder | null> => {
-  let result;
-
   //check order
   const order = await Order.findById(orderId).lean();
 
@@ -40,18 +76,10 @@ const getSingleOrder = async (
       throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden Access!');
     }
 
-    result = order;
-
-    return result;
+    return order;
   }
 
-  if (user?.role === 'admin') {
-    result = order;
-
-    return result;
-  }
-
-  return null;
+  return order;
 };
 
 const updateOrder = async (

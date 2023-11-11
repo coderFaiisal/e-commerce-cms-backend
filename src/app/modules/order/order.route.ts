@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.post(
   '/create-order',
+  auth(ENUM_USER_ROLE.USER),
   validateRequest(OrderValidation.createOrderZodSchema),
   OrderController.createOrder,
 );

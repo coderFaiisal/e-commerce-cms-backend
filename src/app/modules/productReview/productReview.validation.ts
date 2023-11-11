@@ -11,6 +11,9 @@ const createProductReviewZodSchema = z.object({
 
 const updateProductReviewZodSchema = z.object({
   body: z.object({
+    reviewId: z.string({
+      required_error: 'Review id is required',
+    }),
     review: z.string({
       required_error: 'Review is required',
     }),

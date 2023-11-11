@@ -13,7 +13,7 @@ const createOrderZodSchema = z.object({
         productId: z.string({
           required_error: 'Product id is required',
         }),
-        quantity: z.string({
+        quantity: z.number({
           required_error: 'Quantity is required',
         }),
       }),

@@ -25,13 +25,12 @@ const createProductReview = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateProductReview = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user;
   const productId = req.params.id;
-  const { ...updatedData } = req.body;
+  const { reviewId, ...updatedData } = req.body;
 
   const result = await ProductReviewService.updateProductReview(
     productId,
-    user,
+    reviewId,
     updatedData,
   );
 
@@ -44,12 +43,12 @@ const updateProductReview = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteProductReview = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user;
   const productId = req.params.id;
+  const { reviewId } = req.body;
 
   const result = await ProductReviewService.deleteProductReview(
     productId,
-    user,
+    reviewId,
   );
 
   sendResponse<IProduct>(res, {

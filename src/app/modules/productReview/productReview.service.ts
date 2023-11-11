@@ -37,16 +37,12 @@ const createProductReview = async (
     { new: true },
   );
 
-  if (!result) {
-    throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to add product review');
-  }
-
   return result;
 };
 
 const updateProductReview = async (
   productId: string,
-  user: JwtPayload | null,
+  reviewId: string,
   updatedData: Partial<IProductReview>,
 ): Promise<IProduct | null> => {
   const isProductExist = await Product.isProductExist(productId);
@@ -55,60 +51,49 @@ const updateProductReview = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Product does not exist');
   }
 
-  const result = await Product.aggregate([
+  const result = await Product.findOneAndUpdate(
     {
-      $match: { _id: productId },
+      _id: productId,
+      'reviews._id': reviewId,
     },
     {
-      $addFields: {
-        reviews: {
-          $map: {
-            input: '$reviews',
-            as: 'review',
-            in: {
-              $cond: [
-                { $eq: ['$$review.userEmail', user?.email] },
-                { $mergeObjects: ['$$review', updatedData] },
-                '$$review',
-              ],
-            },
-          },
-        },
+      $set: {
+        'reviews.$.review': updatedData.review,
+        'reviews.$.rating': updatedData.rating,
       },
     },
-  ]);
+    { new: true },
+  );
 
-  return result[0];
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Failed to update review');
+  }
+
+  return result;
 };
 
 const deleteProductReview = async (
   productId: string,
-  user: JwtPayload | null,
+  reviewId: string,
 ): Promise<IProduct | null> => {
   const isProductExist = await Product.isProductExist(productId);
 
   if (!isProductExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product does not exist');
   }
-
-  const result = await Product.aggregate([
+  const result = await Product.findByIdAndUpdate(
+    productId,
     {
-      $match: { _id: productId },
-    },
-    {
-      $addFields: {
+      $pull: {
         reviews: {
-          $filter: {
-            input: '$reviews',
-            as: 'review',
-            cond: { $ne: ['$$review.userEmail', user?.email] },
-          },
+          _id: reviewId,
         },
       },
     },
-  ]);
+    { new: true },
+  );
 
-  return result[0];
+  return result;
 };
 
 export const ProductReviewService = {

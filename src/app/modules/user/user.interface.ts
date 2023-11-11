@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 
 export type IUser = {
   name: string;
@@ -8,12 +8,6 @@ export type IUser = {
   role?: 'user';
   phoneNumber?: string;
   image?: string;
-  reviews?: IReview[];
-};
-
-export type IReview = {
-  productId?: Types.ObjectId;
-  review?: string;
 };
 
 export type UserModel = {

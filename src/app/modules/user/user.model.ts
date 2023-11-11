@@ -12,12 +12,6 @@ const userSchema = new Schema<IUser, UserModel>(
     role: { type: String, default: 'user' },
     phoneNumber: { type: String },
     image: { type: String },
-    reviews: [
-      {
-        productId: { type: Schema.Types.ObjectId, ref: 'Product' },
-        review: { type: String },
-      },
-    ],
   },
   {
     timestamps: true,

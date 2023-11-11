@@ -1,7 +1,11 @@
 import httpStatus from 'http-status';
+import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
 import { ICategory } from './category.interface';
 import { Category } from './category.model';
+import { Carat } from '../carat/carat.model';
+import { Material } from '../material/material.model';
+import { Product } from '../product/product.model';
 
 const createCategory = async (
   categoryData: ICategory,
@@ -63,10 +67,36 @@ const updateCategory = async (
 const deleteCategory = async (
   categoryId: string,
 ): Promise<ICategory | null> => {
-  //! Have to add functionality
+  const session = await mongoose.startSession();
 
-  const result = await Category.findByIdAndDelete(categoryId);
-  return result;
+  session.startTransaction();
+
+  try {
+    const category = await Category.findById(categoryId).session(session);
+
+    if (!category) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Category does not found');
+    }
+
+    await Carat.deleteMany({ categoryId: category._id }).session(session);
+
+    await Material.deleteMany({ categoryId: category._id }).session(session);
+
+    await Product.deleteMany({ categoryId: category._id }).session(session);
+
+    const result =
+      await Category.findByIdAndDelete(categoryId).session(session);
+
+    await session.commitTransaction();
+
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+
+    throw error;
+  } finally {
+    session.endSession();
+  }
 };
 
 export const CategoryService = {

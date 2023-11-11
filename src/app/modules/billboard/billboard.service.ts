@@ -53,15 +53,15 @@ const updateBillboard = async (
 const deleteBillboard = async (
   billboardId: string,
 ): Promise<IBillboard | null> => {
-  //! Have to add functionality
-
   const billboard = await Billboard.findById(billboardId).lean();
 
   if (!billboard) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Billboard does not found');
   }
 
-  return null;
+  const result = await Billboard.findByIdAndDelete(billboardId);
+
+  return result;
 };
 
 export const BillboardService = {

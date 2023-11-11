@@ -21,6 +21,7 @@ const updateCategoryZodSchema = z.object({
   body: z.object({
     name: z.string().optional(),
     code: z.string().optional(),
+    billboardId: z.string().optional(),
   }),
 });
 

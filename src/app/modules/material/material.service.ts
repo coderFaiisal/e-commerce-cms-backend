@@ -20,7 +20,10 @@ const createMaterial = async (
 };
 
 const getAllMaterials = async (): Promise<IMaterial[] | null> => {
-  const result = await Material.find({});
+  const result = await Material.find({})
+    .populate('storeId')
+    .populate('categoryId')
+    .lean();
 
   return result;
 };
@@ -28,7 +31,10 @@ const getAllMaterials = async (): Promise<IMaterial[] | null> => {
 const getSingleMaterial = async (
   materialId: string,
 ): Promise<IMaterial | null> => {
-  const result = await Material.findById(materialId);
+  const result = await Material.findById(materialId)
+    .populate('storeId')
+    .populate('categoryId')
+    .lean();
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Material does not found');
@@ -43,7 +49,10 @@ const updateMaterial = async (
 ): Promise<IMaterial | null> => {
   const result = await Material.findByIdAndUpdate(materialId, updatedData, {
     new: true,
-  });
+  })
+    .populate('storeId')
+    .populate('categoryId')
+    .lean();
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update material');

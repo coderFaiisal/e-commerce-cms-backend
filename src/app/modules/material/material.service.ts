@@ -64,8 +64,15 @@ const updateMaterial = async (
 const deleteMaterial = async (
   materialId: string,
 ): Promise<IMaterial | null> => {
-  console.log(materialId);
-  return null;
+  const isMaterialExist = await Material.findById(materialId);
+
+  if (!isMaterialExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Material does not exist');
+  }
+
+  const result = await Material.findByIdAndDelete(materialId);
+
+  return result;
 };
 
 export const MaterialService = {

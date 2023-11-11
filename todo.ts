@@ -8,4 +8,3 @@
 // * Category delete route functionality
 // * Carat delete route functionality
 // * Material delete route functionality
-// * Order delete route functionality

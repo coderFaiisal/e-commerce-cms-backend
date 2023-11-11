@@ -130,31 +130,56 @@ const deleteOrder = async (
   orderId: string,
   user: JwtPayload | null,
 ): Promise<IOrder | null> => {
-  //check list
-  const isOrderExist = await Order.findById(orderId).lean();
+  let result = null;
 
-  if (!isOrderExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Order does not exist');
-  }
+  const session = await mongoose.startSession();
 
-  if (user?.role === 'user') {
-    //check authentic user
-    if (isOrderExist?.userEmail !== user?.email) {
-      throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+  session.startTransaction();
+
+  try {
+    const order = await Order.findById(orderId).session(session);
+
+    if (!order) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
     }
 
-    const result = await Order.findByIdAndDelete(orderId);
+    await Promise.all(
+      order.orderItems.map(async orderItem => {
+        const product = await Product.findById(orderItem.productId).session(
+          session,
+        );
 
-    return result;
+        if (product) {
+          product.stockQuantity += orderItem.quantity;
+
+          await product.save({ session });
+        }
+      }),
+    );
+
+    if (user?.role === 'user') {
+      //check authentic user
+      if (order?.userEmail !== user?.email) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+      }
+
+      result = await Order.findByIdAndDelete(orderId).session(session);
+    }
+
+    if (user?.role === 'admin') {
+      result = await Order.findByIdAndDelete(orderId).session(session);
+    }
+
+    await session.commitTransaction();
+  } catch (error) {
+    await session.abortTransaction();
+
+    throw error;
+  } finally {
+    session.endSession();
   }
 
-  if (user?.role === 'admin') {
-    const result = await Order.findByIdAndDelete(orderId);
-
-    return result;
-  }
-
-  return null;
+  return result;
 };
 
 export const OrderService = {

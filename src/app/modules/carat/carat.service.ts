@@ -53,11 +53,15 @@ const updateCarat = async (
 };
 
 const deleteCarat = async (caratId: string): Promise<ICarat | null> => {
-  //! Have to add functionality
+  const isCaratExist = await Carat.findById(caratId).lean();
 
-  console.log(caratId);
+  if (!isCaratExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Carat does not exist');
+  }
 
-  return null;
+  const result = await Carat.findByIdAndDelete(caratId);
+
+  return result;
 };
 
 export const CaratService = {

@@ -11,7 +11,9 @@ const createCaratZodSchema = z.object({
     storeId: z.string({
       required_error: 'Store id is required',
     }),
-    products: z.array(z.string()).optional(),
+    categoryId: z.string({
+      required_error: 'Category id is required',
+    }),
   }),
 });
 

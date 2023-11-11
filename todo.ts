@@ -16,4 +16,6 @@
 
 //! Todo
 // * Store delete route functionality
+// * Billboard delete route functionality
 // * Category delete route functionality
+// * Carat delete route functionality

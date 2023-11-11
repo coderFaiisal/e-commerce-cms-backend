@@ -6,7 +6,11 @@ const caratSchema = new Schema<ICarat, CaratModel>(
     name: { type: String, required: true, unique: true },
     value: { type: String, required: true },
     storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
-    products: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
+      required: true,
+    },
   },
   {
     timestamps: true,

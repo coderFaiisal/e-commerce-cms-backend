@@ -1,12 +1,12 @@
 import { Model, Types } from 'mongoose';
-import { IProduct } from '../product/product.interface';
+import { ICategory } from '../category/category.interface';
 import { IStore } from '../store/store.interface';
 
 export type ICarat = {
   name: string;
   value: string;
   storeId: Types.ObjectId | IStore;
-  products?: Types.ObjectId[] | IProduct[];
+  categoryId: Types.ObjectId | ICategory;
 };
 
 export type CaratModel = Model<ICarat, Record<string, undefined>>;

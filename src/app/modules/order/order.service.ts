@@ -130,8 +130,6 @@ const deleteOrder = async (
   orderId: string,
   user: JwtPayload | null,
 ): Promise<IOrder | null> => {
-  let result = null;
-
   const session = await mongoose.startSession();
 
   session.startTransaction();
@@ -163,14 +161,20 @@ const deleteOrder = async (
         throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
       }
 
-      result = await Order.findByIdAndDelete(orderId).session(session);
+      const result = await Order.findByIdAndDelete(orderId).session(session);
+
+      return result;
     }
 
     if (user?.role === 'admin') {
-      result = await Order.findByIdAndDelete(orderId).session(session);
+      const result = await Order.findByIdAndDelete(orderId).session(session);
+
+      return result;
     }
 
     await session.commitTransaction();
+
+    return null;
   } catch (error) {
     await session.abortTransaction();
 
@@ -178,8 +182,6 @@ const deleteOrder = async (
   } finally {
     session.endSession();
   }
-
-  return result;
 };
 
 export const OrderService = {

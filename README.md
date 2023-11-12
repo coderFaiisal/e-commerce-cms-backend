@@ -90,10 +90,14 @@ Refresh Token: https://timeless-backend.vercel.app/api/v1/auth/refresh-token (PO
 
 ```ts
 * Get All Users: "https://timeless-backend.vercel.app/api/v1/users?search&filter" (GET) (Admin)
-* Get User Profile: https://timeless-backend.vercel.app/api/v1/users/my-profile (GET) (Auth User)
-* Get Single User: https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5e376ac8 (Single GET) (Admin)
-* Update User Profile: https://timeless-backend.vercel.app/api/v1/users/my-profile (PATCH) (Auth User)
-* Delete User: https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5e376ac8 (DELETE) (Auth User)
+
+* Get User Profile: "https://timeless-backend.vercel.app/api/v1/users/my-profile" (GET) (Auth User)
+
+* Get Single User: "https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5e376ac8" (Single GET) (Admin)
+
+* Update User Profile: "https://timeless-backend.vercel.app/api/v1/users/my-profile" (PATCH) (Auth User)
+
+* Delete User: "https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5e376ac8" (DELETE) (Auth User)
 ```
 
 ## Auth (Admin)

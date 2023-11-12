@@ -23,7 +23,7 @@ Key Features:
 - Stripe checkout
 - Stripe webhooks
 
-### Vercel Hosted Live API Link: https://timeless-backend.vercel.app
+### Vercel Hosted API Base URL: https://timeless-backend.vercel.app
 
 ### Technologies
 
@@ -187,3 +187,5 @@ Create Product Review: "https://timeless-backend.vercel.app/api/v1/productReview
 Update Product Review: "https://timeless-backend.vercel.app/api/v1/productReviews/654f59d43c04a5a4966d5917" (PATCH) (User)
 Delete Product Review: "https://timeless-backend.vercel.app/api/v1/productReviews/654f59d43c04a5a4966d5917" (DELETE) (User)
 ```
+
+# [Project Complete RnD](https://www.notion.so/Timeless-Jewellery-c2fc3a5892ac4a3fa74dd9a1401dd402?pvs=4)

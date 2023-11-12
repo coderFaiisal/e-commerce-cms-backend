@@ -23,6 +23,8 @@ Key Features:
 - Stripe checkout
 - Stripe webhooks
 
+### Vercel Hosted Live API Link: https://timeless-backend.vercel.app
+
 ### Technologies
 
 Project is created with:
@@ -73,11 +75,9 @@ JWT_REFRESH_EXPIRES_IN=
 yarn dev
 ```
 
-## Vercel Hosted Live API Link: https://timeless-backend.vercel.app
+## [API Documentation](https://documenter.getpostman.com/view/29322785/2s9YXk3gAs)
 
-## Application Routes:
-
-- [API Documentation](https://documenter.getpostman.com/view/29322785/2s9YXk3gAs)
+### Application Routes:
 
 ### Auth (User)
 

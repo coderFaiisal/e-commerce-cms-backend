@@ -34,19 +34,6 @@ const getUserProfile = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getUserReviews = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user;
-
-  const result = await UserService.getUserReviews(user);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User reviews retrieved successfully',
-    data: result,
-  });
-});
-
 const getSingleUser = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -87,7 +74,6 @@ export const UserController = {
   getSingleUser,
   getAllUsers,
   getUserProfile,
-  getUserReviews,
   deleteUser,
   updateUserProfile,
 };

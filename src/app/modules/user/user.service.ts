@@ -56,14 +56,6 @@ const getUserProfile = async (
   return result;
 };
 
-const getUserReviews = async (
-  user: JwtPayload | null,
-): Promise<IUser | null> => {
-  const result = await User.findOne({ email: user?.email }, { reviews: 1 });
-
-  return result;
-};
-
 const getSingleUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findById(id);
 
@@ -126,7 +118,6 @@ export const UserService = {
   getSingleUser,
   getAllUsers,
   getUserProfile,
-  getUserReviews,
   updateUserProfile,
   deleteUser,
 };

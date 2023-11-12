@@ -15,12 +15,6 @@ router.get(
   UserController.getUserProfile,
 );
 
-router.get(
-  '/reviews',
-  auth(ENUM_USER_ROLE.USER),
-  UserController.getUserReviews,
-);
-
 router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), UserController.getSingleUser);
 
 router.patch(

@@ -86,17 +86,18 @@ Change Password:https://timeless-backend.vercel.app/api/v1/auth/change-password 
 Refresh Token: https://timeless-backend.vercel.app/api/v1/auth/refresh-token (POST)
 ```
 
+### User
+
+```ts
+* Get All Users: https://timeless-backend.vercel.app/api/v1/users?search&filter (GET) (Admin)
+* Get User Profile: https://timeless-backend.vercel.app/api/v1/users/my-profile (GET) (Auth User)
+* Get Single User: https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5e376ac8 (Single GET) (Admin)
+* Update User Profile: https://timeless-backend.vercel.app/api/v1/users/my-profile (PATCH) (Auth User)
+* Delete User: https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5e376ac8 (DELETE) (Auth User)
+```
+
 ## Auth (Admin)
 
 - Route: https://timeless-backend.vercel.app/api/v1/admins/create-admin (POST)
 - Route: https://timeless-backend.vercel.app/api/v1/admins/sign-in (POST)
 - Route: https://timeless-backend.vercel.app/api/v1/admins/refresh-token (POST)
-
-## User
-
-- Route: https://timeless-backend.vercel.app/api/v1/users?search&filter (GET) (Admin)
-- Route: https://timeless-backend.vercel.app/api/v1/users/my-profile (GET) (Auth User)
-- Route: https://timeless-backend.vercel.app/api/v1/users/reviews (GET) (Auth User)
-- Route: https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5e376ac8 (Single GET) (Admin)
-- Route: https://timeless-backend.vercel.app/api/v1/users/my-profile (PATCH) (Auth User)
-- Route: https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5e376ac8 (DELETE) (Auth User)

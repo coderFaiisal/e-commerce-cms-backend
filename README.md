@@ -77,6 +77,8 @@ yarn dev
 
 ## Application Routes:
 
+- [API Documentation](https://documenter.getpostman.com/view/29322785/2s9YXk3gAs)
+
 ### Auth (User)
 
 ```ts

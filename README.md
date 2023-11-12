@@ -80,28 +80,32 @@ yarn dev
 ### Auth (User)
 
 ```ts
-Create User: https://timeless-backend.vercel.app/api/v1/auth/sign-up (POST)
-Signin User: https://timeless-backend.vercel.app/api/v1/auth/sign-in (POST)
-Change Password:https://timeless-backend.vercel.app/api/v1/auth/change-password (POST)
-Refresh Token: https://timeless-backend.vercel.app/api/v1/auth/refresh-token (POST)
+Create User: "https://timeless-backend.vercel.app/api/v1/auth/sign-up" (POST)
+Signin User: "https://timeless-backend.vercel.app/api/v1/auth/sign-in" (POST)
+Change Password: "https://timeless-backend.vercel.app/api/v1/auth/change-password" (POST)
+Refresh Token: "https://timeless-backend.vercel.app/api/v1/auth/refresh-token" (POST)
 ```
 
 ### User
 
 ```ts
-* Get All Users: "https://timeless-backend.vercel.app/api/v1/users?search&filter" (GET) (Admin)
-
-* Get User Profile: "https://timeless-backend.vercel.app/api/v1/users/my-profile" (GET) (Auth User)
-
-* Get Single User: "https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5e376ac8" (Single GET) (Admin)
-
-* Update User Profile: "https://timeless-backend.vercel.app/api/v1/users/my-profile" (PATCH) (Auth User)
-
-* Delete User: "https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5e376ac8" (DELETE) (Auth User)
+Get All Users: "https://timeless-backend.vercel.app/api/v1/users?search&filter" (GET) (Admin)
+Get User Profile: "https://timeless-backend.vercel.app/api/v1/users/my-profile" (GET) (Auth User)
+Get Single User: "https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5e376ac8" (Single GET) (Admin)
+Update User Profile: "https://timeless-backend.vercel.app/api/v1/users/my-profile" (PATCH) (Auth User)
+Delete User: "https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5e376ac8" (DELETE) (Auth User)
 ```
 
-## Auth (Admin)
+### Admin
 
-- Route: https://timeless-backend.vercel.app/api/v1/admins/create-admin (POST)
-- Route: https://timeless-backend.vercel.app/api/v1/admins/sign-in (POST)
-- Route: https://timeless-backend.vercel.app/api/v1/admins/refresh-token (POST)
+```
+Create Admin: "https://timeless-backend.vercel.app/api/v1/admins/create-admin" (POST)
+Signin Admin: "https://timeless-backend.vercel.app/api/v1/admins/sign-in" (POST)
+Change Password: "https://timeless-backend.vercel.app/api/v1/admins/change-password" (POST)
+Refresh Token: "https://timeless-backend.vercel.app/api/v1/admins/refresh-token" (POST)
+Get All Admins: "https://timeless-backend.vercel.app/api/v1/admins/" (GET) (Admin)
+Get Admin Profile: "https://timeless-backend.vercel.app/api/v1/admins/my-profile" (GET) (Admin)
+Get Single Admin: "https://timeless-backend.vercel.app/api/v1/admins/64ee43b42c55973c5e376ac8" (GET) (Admin)
+Update Admin: "https://timeless-backend.vercel.app/api/v1/admins/my-profile" (PATCH) (Admin)
+Delete Admin: "https://timeless-backend.vercel.app/api/v1/admins/64ee43b42c55973c5e376ac8" (DELETE) (Admin)
+```

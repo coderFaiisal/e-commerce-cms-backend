@@ -23,7 +23,7 @@ Key Features:
 - Stripe checkout
 - Stripe webhooks
 
-## Technologies
+### Technologies
 
 Project is created with:
 
@@ -98,7 +98,7 @@ Delete User: "https://timeless-backend.vercel.app/api/v1/users/64ee43b42c55973c5
 
 ### Admin
 
-```
+```ts
 Create Admin: "https://timeless-backend.vercel.app/api/v1/admins/create-admin" (POST)
 Signin Admin: "https://timeless-backend.vercel.app/api/v1/admins/sign-in" (POST)
 Change Password: "https://timeless-backend.vercel.app/api/v1/admins/change-password" (POST)
@@ -108,4 +108,80 @@ Get Admin Profile: "https://timeless-backend.vercel.app/api/v1/admins/my-profile
 Get Single Admin: "https://timeless-backend.vercel.app/api/v1/admins/64ee43b42c55973c5e376ac8" (GET) (Admin)
 Update Admin: "https://timeless-backend.vercel.app/api/v1/admins/my-profile" (PATCH) (Admin)
 Delete Admin: "https://timeless-backend.vercel.app/api/v1/admins/64ee43b42c55973c5e376ac8" (DELETE) (Admin)
+```
+
+### Store
+
+```ts
+Create Store: "https://timeless-backend.vercel.app/api/v1/stores/create-store" (POST) (Admin)
+Get Single Store: "https://timeless-backend.vercel.app/api/v1/stores/654e4850e878e7c1c8804100" (GET) (Admin)
+Update Store: "https://timeless-backend.vercel.app/api/v1/stores/654e4850e878e7c1c8804100" (PATCH) (Admin)
+Delete Store: "https://timeless-backend.vercel.app/api/v1/stores/64ee43b42c55973c5e376ac8" (DELETE) (Super Admin)
+```
+
+### Billboard
+
+```ts
+Create Billboard: "https://timeless-backend.vercel.app/api/v1/billboards/create-billboard" (POST) (Admin)
+Get Single Billboard: "https://timeless-backend.vercel.app/api/v1/billboards/654e4850e878e7c1c8804100" (GET) (Admin)
+Update Billboard: "https://timeless-backend.vercel.app/api/v1/billboards/654e4850e878e7c1c8804100" (PATCH) (Admin)
+Delete Billboard: "https://timeless-backend.vercel.app/api/v1/billboards/654e4850e878e7c1c8804100" (DELETE) (Super Admin)
+```
+
+### Category
+
+```ts
+Create Category: "https://timeless-backend.vercel.app/api/v1/categories/create-category" (POST) (Admin)
+Get All Categories: "https://timeless-backend.vercel.app/api/v1/categories/" (GET)
+Get Single Category: "https://timeless-backend.vercel.app/api/v1/categories/654e4850e878e7c1c8804100" (GET)
+Update Category: "https://timeless-backend.vercel.app/api/v1/categories/654e4850e878e7c1c8804100" (PATCH) (Admin)
+Delete Category: "https://timeless-backend.vercel.app/api/v1/categories/654e4850e878e7c1c8804100" (DELETE) (Super Admin)
+```
+
+### Carat
+
+```ts
+Create Carat: "https://timeless-backend.vercel.app/api/v1/carats/create-carat" (POST) (Admin)
+Get All Carats: "https://timeless-backend.vercel.app/api/v1/carats/" (GET) (Admin)
+Get Single Carat: "https://timeless-backend.vercel.app/api/v1/carats/654e4850e878e7c1c8804100" (GET) (Admin)
+Update Carat: "https://timeless-backend.vercel.app/api/v1/carats/654e4850e878e7c1c8804100" (PATCH) (Admin)
+Delete Carat: "https://timeless-backend.vercel.app/api/v1/carats/654e4850e878e7c1c8804100" (DELETE) (Super Admin)
+```
+
+### Material
+
+```ts
+Create Material: "https://timeless-backend.vercel.app/api/v1/materials/create-material" (POST) (Admin)
+Get All Materials: "https://timeless-backend.vercel.app/api/v1/materials/" (GET) (Admin)
+Get Single Material: "https://timeless-backend.vercel.app/api/v1/materials/654e4850e878e7c1c8804100" (GET) (Admin)
+Update Material: "https://timeless-backend.vercel.app/api/v1/materials/654e4850e878e7c1c8804100" (PATCH) (Admin)
+Delete Material: "https://timeless-backend.vercel.app/api/v1/materials/654e4850e878e7c1c8804100" (DELETE) (Super Admin)
+```
+
+### Product
+
+```ts
+Create Product: "https://timeless-backend.vercel.app/api/v1/products/create-product" (POST) (Admin)
+Get All Products: "https://timeless-backend.vercel.app/api/v1/products/" (GET)
+Get Single Product: "https://timeless-backend.vercel.app/api/v1/products/654e4850e878e7c1c8804100" (GET)
+Update Product: "https://timeless-backend.vercel.app/api/v1/products/654e4850e878e7c1c8804100" (PATCH) (Admin)
+Delete Product: "https://timeless-backend.vercel.app/api/v1/products/654e4850e878e7c1c8804100" (DELETE) (Super Admin)
+```
+
+### Order
+
+```ts
+Create Order: "https://timeless-backend.vercel.app/api/v1/orders/create-order" (POST) (User)
+Get All Orders: "https://timeless-backend.vercel.app/api/v1/orders/" (GET) (Admin & Auth User)
+Get Single Order: "https://timeless-backend.vercel.app/api/v1/orders/654e4850e878e7c1c8804100" (GET) (Admin & Auth User)
+Update Order: "https://timeless-backend.vercel.app/api/v1/orders/654e4850e878e7c1c8804100" (PATCH) (Admin & Auth User)
+Delete Order: "https://timeless-backend.vercel.app/api/v1/orders/654e4850e878e7c1c8804100" (DELETE) (Admin & Auth User)
+```
+
+### Product Review
+
+```ts
+Create Product Review: "https://timeless-backend.vercel.app/api/v1/productReviews/654f59d43c04a5a4966d5917" (POST) (User)
+Update Product Review: "https://timeless-backend.vercel.app/api/v1/productReviews/654f59d43c04a5a4966d5917" (PATCH) (User)
+Delete Product Review: "https://timeless-backend.vercel.app/api/v1/productReviews/654f59d43c04a5a4966d5917" (DELETE) (User)
 ```

@@ -77,11 +77,14 @@ yarn dev
 
 ## Application Routes:
 
-## Auth (User)
+### Auth (User)
 
-- Route: https://timeless-backend.vercel.app/api/v1/auth/login (POST)
-- Route: https://timeless-backend.vercel.app/api/v1/auth/signup (POST)
-- Route: https://timeless-backend.vercel.app/api/v1/auth/refresh-token (POST)
+```ts
+Create User: https://timeless-backend.vercel.app/api/v1/auth/sign-up (POST)
+Signin User: https://timeless-backend.vercel.app/api/v1/auth/sign-in (POST)
+Change Password:https://timeless-backend.vercel.app/api/v1/auth/change-password (POST)
+Refresh Token: https://timeless-backend.vercel.app/api/v1/auth/refresh-token (POST)
+```
 
 ## Auth (Admin)
 

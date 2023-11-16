@@ -116,6 +116,7 @@ Delete Admin: "https://timeless-backend.vercel.app/api/v1/admins/64ee43b42c55973
 
 ```ts
 Create Store: "https://timeless-backend.vercel.app/api/v1/stores/create-store" (POST) (Admin)
+Store Exist: "https://timeless-backend.vercel.app/api/v1/stores/isStoreExist" (GET) (Admin)
 Get Single Store: "https://timeless-backend.vercel.app/api/v1/stores/654e4850e878e7c1c8804100" (GET) (Admin)
 Update Store: "https://timeless-backend.vercel.app/api/v1/stores/654e4850e878e7c1c8804100" (PATCH) (Admin)
 Delete Store: "https://timeless-backend.vercel.app/api/v1/stores/64ee43b42c55973c5e376ac8" (DELETE) (Super Admin)

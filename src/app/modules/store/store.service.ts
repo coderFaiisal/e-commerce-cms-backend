@@ -22,6 +22,16 @@ const createStore = async (store: IStore): Promise<IStore | null> => {
   return result;
 };
 
+const isStoreExist = async (): Promise<boolean> => {
+  const result = await Store.countDocuments();
+
+  if (result > 0) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 const getSingleStore = async (storeId: string): Promise<IStore | null> => {
   const result = await Store.findById(storeId);
 
@@ -93,6 +103,7 @@ const deleteStore = async (storeId: string): Promise<IStore | null> => {
 
 export const StoreService = {
   createStore,
+  isStoreExist,
   getSingleStore,
   updateStore,
   deleteStore,

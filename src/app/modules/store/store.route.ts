@@ -14,6 +14,12 @@ router.post(
   StoreController.createStore,
 );
 
+router.get(
+  '/isStoreExist',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  StoreController.isStoreExist,
+);
+
 router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), StoreController.getSingleStore);
 
 router.patch(

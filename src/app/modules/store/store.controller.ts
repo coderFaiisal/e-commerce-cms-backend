@@ -21,7 +21,7 @@ const createStore = catchAsync(async (req: Request, res: Response) => {
 const isStoreExist = catchAsync(async (req: Request, res: Response) => {
   const result = await StoreService.isStoreExist();
 
-  sendResponse<boolean>(res, {
+  sendResponse<IStore>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Store info retrieved successfully',

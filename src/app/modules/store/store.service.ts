@@ -22,14 +22,10 @@ const createStore = async (store: IStore): Promise<IStore | null> => {
   return result;
 };
 
-const isStoreExist = async (): Promise<boolean> => {
-  const result = await Store.countDocuments();
+const isStoreExist = async (): Promise<IStore | null> => {
+  const result = await Store.find({}).sort({ createdAt: -1 });
 
-  if (result > 0) {
-    return true;
-  } else {
-    return false;
-  }
+  return result[0];
 };
 
 const getSingleStore = async (storeId: string): Promise<IStore | null> => {

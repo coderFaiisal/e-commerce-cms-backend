@@ -15,6 +15,12 @@ router.post(
 );
 
 router.get(
+  '/',
+  auth(ENUM_USER_ROLE.ADMIN),
+  BillboardController.getAllBillboards,
+);
+
+router.get(
   '/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   BillboardController.getSingleBillboard,

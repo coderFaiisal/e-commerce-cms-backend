@@ -18,6 +18,17 @@ const createBillboard = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllBillboards = catchAsync(async (req: Request, res: Response) => {
+  const result = await BillboardService.getAllBillboards();
+
+  sendResponse<IBillboard[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Billboards retrieved successfully',
+    data: result,
+  });
+});
+
 const getSingleBillboard = catchAsync(async (req: Request, res: Response) => {
   const billboardId = req.params.id;
 
@@ -63,6 +74,7 @@ const deleteBillboard = catchAsync(async (req: Request, res: Response) => {
 
 export const BillboardController = {
   createBillboard,
+  getAllBillboards,
   getSingleBillboard,
   updateBillboard,
   deleteBillboard,

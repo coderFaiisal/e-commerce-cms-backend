@@ -19,6 +19,12 @@ const createBillboard = async (
   return result;
 };
 
+const getAllBillboards = async (): Promise<IBillboard[] | null> => {
+  const result = await Billboard.find({}).populate('storeId').lean();
+
+  return result;
+};
+
 const getSingleBillboard = async (
   billboardId: string,
 ): Promise<IBillboard | null> => {
@@ -66,19 +72,8 @@ const deleteBillboard = async (
 
 export const BillboardService = {
   createBillboard,
+  getAllBillboards,
   getSingleBillboard,
   updateBillboard,
   deleteBillboard,
 };
-
-// billboardId
-// storeId
-// categoriesId = []
-// productsId = [] with aggregate
-
-// billboard, categories, products wiil be delete from store collection.
-// categories will be delete from category collection
-// products will be delete from product collection
-// products will be delete from carat collection.
-// products will be delete from material collection.
-// billboard will be delete from billboard collection

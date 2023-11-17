@@ -23,7 +23,7 @@ const createStore = async (store: IStore): Promise<IStore | null> => {
 };
 
 const isStoreExist = async (): Promise<IStore | null> => {
-  const result = await Store.find({}).sort({ createdAt: -1 });
+  const result = await Store.find({}).sort({ createdAt: 1 });
 
   return result[0];
 };

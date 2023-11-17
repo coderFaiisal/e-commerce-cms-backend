@@ -35,10 +35,6 @@ router.patch(
   StoreController.updateStore,
 );
 
-router.delete(
-  '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN),
-  StoreController.deleteStore,
-);
+router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), StoreController.deleteStore);
 
 export const StoreRoutes = router;

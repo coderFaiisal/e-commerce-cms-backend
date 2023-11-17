@@ -29,6 +29,17 @@ const isStoreExist = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllStores = catchAsync(async (req: Request, res: Response) => {
+  const result = await StoreService.getAllStores();
+
+  sendResponse<IStore[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Stores retrieved successfully',
+    data: result,
+  });
+});
+
 const getSingleStore = catchAsync(async (req: Request, res: Response) => {
   const storeId = req.params.id;
 
@@ -73,6 +84,7 @@ const deleteStore = catchAsync(async (req: Request, res: Response) => {
 export const StoreController = {
   createStore,
   isStoreExist,
+  getAllStores,
   getSingleStore,
   updateStore,
   deleteStore,

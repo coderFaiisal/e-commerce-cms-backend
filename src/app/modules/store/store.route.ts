@@ -20,6 +20,12 @@ router.get(
   StoreController.isStoreExist,
 );
 
+router.get(
+  '/',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  StoreController.getAllStores,
+);
+
 router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), StoreController.getSingleStore);
 
 router.patch(

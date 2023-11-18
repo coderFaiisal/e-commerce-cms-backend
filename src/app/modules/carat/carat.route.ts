@@ -25,10 +25,6 @@ router.patch(
   CaratController.updateCarat,
 );
 
-router.delete(
-  '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN),
-  CaratController.deleteCarat,
-);
+router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), CaratController.deleteCarat);
 
 export const CaratRoutes = router;

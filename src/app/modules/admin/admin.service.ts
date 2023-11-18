@@ -121,7 +121,7 @@ const refreshToken = async (
       config.jwt.refresh_secret as Secret,
     );
   } catch (error) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token!');
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid Refresh Token!');
   }
 
   const { email, role } = verifiedAdmin;

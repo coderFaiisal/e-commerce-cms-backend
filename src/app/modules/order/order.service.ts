@@ -73,7 +73,7 @@ const getSingleOrder = async (
   if (user?.role === 'user') {
     //check authentic buyer
     if (order.userEmail !== user.email) {
-      throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden Access!');
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized Access!');
     }
 
     return order;

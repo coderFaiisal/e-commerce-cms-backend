@@ -21,6 +21,7 @@ const updateCaratZodSchema = z.object({
   body: z.object({
     name: z.string().optional(),
     value: z.string().optional(),
+    categoryId: z.string().optional(),
   }),
 });
 

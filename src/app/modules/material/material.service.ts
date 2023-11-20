@@ -19,8 +19,10 @@ const createMaterial = async (
   return result;
 };
 
-const getAllMaterials = async (): Promise<IMaterial[] | null> => {
-  const result = await Material.find({})
+const getAllMaterials = async (
+  storeId: string,
+): Promise<IMaterial[] | null> => {
+  const result = await Material.find({ storeId })
     .populate('storeId')
     .populate('categoryId')
     .lean();

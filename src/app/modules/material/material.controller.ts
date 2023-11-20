@@ -19,7 +19,9 @@ const createMaterial = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllMaterials = catchAsync(async (req: Request, res: Response) => {
-  const result = await MaterialService.getAllMaterials();
+  const { storeId } = req.params;
+
+  const result = await MaterialService.getAllMaterials(storeId);
 
   sendResponse<IMaterial[]>(res, {
     statusCode: httpStatus.OK,

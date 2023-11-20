@@ -14,10 +14,14 @@ router.post(
   MaterialController.createMaterial,
 );
 
-router.get('/', auth(ENUM_USER_ROLE.ADMIN), MaterialController.getAllMaterials);
+router.get(
+  '/:storeId',
+  auth(ENUM_USER_ROLE.ADMIN),
+  MaterialController.getAllMaterials,
+);
 
 router.get(
-  '/:id',
+  '/single-material/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   MaterialController.getSingleMaterial,
 );

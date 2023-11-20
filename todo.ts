@@ -2,3 +2,4 @@
 // * mongodb indexing on email of user and admin
 // * Explore and implement Invoice
 // * Nodemailer / passportjs try out
+//* Add shipping charge in product or order module

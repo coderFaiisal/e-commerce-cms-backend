@@ -69,7 +69,9 @@ const getSingleOrder = async (
   user: JwtPayload | null,
 ): Promise<IOrder | null> => {
   //check order
-  const order = await Order.findById(orderId).lean();
+  const order = await Order.findById(orderId)
+    .populate('orderItems.productId')
+    .lean();
 
   if (!order) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Order does not found');

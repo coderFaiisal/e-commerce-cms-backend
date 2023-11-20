@@ -14,9 +14,9 @@ router.post(
   CategoryController.createCategory,
 );
 
-router.get('/', CategoryController.getAllCategories);
+router.get('/:storeId', CategoryController.getAllCategories);
 
-router.get('/:id', CategoryController.getSingleCategory);
+router.get('/single-category/:id', CategoryController.getSingleCategory);
 
 router.patch(
   '/:id',

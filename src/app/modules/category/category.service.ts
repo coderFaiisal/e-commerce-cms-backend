@@ -1,11 +1,11 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
-import { ICategory } from './category.interface';
-import { Category } from './category.model';
 import { Carat } from '../carat/carat.model';
 import { Material } from '../material/material.model';
 import { Product } from '../product/product.model';
+import { ICategory } from './category.interface';
+import { Category } from './category.model';
 
 const createCategory = async (
   categoryData: ICategory,
@@ -23,8 +23,10 @@ const createCategory = async (
   return result;
 };
 
-const getAllCategories = async (): Promise<ICategory[] | null> => {
-  const result = await Category.find({})
+const getAllCategories = async (
+  storeId: string,
+): Promise<ICategory[] | null> => {
+  const result = await Category.find({ storeId })
     .populate('storeId')
     .populate('billboardId')
     .lean();

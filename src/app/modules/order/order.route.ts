@@ -15,13 +15,13 @@ router.post(
 );
 
 router.get(
-  '/',
+  '/:storeId',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   OrderController.getAllOrders,
 );
 
 router.get(
-  '/:id',
+  '/single-order/:id',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   OrderController.getSingleOrder,
 );

@@ -45,14 +45,19 @@ const createOrder = async (order: IOrder): Promise<IOrder> => {
   }
 };
 
-const getAllOrders = async (user: JwtPayload | null): Promise<IOrder[]> => {
+const getAllOrders = async (
+  storeId: string,
+  user: JwtPayload | null,
+): Promise<IOrder[]> => {
   if (user?.role === 'user') {
-    const userOrders = await Order.find({ userEmail: user.email }).lean();
+    const userOrders = await Order.find({
+      userEmail: user.email,
+    }).lean();
 
     return userOrders;
   }
 
-  const allOrders = await Order.find({})
+  const allOrders = await Order.find({ storeId })
     .populate('orderItems.productId')
     .lean();
 

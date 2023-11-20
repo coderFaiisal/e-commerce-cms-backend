@@ -14,9 +14,9 @@ router.post(
   ProductController.createProduct,
 );
 
-router.get('/', ProductController.getAllProducts);
+router.get('/:storeId', ProductController.getAllProducts);
 
-router.get('/:id', ProductController.getSingleProduct);
+router.get('/single-product/:id', ProductController.getSingleProduct);
 
 router.patch(
   '/:id',

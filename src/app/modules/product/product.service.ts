@@ -36,6 +36,7 @@ const createProduct = async (productData: IProduct): Promise<IProduct> => {
 };
 
 const getAllProducts = async (
+  storeId: string,
   filters: IProductFilter,
   paginationOptions: IPaginationOptions,
 ): Promise<IGenericResponse<IProduct[]>> => {
@@ -76,7 +77,7 @@ const getAllProducts = async (
 
   //conditional query
   const whereConditions =
-    andConditions.length > 0 ? { $and: andConditions } : {};
+    andConditions.length > 0 ? { $and: andConditions, storeId } : { storeId };
 
   const result = await Product.find(whereConditions)
     .populate('categoryId')

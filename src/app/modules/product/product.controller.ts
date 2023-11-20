@@ -22,10 +22,12 @@ const createProduct = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllProducts = catchAsync(async (req: Request, res: Response) => {
+  const { storeId } = req.params;
   const filters = pick(req.query, productFilterableFields);
   const paginationOptions = pick(req.query, paginationFields);
 
   const result = await ProductService.getAllProducts(
+    storeId,
     filters,
     paginationOptions,
   );

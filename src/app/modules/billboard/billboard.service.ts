@@ -19,8 +19,10 @@ const createBillboard = async (
   return result;
 };
 
-const getAllBillboards = async (): Promise<IBillboard[] | null> => {
-  const result = await Billboard.find({}).populate('storeId').lean();
+const getAllBillboards = async (
+  storeId: string,
+): Promise<IBillboard[] | null> => {
+  const result = await Billboard.find({ storeId }).populate('storeId').lean();
 
   return result;
 };

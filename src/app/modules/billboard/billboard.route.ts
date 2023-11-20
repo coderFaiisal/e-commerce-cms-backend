@@ -15,13 +15,13 @@ router.post(
 );
 
 router.get(
-  '/',
+  '/:storeId',
   auth(ENUM_USER_ROLE.ADMIN),
   BillboardController.getAllBillboards,
 );
 
 router.get(
-  '/:id',
+  '/single-billboard/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   BillboardController.getSingleBillboard,
 );

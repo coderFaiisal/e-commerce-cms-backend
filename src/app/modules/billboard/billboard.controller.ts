@@ -19,7 +19,8 @@ const createBillboard = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllBillboards = catchAsync(async (req: Request, res: Response) => {
-  const result = await BillboardService.getAllBillboards();
+  const { storeId } = req.params;
+  const result = await BillboardService.getAllBillboards(storeId);
 
   sendResponse<IBillboard[]>(res, {
     statusCode: httpStatus.OK,

@@ -79,6 +79,9 @@ const getAllProducts = async (
     andConditions.length > 0 ? { $and: andConditions } : {};
 
   const result = await Product.find(whereConditions)
+    .populate('categoryId')
+    .populate('caratId')
+    .populate('materialId')
     .sort(sortConditions)
     .skip(skip)
     .limit(limit);

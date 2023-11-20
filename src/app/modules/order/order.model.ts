@@ -5,7 +5,6 @@ const orderSchema = new Schema<IOrder, OrderModel>(
   {
     userEmail: { type: String, required: true },
     storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
-
     orderItems: [
       {
         productId: {
@@ -16,7 +15,6 @@ const orderSchema = new Schema<IOrder, OrderModel>(
         quantity: { type: Number, required: true },
       },
     ],
-
     isPaid: { type: Boolean, required: true },
     orderStatus: { type: String, default: 'pending' },
     totalCost: { type: Number, required: true },

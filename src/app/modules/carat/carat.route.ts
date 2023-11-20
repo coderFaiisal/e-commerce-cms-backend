@@ -14,9 +14,17 @@ router.post(
   CaratController.createCarat,
 );
 
-router.get('/', auth(ENUM_USER_ROLE.ADMIN), CaratController.getAllCarats);
+router.get(
+  '/:storeId',
+  auth(ENUM_USER_ROLE.ADMIN),
+  CaratController.getAllCarats,
+);
 
-router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), CaratController.getSingleCarat);
+router.get(
+  '/single-carat/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  CaratController.getSingleCarat,
+);
 
 router.patch(
   '/:id',

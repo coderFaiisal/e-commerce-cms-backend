@@ -15,8 +15,8 @@ const createCarat = async (caratData: ICarat): Promise<ICarat | null> => {
   return result;
 };
 
-const getAllCarats = async (): Promise<ICarat[] | null> => {
-  const result = await Carat.find({})
+const getAllCarats = async (storeId: string): Promise<ICarat[] | null> => {
+  const result = await Carat.find({ storeId })
     .populate('storeId')
     .populate('categoryId')
     .lean();

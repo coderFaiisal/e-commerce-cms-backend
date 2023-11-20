@@ -19,7 +19,9 @@ const createCarat = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllCarats = catchAsync(async (req: Request, res: Response) => {
-  const result = await CaratService.getAllCarats();
+  const { storeId } = req.params;
+
+  const result = await CaratService.getAllCarats(storeId);
 
   sendResponse<ICarat[]>(res, {
     statusCode: httpStatus.OK,

@@ -1,8 +1,6 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
-import { Carat } from '../carat/carat.model';
-import { Material } from '../material/material.model';
 import { Product } from '../product/product.model';
 import { ICategory } from './category.interface';
 import { Category } from './category.model';
@@ -79,10 +77,6 @@ const deleteCategory = async (
     if (!category) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Category does not found');
     }
-
-    await Carat.deleteMany({ categoryId: category._id }).session(session);
-
-    await Material.deleteMany({ categoryId: category._id }).session(session);
 
     await Product.deleteMany({ categoryId: category._id }).session(session);
 

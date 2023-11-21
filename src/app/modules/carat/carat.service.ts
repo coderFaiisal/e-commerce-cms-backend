@@ -16,19 +16,13 @@ const createCarat = async (caratData: ICarat): Promise<ICarat | null> => {
 };
 
 const getAllCarats = async (storeId: string): Promise<ICarat[] | null> => {
-  const result = await Carat.find({ storeId })
-    .populate('storeId')
-    .populate('categoryId')
-    .lean();
+  const result = await Carat.find({ storeId }).populate('storeId').lean();
 
   return result;
 };
 
 const getSingleCarat = async (caratId: string): Promise<ICarat | null> => {
-  const result = await Carat.findById(caratId)
-    .populate('storeId')
-    .populate('categoryId')
-    .lean();
+  const result = await Carat.findById(caratId).populate('storeId').lean();
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Carat does not found');

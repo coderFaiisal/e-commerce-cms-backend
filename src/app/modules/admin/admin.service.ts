@@ -83,7 +83,7 @@ const signInAdmin = async (payload: ISignIn): Promise<ISignInResponse> => {
 const changePassword = async (
   admin: JwtPayload | null,
   payload: IChangePassword,
-): Promise<void> => {
+): Promise<Record<string, boolean>> => {
   const { oldPassword, newPassword } = payload;
 
   //check admin
@@ -108,6 +108,10 @@ const changePassword = async (
 
   // updating using save()
   isAdminExist.save();
+
+  return {
+    modified: true,
+  };
 };
 
 const refreshToken = async (

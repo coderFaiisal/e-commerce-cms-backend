@@ -51,7 +51,7 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
 
   const result = await AdminService.changePassword(admin, passwordData);
 
-  sendResponse<void>(res, {
+  sendResponse<Record<string, boolean>>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Password changed successfully',

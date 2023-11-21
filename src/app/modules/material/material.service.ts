@@ -22,10 +22,7 @@ const createMaterial = async (
 const getAllMaterials = async (
   storeId: string,
 ): Promise<IMaterial[] | null> => {
-  const result = await Material.find({ storeId })
-    .populate('storeId')
-    .populate('categoryId')
-    .lean();
+  const result = await Material.find({ storeId }).populate('storeId').lean();
 
   return result;
 };
@@ -33,10 +30,7 @@ const getAllMaterials = async (
 const getSingleMaterial = async (
   materialId: string,
 ): Promise<IMaterial | null> => {
-  const result = await Material.findById(materialId)
-    .populate('storeId')
-    .populate('categoryId')
-    .lean();
+  const result = await Material.findById(materialId).populate('storeId').lean();
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Material does not found');
@@ -53,7 +47,6 @@ const updateMaterial = async (
     new: true,
   })
     .populate('storeId')
-    .populate('categoryId')
     .lean();
 
   if (!result) {

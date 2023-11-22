@@ -7,7 +7,11 @@ import { UserValidation } from './user.validation';
 
 const router = express.Router();
 
-router.get('/', auth(ENUM_USER_ROLE.ADMIN), UserController.getAllUsers);
+router.get(
+  '/',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  UserController.getAllUsers,
+);
 
 router.get(
   '/my-profile',
@@ -15,7 +19,11 @@ router.get(
   UserController.getUserProfile,
 );
 
-router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), UserController.getSingleUser);
+router.get(
+  '/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  UserController.getSingleUser,
+);
 
 router.patch(
   '/my-profile',
@@ -24,6 +32,10 @@ router.patch(
   UserController.updateUserProfile,
 );
 
-router.delete('/:id', auth(ENUM_USER_ROLE.USER), UserController.deleteUser);
+router.delete(
+  '/:id',
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.SUPER_ADMIN),
+  UserController.deleteUser,
+);
 
 export const UserRoutes = router;

@@ -10,7 +10,7 @@ const router = express.Router();
 router.post(
   '/create-store',
   validateRequest(StoreValidation.createStoreZodSchema),
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   StoreController.createStore,
 );
 
@@ -26,15 +26,23 @@ router.get(
   StoreController.getAllStores,
 );
 
-router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), StoreController.getSingleStore);
+router.get(
+  '/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  StoreController.getSingleStore,
+);
 
 router.patch(
   '/:id',
   validateRequest(StoreValidation.updateStoreZodSchema),
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   StoreController.updateStore,
 );
 
-router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), StoreController.deleteStore);
+router.delete(
+  '/:id',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN),
+  StoreController.deleteStore,
+);
 
 export const StoreRoutes = router;

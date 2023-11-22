@@ -18,6 +18,7 @@ const orderSchema = new Schema<IOrder, OrderModel>(
     isPaid: { type: Boolean, required: true },
     orderStatus: { type: String, default: 'pending' },
     totalCost: { type: Number, required: true },
+    shippingCharge: { type: Number, required: true },
     paymentMethod: { type: String, required: true },
     contactInformation: {
       name: { type: String, required: true },

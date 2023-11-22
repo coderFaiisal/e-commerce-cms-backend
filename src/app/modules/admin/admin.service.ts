@@ -234,7 +234,16 @@ const updateAdminProfile = async (
   return result;
 };
 
-const deleteAdmin = async (adminId: string): Promise<IAdmin | null> => {
+const deleteAdmin = async (
+  adminId: string,
+  admin: JwtPayload | null,
+): Promise<IAdmin | null> => {
+  const isAdminExist = await Admin.findById(adminId).lean();
+
+  if (isAdminExist?.email === admin?.email) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'You can not delete yourself!');
+  }
+
   const result = await Admin.findByIdAndDelete(adminId).lean();
 
   return result;

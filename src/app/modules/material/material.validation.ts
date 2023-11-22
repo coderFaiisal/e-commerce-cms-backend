@@ -5,8 +5,8 @@ const createMaterialZodSchema = z.object({
     name: z.string({
       required_error: 'Name is required',
     }),
-    value: z.string({
-      required_error: 'Value is required',
+    caratId: z.string({
+      required_error: 'Carat id is required',
     }),
     storeId: z.string({
       required_error: 'Store id is required',
@@ -17,7 +17,7 @@ const createMaterialZodSchema = z.object({
 const updateMaterialZodSchema = z.object({
   body: z.object({
     name: z.string().optional(),
-    value: z.string().optional(),
+    caratId: z.string().optional(),
   }),
 });
 

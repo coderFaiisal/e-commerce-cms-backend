@@ -12,8 +12,9 @@ export type IOrder = {
     },
   ];
   isPaid: boolean;
-  orderStatus?: 'pending' | 'delivered';
+  orderStatus?: 'pending' | 'processing' | 'delivered';
   totalCost: number;
+  shippingCharge: number;
   paymentMethod: string;
   contactInformation: {
     name: string;

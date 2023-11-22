@@ -23,8 +23,21 @@ const createOrder = async (order: IOrder): Promise<IOrder> => {
           session,
         );
 
-        if (product && product.stockQuantity) {
+        if (
+          product &&
+          product.stockQuantity &&
+          product.stockQuantity > orderItem.quantity
+        ) {
           product.stockQuantity -= orderItem.quantity;
+
+          await product.save({ session });
+        } else {
+          throw new ApiError(httpStatus.BAD_REQUEST, 'Product stock out');
+        }
+
+        if (product?.stockQuantity < 1) {
+          product.isFeatured = false;
+          product.isArchived = true;
 
           await product.save({ session });
         }

@@ -25,6 +25,9 @@ const createOrderZodSchema = z.object({
     totalCost: z.number({
       required_error: 'Total cost is required',
     }),
+    shippingCharge: z.number({
+      required_error: 'Shipping charge is required',
+    }),
     paymentMethod: z.string({
       required_error: 'Payment method is required',
     }),

@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post(
   '/create-admin',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN),
   validateRequest(AdminValidation.createAdminZodSchema),
   AdminController.createAdmin,
 );
@@ -22,7 +22,7 @@ router.post(
 
 router.post(
   '/change-password',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   validateRequest(AdminValidation.changeAdminPasswordZodSchema),
   AdminController.changePassword,
 );
@@ -33,23 +33,35 @@ router.post(
   AdminController.refreshToken,
 );
 
-router.get('/', auth(ENUM_USER_ROLE.ADMIN), AdminController.getAllAdmins);
+router.get(
+  '/',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  AdminController.getAllAdmins,
+);
 
 router.get(
   '/my-profile',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   AdminController.getAdminProfile,
 );
 
-router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), AdminController.getSingleAdmin);
+router.get(
+  '/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  AdminController.getSingleAdmin,
+);
 
 router.patch(
   '/my-profile',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   validateRequest(AdminValidation.updateAdminZodSchema),
   AdminController.updateAdminProfile,
 );
 
-router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), AdminController.deleteAdmin);
+router.delete(
+  '/:id',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN),
+  AdminController.deleteAdmin,
+);
 
 export const AdminRoutes = router;

@@ -10,32 +10,32 @@ const router = express.Router();
 router.post(
   '/create-material',
   validateRequest(MaterialValidation.createMaterialZodSchema),
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   MaterialController.createMaterial,
 );
 
 router.get(
   '/:storeId',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   MaterialController.getAllMaterials,
 );
 
 router.get(
   '/single-material/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   MaterialController.getSingleMaterial,
 );
 
 router.patch(
   '/:id',
   validateRequest(MaterialValidation.updateMaterialZodSchema),
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   MaterialController.updateMaterial,
 );
 
 router.delete(
   '/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   MaterialController.deleteMaterial,
 );
 

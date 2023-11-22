@@ -10,29 +10,33 @@ const router = express.Router();
 router.post(
   '/create-carat',
   validateRequest(CaratValidation.createCaratZodSchema),
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   CaratController.createCarat,
 );
 
 router.get(
   '/:storeId',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   CaratController.getAllCarats,
 );
 
 router.get(
   '/single-carat/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   CaratController.getSingleCarat,
 );
 
 router.patch(
   '/:id',
   validateRequest(CaratValidation.updateCaratZodSchema),
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   CaratController.updateCarat,
 );
 
-router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), CaratController.deleteCarat);
+router.delete(
+  '/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  CaratController.deleteCarat,
+);
 
 export const CaratRoutes = router;

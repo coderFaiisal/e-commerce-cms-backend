@@ -133,9 +133,10 @@ const updateAdminProfile = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteAdmin = catchAsync(async (req: Request, res: Response) => {
+  const admin = req.user;
   const { id } = req.params;
 
-  const result = await AdminService.deleteAdmin(id);
+  const result = await AdminService.deleteAdmin(id, admin);
 
   sendResponse<IAdmin>(res, {
     statusCode: httpStatus.OK,

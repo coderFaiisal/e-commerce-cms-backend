@@ -8,7 +8,15 @@ import routes from './app/routes';
 const app: Application = express();
 
 //middlewares
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(
+  cors({
+    origin: [
+      'https://timeless-jewellery-admin.vercel.app',
+      'http://localhost:3000',
+    ],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));

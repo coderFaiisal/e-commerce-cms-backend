@@ -126,6 +126,14 @@ const updateProduct = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Product does not exist');
   }
 
+  if (updatedData?.stockQuantity) {
+    updatedData.stockQuantity += isProductExist?.stockQuantity;
+  }
+
+  if ((updatedData.stockQuantity as number) > 0) {
+    updatedData.status = 'stock';
+  }
+
   const result = await Product.findByIdAndUpdate(productId, updatedData, {
     new: true,
   })

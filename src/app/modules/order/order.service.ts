@@ -26,7 +26,7 @@ const createOrder = async (order: IOrder): Promise<IOrder> => {
         if (
           product &&
           product.stockQuantity &&
-          product.stockQuantity > orderItem.quantity
+          product.stockQuantity >= orderItem.quantity
         ) {
           product.stockQuantity -= orderItem.quantity;
 
@@ -38,6 +38,7 @@ const createOrder = async (order: IOrder): Promise<IOrder> => {
         if (product?.stockQuantity < 1) {
           product.isFeatured = false;
           product.isArchived = true;
+          product.status = 'stock out';
 
           await product.save({ session });
         }
@@ -131,19 +132,15 @@ const updateOrder = async (
     return result;
   }
 
-  if (user?.role === 'admin') {
-    const result = await Order.findByIdAndUpdate(orderId, updatedData, {
-      new: true,
-    });
+  const result = await Order.findByIdAndUpdate(orderId, updatedData, {
+    new: true,
+  });
 
-    if (!result) {
-      throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update order');
-    }
-
-    return result;
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update order');
   }
 
-  return null;
+  return result;
 };
 
 const deleteOrder = async (

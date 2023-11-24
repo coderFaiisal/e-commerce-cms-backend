@@ -115,18 +115,12 @@ const changePassword = async (
 };
 
 const refreshToken = async (
-  payload: string,
+  refreshToken: string,
 ): Promise<IRefreshTokenResponse> => {
-  let verifiedAdmin = null;
-
-  try {
-    verifiedAdmin = jwtHelper.verifyToken(
-      payload,
-      config.jwt.refresh_secret as Secret,
-    );
-  } catch (error) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid Refresh Token!');
-  }
+  const verifiedAdmin = jwtHelper.verifyToken(
+    refreshToken,
+    config.jwt.refresh_secret as Secret,
+  );
 
   const { email, role } = verifiedAdmin;
 

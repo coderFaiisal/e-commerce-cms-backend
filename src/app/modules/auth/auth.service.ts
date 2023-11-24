@@ -134,18 +134,12 @@ const changePassword = async (
 };
 
 const refreshToken = async (
-  payload: string,
+  refreshToken: string,
 ): Promise<IRefreshTokenResponse> => {
-  let verifiedUser = null;
-
-  try {
-    verifiedUser = jwtHelper.verifyToken(
-      payload,
-      config.jwt.refresh_secret as Secret,
-    );
-  } catch (error) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid Refresh Token');
-  }
+  const verifiedUser = jwtHelper.verifyToken(
+    refreshToken,
+    config.jwt.refresh_secret as Secret,
+  );
 
   const { email, role } = verifiedUser;
 

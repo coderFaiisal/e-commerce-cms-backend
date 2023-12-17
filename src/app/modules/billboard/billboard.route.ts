@@ -14,17 +14,9 @@ router.post(
   BillboardController.createBillboard,
 );
 
-router.get(
-  '/:storeId',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
-  BillboardController.getAllBillboards,
-);
+router.get('/:storeId', BillboardController.getAllBillboards);
 
-router.get(
-  '/single-billboard/:id',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
-  BillboardController.getSingleBillboard,
-);
+router.get('/single-billboard/:id', BillboardController.getSingleBillboard);
 
 router.patch(
   '/:id',

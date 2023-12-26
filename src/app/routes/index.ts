@@ -1,6 +1,7 @@
 import express from 'express';
 import { AdminRoutes } from '../modules/admin/admin.route';
 import { AuthRoutes } from '../modules/auth/auth.route';
+import { BannerRoutes } from '../modules/banner/banner.route';
 import { BillboardRoutes } from '../modules/billboard/billboard.route';
 import { CaratRoutes } from '../modules/carat/carat.route';
 import { CategoryRoutes } from '../modules/category/category.route';
@@ -29,6 +30,10 @@ const moduleRoutes = [
   {
     path: '/stores',
     route: StoreRoutes,
+  },
+  {
+    path: '/banners',
+    route: BannerRoutes,
   },
   {
     path: '/billboards',

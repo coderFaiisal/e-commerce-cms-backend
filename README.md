@@ -122,6 +122,16 @@ Update Store: "https://timeless-backend.vercel.app/api/v1/stores/:id" (PATCH) (A
 Delete Store: "https://timeless-backend.vercel.app/api/v1/stores/:id" (DELETE) (Super Admin)
 ```
 
+### Banner
+
+```ts
+Create Banner: "https://timeless-backend.vercel.app/api/v1/banners/create-banner" (POST) (Admin)
+Get All Banners: "https://timeless-backend.vercel.app/api/v1/banners/:storeId" (GET) (Admin)
+Get Single Banner: "https://timeless-backend.vercel.app/api/v1/banners/single-banner/:id" (GET) (Admin)
+Update Banner: "https://timeless-backend.vercel.app/api/v1/banners/:id" (PATCH) (Admin)
+Delete Banner: "https://timeless-backend.vercel.app/api/v1/banners/:id" (DELETE) (Super Admin)
+```
+
 ### Billboard
 
 ```ts

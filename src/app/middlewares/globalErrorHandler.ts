@@ -7,6 +7,7 @@ import { ZodError } from 'zod';
 import config from '../../config';
 import ApiError from '../../errors/ApiError';
 import handleCastError from '../../errors/handleCastError';
+import handleDuplicateError from '../../errors/handleDuplicateError';
 import handleValidationError from '../../errors/handleValidationError';
 import handleZodError from '../../errors/handleZodError';
 import { IGenericErrorMessage } from '../../interfaces/error';
@@ -42,38 +43,40 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     message = simplifiedError?.message;
     errorMessages = simplifiedError?.errorMessages;
   }
-
+  //check duplicate error
+  else if (error?.code === 11000) {
+    const simplifiedError = handleDuplicateError(error);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorMessages = simplifiedError?.errorMessages;
+  }
   // check custom ApiError
   else if (error instanceof ApiError) {
     statusCode = error?.statusCode;
     message = error?.message;
-    errorMessages = error?.message
-      ? [
-          {
-            path: '',
-            message: error?.message,
-          },
-        ]
-      : [];
+    errorMessages = [
+      {
+        path: '',
+        message: error?.message,
+      },
+    ];
   }
   //check express dafault error
   else if (error instanceof Error) {
     message = error?.message;
-    errorMessages = error?.message
-      ? [
-          {
-            path: '',
-            message: error?.message,
-          },
-        ]
-      : [];
+    errorMessages = [
+      {
+        path: '',
+        message: error?.message,
+      },
+    ];
   }
 
   res.status(statusCode).json({
     success: false,
     message,
     errorMessages,
-    stack: config.env !== 'production' ? error?.stack : undefined,
+    stack: config.env !== 'production' ? error?.stack : null,
   });
 };
 

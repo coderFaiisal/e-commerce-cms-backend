@@ -1,5 +1,3 @@
-Ch
-
 ## Full Stack E-Commerce & Dashboard Backend
 
 This is a repository for a Full Stack E-Commerce & Dashboard Backend.

@@ -15,15 +15,15 @@ const auth =
         throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
       }
 
-      const varifiedUser = jwtHelper.verifyToken(
+      const verifiedUser = jwtHelper.verifyToken(
         token,
         config.jwt.secret as Secret,
       );
 
       //set user information in req
-      req.user = varifiedUser;
+      req.user = verifiedUser;
 
-      if (requiredRoles.length && !requiredRoles.includes(varifiedUser.role)) {
+      if (requiredRoles.length && !requiredRoles.includes(verifiedUser.role)) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized Access!');
       }
 

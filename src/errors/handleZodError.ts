@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import { ZodError, ZodIssue } from 'zod';
-import { IGenericErrorResponse } from '../interfaces/common';
-import { IGenericErrorMessage } from '../interfaces/error';
+import { IGenericErrorResponse } from '../types/common';
+import { IGenericErrorMessage } from '../types/error';
 
 const handleZodError = (error: ZodError): IGenericErrorResponse => {
   const errors: IGenericErrorMessage[] = error?.issues?.map(

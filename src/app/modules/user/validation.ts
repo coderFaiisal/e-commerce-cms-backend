@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const createAdminZodSchema = z.object({
+const signUpSchema = z.object({
   body: z.object({
     name: z.string({
       required_error: 'Name is required',
@@ -12,19 +12,14 @@ const createAdminZodSchema = z.object({
       required_error: 'Password is required',
     }),
     role: z.string().optional(),
+    phoneNumber: z.string().optional(),
     image: z.string().optional(),
+    gender: z.string().optional(),
+    dob: z.string().optional(),
   }),
 });
 
-const updateAdminZodSchema = z.object({
-  body: z.object({
-    name: z.string().optional(),
-    password: z.string().optional(),
-    image: z.string().optional(),
-  }),
-});
-
-const signInAdinZodSchema = z.object({
+const signInSchema = z.object({
   body: z.object({
     email: z.string({
       required_error: 'Email is required',
@@ -35,18 +30,18 @@ const signInAdinZodSchema = z.object({
   }),
 });
 
-const changeAdminPasswordZodSchema = z.object({
+const changePasswordSchema = z.object({
   body: z.object({
     oldPassword: z.string({
       required_error: 'Old password is required',
     }),
     newPassword: z.string({
-      required_error: 'New password required',
+      required_error: 'New password is required',
     }),
   }),
 });
 
-const refreshTokenZodSchema = z.object({
+const refreshTokenSchema = z.object({
   cookies: z.object({
     refreshToken: z.string({
       required_error: 'Refresh token is required',
@@ -54,10 +49,18 @@ const refreshTokenZodSchema = z.object({
   }),
 });
 
-export const AdminValidation = {
-  createAdminZodSchema,
-  updateAdminZodSchema,
-  signInAdinZodSchema,
-  changeAdminPasswordZodSchema,
-  refreshTokenZodSchema,
+const updateSchema = z.object({
+  body: z.object({
+    name: z.string().optional(),
+    password: z.string().optional(),
+    image: z.string().optional(),
+  }),
+});
+
+export const AuthValidation = {
+  signUpSchema,
+  signInSchema,
+  updateSchema,
+  changePasswordSchema,
+  refreshTokenSchema,
 };

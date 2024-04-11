@@ -69,9 +69,9 @@ const deleteCategory = async (
 ): Promise<ICategory | null> => {
   const session = await mongoose.startSession();
 
-  session.startTransaction();
-
   try {
+    session.startTransaction();
+
     const category = await Category.findById(categoryId).session(session);
 
     if (!category) {
@@ -85,13 +85,14 @@ const deleteCategory = async (
 
     await session.commitTransaction();
 
+    session.endSession();
+
     return result;
   } catch (error) {
     await session.abortTransaction();
+    session.endSession();
 
     throw error;
-  } finally {
-    session.endSession();
   }
 };
 

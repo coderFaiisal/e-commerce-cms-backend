@@ -1,4 +1,4 @@
-export type IGenericErrorMessage = {
+export type TGenericErrorMessage = {
   path: string | number;
   message: string;
 };

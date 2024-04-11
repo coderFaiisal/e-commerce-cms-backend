@@ -1,17 +1,14 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import bcrypt from 'bcrypt';
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 import config from '../../../config';
-import { IUser, UserModel } from './user.interface';
+import { TProfile, TUser, UserModel } from './type';
 
-const userSchema = new Schema<IUser, UserModel>(
+const userSchema = new Schema<TUser, UserModel>(
   {
-    name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: 0 },
-    role: { type: String, default: 'user' },
-    phoneNumber: { type: String },
-    image: { type: String },
+    role: { type: String, required: true },
   },
   {
     timestamps: true,
@@ -20,7 +17,7 @@ const userSchema = new Schema<IUser, UserModel>(
 
 userSchema.statics.isUserExist = async function (
   email: string,
-): Promise<IUser | null> {
+): Promise<TUser | null> {
   return await User.findOne({ email }).select('+password').lean();
 };
 
@@ -40,4 +37,22 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-export const User = model<IUser, UserModel>('User', userSchema);
+const User = model<TUser, UserModel>('User', userSchema);
+
+const profileSchema = new Schema<TProfile>(
+  {
+    name: { type: String, required: true },
+    image: { type: String },
+    phoneNumber: { type: String },
+    gender: { type: String },
+    dob: { type: String },
+    userId: { type: Types.ObjectId, ref: 'User', required: true },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+const Profile = model<TProfile>('Profile', profileSchema);
+
+export { Profile, User };

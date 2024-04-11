@@ -1,6 +1,4 @@
 import express from 'express';
-import { AdminRoutes } from '../modules/admin/admin.route';
-import { AuthRoutes } from '../modules/auth/auth.route';
 import { BannerRoutes } from '../modules/banner/banner.route';
 import { BillboardRoutes } from '../modules/billboard/billboard.route';
 import { CaratRoutes } from '../modules/carat/carat.route';
@@ -10,22 +8,14 @@ import { OrderRoutes } from '../modules/order/order.route';
 import { ProductRoutes } from '../modules/product/product.route';
 import { productReviewRoutes } from '../modules/productReview/productReview.route';
 import { StoreRoutes } from '../modules/store/store.route';
-import { UserRoutes } from '../modules/user/user.route';
+import { UserRoutes } from '../modules/user/route';
 
 const router = express.Router();
 
 const moduleRoutes = [
   {
-    path: '/auth',
-    route: AuthRoutes,
-  },
-  {
     path: '/users',
     route: UserRoutes,
-  },
-  {
-    path: '/admins',
-    route: AdminRoutes,
   },
   {
     path: '/stores',

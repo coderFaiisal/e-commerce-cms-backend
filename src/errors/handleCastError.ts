@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
-import { IGenericErrorResponse } from '../interfaces/common';
-import { IGenericErrorMessage } from '../interfaces/error';
+import { IGenericErrorResponse } from '../types/common';
+import { IGenericErrorMessage } from '../types/error';
 
 const handleCastError = (
   error: mongoose.Error.CastError,

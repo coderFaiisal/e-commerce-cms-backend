@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { IGenericErrorResponse } from '../interfaces/common';
-import { IGenericErrorMessage } from '../interfaces/error';
+import { IGenericErrorResponse } from '../types/common';
+import { IGenericErrorMessage } from '../types/error';
 
 const handleDuplicateError = (err: any): IGenericErrorResponse => {
   // Extract value within double quotes using regex

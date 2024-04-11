@@ -10,7 +10,7 @@ import handleCastError from '../../errors/handleCastError';
 import handleDuplicateError from '../../errors/handleDuplicateError';
 import handleValidationError from '../../errors/handleValidationError';
 import handleZodError from '../../errors/handleZodError';
-import { IGenericErrorMessage } from '../../interfaces/error';
+import { IGenericErrorMessage } from '../../types/error';
 
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   //checking is server on development or production

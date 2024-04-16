@@ -14,5 +14,10 @@ export default {
 
     refresh_secret: process.env.JWT_REFRESH_SECRET,
     refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN,
+
+    reset_pass_expires_in: process.env.JWT_RESET_PASS_EXPIRES_IN,
   },
+  resetlink: process.env.RESETLINK,
+  user_email: process.env.USER_EMAIL,
+  user_pass: process.env.USER_PASS,
 };

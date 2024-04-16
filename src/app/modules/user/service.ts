@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
 import { jwtHelper } from '../../../helpers/jwtHelper';
+import { sendEmail } from '../../../shared/sendEmail';
 import { Profile, User } from './model';
 import {
   TAccessTokenResponse,
@@ -240,7 +241,47 @@ const changePassword = async (
   return true;
 };
 
-const forgotPassword = async (): Promise<void> => {};
+const forgotPassword = async (payload: string): Promise<boolean> => {
+  const user = await User.findOne(
+    { email: payload },
+    { email: 1, password: 1 },
+  ).lean();
+
+  if (!user) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "User doesn't exist!");
+  }
+
+  const passwordResetToken = jwtHelper.createResetToken(
+    {
+      email: user.email,
+      role: user.role,
+    },
+    config.jwt.secret as Secret,
+    config.jwt.reset_pass_expires_in as string,
+  );
+
+  const passwordResetLink: string =
+    config.resetlink + `token=${passwordResetToken}`;
+
+  await sendEmail(
+    user.email,
+    'RESET YOUR PASSWORD',
+    `
+ <html>
+ <head><title>Reset Your Account Password.</title></head>
+ <body>
+ <h1>Hi, ${user.email}</h1>
+ <div>
+     <p>Your password reset link is here: <a href=${passwordResetLink}>Click here...</a></p>
+     <p>Thank you</p>
+  </div>
+ </body>
+ </html>
+ `,
+  );
+
+  return true;
+};
 
 const resetPassword = async (): Promise<void> => {};
 

@@ -90,12 +90,14 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
 });
 
 const forgotPassword = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserService.forgotPassword();
+  const userEmail = req.body.email;
+
+  const result = await UserService.forgotPassword(userEmail);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: '',
+    message: 'Please, check your email.',
     data: result,
   });
 });

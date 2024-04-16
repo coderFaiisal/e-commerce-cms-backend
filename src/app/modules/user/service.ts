@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
 import { JwtPayload, Secret } from 'jsonwebtoken';
 import mongoose from 'mongoose';
@@ -5,6 +6,8 @@ import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
 import { jwtHelper } from '../../../helpers/jwtHelper';
 import { sendEmail } from '../../../shared/sendEmail';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { UserSearchableFields } from './constant';
 import { Profile, User } from './model';
 import {
   TAccessTokenResponse,
@@ -283,34 +286,108 @@ const forgotPassword = async (payload: string): Promise<boolean> => {
   return true;
 };
 
-const resetPassword = async (): Promise<void> => {};
+const resetPassword = async (
+  token: string,
+  payload: { email: string; newPassword: string },
+): Promise<boolean> => {
+  const { email, newPassword } = payload;
 
-const getAllUsers = async () => {
-  const result = await User.find({}).lean();
+  const user = await User.findOne({ email }, { email: 1 });
 
-  return result;
-};
-
-const getAllStoreOwners = async () => {
-  const result = await User.find({}).lean();
-
-  return result;
-};
-
-const getAllAdmins = async () => {
-  const result = await User.find({}).lean();
-
-  return result;
-};
-
-const getProfile = async (admin: JwtPayload | null) => {
-  const result = await User.findOne({ email: admin?.email }).lean();
-
-  if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Profile doesn't found");
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't found!");
   }
 
-  return result;
+  jwtHelper.verifyToken(token, config.jwt.secret as Secret);
+
+  const password = await bcrypt.hash(
+    newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  await User.updateOne({ email }, { password });
+
+  return true;
+};
+
+const getAllUsers = async (query: Record<string, unknown>) => {
+  const userQuery = new QueryBuilder(User.find({ role: 'user' }), query)
+    .search(UserSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await userQuery.modelQuery;
+  const { page, limit, total } = await userQuery.countTotal();
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  };
+};
+
+const getAllStoreOwners = async (query: Record<string, unknown>) => {
+  const storeOwnerQuery = new QueryBuilder(
+    User.find({ role: 'store-owner' }),
+    query,
+  )
+    .search(UserSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await storeOwnerQuery.modelQuery;
+  const { page, limit, total } = await storeOwnerQuery.countTotal();
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  };
+};
+
+const getAllAdmins = async (query: Record<string, unknown>) => {
+  const adminQuery = new QueryBuilder(User.find({ role: 'admin' }), query)
+    .search(UserSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await adminQuery.modelQuery;
+  const { page, limit, total } = await adminQuery.countTotal();
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  };
+};
+
+const getProfile = async (user: JwtPayload | null) => {
+  const isUserExist = await User.findOne({ email: user?.email }, { _id: 1 });
+
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't found");
+  }
+
+  const profile = await Profile.findOne({ userId: isUserExist._id }).populate(
+    'userId',
+  );
+
+  return profile;
 };
 
 const getSingleUser = async (userId: string) => {
@@ -326,11 +403,11 @@ const getSingleUser = async (userId: string) => {
 const updateProfile = async (
   user: JwtPayload | null,
   payload: Partial<TProfile>,
-): Promise<Partial<TProfile> | null> => {
-  const isExist = await User.findOne({ email: user?.email });
+): Promise<boolean> => {
+  const isUserExist = await User.findOne({ email: user?.email }).lean();
 
-  if (!isExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist");
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
   }
 
   const result = await Profile.findOneAndUpdate(
@@ -339,17 +416,33 @@ const updateProfile = async (
     { new: true },
   );
 
-  return result;
+  console.log(result);
+
+  return true;
 };
 
-const deleteAccount = async (id: string): Promise<boolean> => {
-  const isExist = await User.findById(id).lean();
+const deleteAccount = async (userId: string): Promise<boolean> => {
+  const isUserExist = await User.findById(userId, { _id: 1 }).lean();
 
-  if (!isExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist");
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
   }
 
-  await User.findByIdAndDelete(id);
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    await User.findByIdAndDelete(userId).session(session);
+
+    await Profile.findOneAndDelete({ userId }).session(session);
+
+    await session.commitTransaction();
+  } catch (error) {
+    await session.abortTransaction();
+  } finally {
+    session.endSession();
+  }
 
   return true;
 };

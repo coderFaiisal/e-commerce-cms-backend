@@ -3,34 +3,49 @@ import { UserController } from './controller';
 
 const router = express.Router();
 
-router.post('/sign-in', UserController.signIn);
+const {
+  signIn,
+  signUp,
+  createAdmin,
+  accessToken,
+  changePassword,
+  forgotPassword,
+  resetPassword,
+  getAllUsers,
+  getAllStoreOwners,
+  getAllAdmins,
+  getProfile,
+  getSingleUser,
+  updateProfile,
+  deleteAccount,
+} = UserController;
 
-router.post('/sign-up', UserController.signUp);
+router.post('/sign-in', signIn);
 
-router.post('/create-admin', UserController.createAdmin);
+router.post('/sign-up', signUp);
 
-router.post('/access-token', UserController.accessToken);
+router.post('/create-admin', createAdmin);
 
-router.post('/change-password', UserController.changePassword);
+router.post('/access-token', accessToken);
 
-//! Work from here
+router.post('/change-password', changePassword);
 
-router.post('/forgot-password', UserController.forgotPassword);
+router.post('/forgot-password', forgotPassword);
 
-router.post('/reset-password', UserController.resetPassword);
+router.post('/reset-password', resetPassword);
 
-router.get('/all-users', UserController.getAllUsers);
+router.get('/all-users', getAllUsers);
 
-router.get('/all-store-owners', UserController.getAllStoreOwners);
+router.get('/all-store-owners', getAllStoreOwners);
 
-router.get('/all-admins', UserController.getAllAdmins);
+router.get('/all-admins', getAllAdmins);
 
-router.get('/my-profile', UserController.getProfile);
+router.get('/my-profile', getProfile);
 
-router.get('/:id', UserController.getSingleUser);
+router.get('/:id', getSingleUser);
 
-router.patch('/my-profile', UserController.updateProfile);
+router.patch('/my-profile', updateProfile);
 
-router.delete('/:id', UserController.deleteAccount);
+router.delete('/:id', deleteAccount);
 
 export const UserRoutes = router;

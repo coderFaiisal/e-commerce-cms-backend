@@ -103,46 +103,59 @@ const forgotPassword = catchAsync(async (req: Request, res: Response) => {
 });
 
 const resetPassword = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserService.resetPassword();
+  const token = req.headers.authorization || '';
+
+  const data = req.body;
+
+  const result = await UserService.resetPassword(token, data);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: '',
+    message: 'Account recovered!',
     data: result,
   });
 });
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserService.getAllUsers();
+  const query = req.query;
+
+  const result = await UserService.getAllUsers(query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Users retrieved successfully.',
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 
 const getAllStoreOwners = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserService.getAllStoreOwners();
+  const query = req.query;
+
+  const result = await UserService.getAllStoreOwners(query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Store owners retrieved successfully.',
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 
 const getAllAdmins = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserService.getAllAdmins();
+  const query = req.query;
+
+  const result = await UserService.getAllAdmins(query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Admins retrieved successfully.',
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 

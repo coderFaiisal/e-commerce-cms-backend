@@ -3,7 +3,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import ApiError from '../../../errors/ApiError';
 import { IProduct, IProductReview } from '../product/product.interface';
 import { Product } from '../product/product.model';
-import { User } from '../user/user.model';
+import { User } from '../user/model';
 
 const createProductReview = async (
   productId: string,
@@ -23,7 +23,6 @@ const createProductReview = async (
   }
 
   const review = {
-    userName: isUserExist?.name,
     userEmail: isUserExist?.email,
     review: reviewData?.review,
     rating: reviewData?.rating || null,

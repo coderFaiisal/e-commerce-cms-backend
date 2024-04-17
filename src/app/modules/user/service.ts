@@ -70,9 +70,7 @@ const signUp = async (payload: TSignUp): Promise<TSignUpResponse> => {
     payload.role = 'user';
   }
 
-  const isUserExist = await User.findOne({
-    email: payload.email,
-  }).lean();
+  const isUserExist = await User.isUserExist(payload.email);
 
   if (isUserExist) {
     throw new ApiError(httpStatus.CONFLICT, 'User already exist!');
@@ -142,7 +140,7 @@ const signUp = async (payload: TSignUp): Promise<TSignUpResponse> => {
 
 const createAdmin = async (payload: TSignUp): Promise<string> => {
   if (!payload.role) {
-    payload.role = 'admin';
+    payload.role = 'super-admin';
   }
 
   const isExist = await User.isUserExist(payload.email);
@@ -200,7 +198,7 @@ const accessToken = async (
   const isUserExist = await User.isUserExist(email);
 
   if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
+    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist");
   }
 
   const accessToken = jwtHelper.createToken(
@@ -245,13 +243,19 @@ const changePassword = async (
 };
 
 const forgotPassword = async (payload: string): Promise<boolean> => {
-  const user = await User.findOne(
-    { email: payload },
-    { email: 1, password: 1 },
-  ).lean();
+  const user = await User.findOne({ email: payload }).lean();
 
   if (!user) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User doesn't exist!");
+  }
+
+  const profile = await Profile.findOne(
+    { userId: user._id },
+    { name: 1 },
+  ).lean();
+
+  if (!profile) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Profile doesn't exist!");
   }
 
   const passwordResetToken = jwtHelper.createResetToken(
@@ -270,17 +274,86 @@ const forgotPassword = async (payload: string): Promise<boolean> => {
     user.email,
     'RESET YOUR PASSWORD',
     `
- <html>
- <head><title>Reset Your Account Password.</title></head>
- <body>
- <h1>Hi, ${user.email}</h1>
- <div>
-     <p>Your password reset link is here: <a href=${passwordResetLink}>Click here...</a></p>
-     <p>Thank you</p>
-  </div>
- </body>
- </html>
- `,
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Password Reset Link</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #050315;
+                margin: 0;
+                padding: 0;
+                line-height: 1.6;
+            }
+            .container {
+                max-width: 600px;
+                margin: 20px auto;
+                background-color: #fff;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+            .header {
+                background-color: #007bff;
+                color: #fff;
+                padding: 20px;
+                text-align: center;
+            }
+            .content {
+                padding: 30px;
+              min-height: 400px;
+            }
+    
+            h1 {
+                color: #fff;
+              font-size: 25px;
+                margin-top: 0;
+            }
+    
+            p {
+                color: #000000;
+            }
+    
+            .button-style {
+                display: inline-block;
+                background-color: #007bff;
+                color: #fff;
+              font-size: 13px;
+                text-decoration: none;
+                padding: 2px 6px;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+            }
+            .button-style:hover {
+                background-color: #0056b3;
+            }
+            .footer {
+                background-color: #eaeaea;
+                color: #fff;
+                text-align: center;
+                padding: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Password Reset</h1>
+            </div>
+            <div class="content">
+                <p>Hello, ${profile.name}</p>
+                <p>Your password reset link is here: <a class="button-style" href=${passwordResetLink}>Click here...</a></p>
+            </div>
+            <div class="footer">
+                <p>&copy; 2024 E-commerce CMS. All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    
+    `,
   );
 
   return true;
@@ -288,9 +361,14 @@ const forgotPassword = async (payload: string): Promise<boolean> => {
 
 const resetPassword = async (
   token: string,
-  payload: { email: string; newPassword: string },
+  payload: { newPassword: string },
 ): Promise<boolean> => {
-  const { email, newPassword } = payload;
+  const verifiedUser = jwtHelper.verifyToken(
+    token,
+    config.jwt.secret as Secret,
+  );
+
+  const { email } = verifiedUser;
 
   const user = await User.findOne({ email }, { email: 1 });
 
@@ -298,10 +376,8 @@ const resetPassword = async (
     throw new ApiError(httpStatus.NOT_FOUND, "User doesn't found!");
   }
 
-  jwtHelper.verifyToken(token, config.jwt.secret as Secret);
-
   const password = await bcrypt.hash(
-    newPassword,
+    payload.newPassword,
     Number(config.bcrypt_salt_rounds),
   );
 
@@ -380,7 +456,7 @@ const getProfile = async (user: JwtPayload | null) => {
   const isUserExist = await User.findOne({ email: user?.email }, { _id: 1 });
 
   if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't found");
+    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't found!");
   }
 
   const profile = await Profile.findOne({ userId: isUserExist._id }).populate(
@@ -404,19 +480,20 @@ const updateProfile = async (
   user: JwtPayload | null,
   payload: Partial<TProfile>,
 ): Promise<boolean> => {
-  const isUserExist = await User.findOne({ email: user?.email }).lean();
+  const isUserExist = await User.findOne(
+    { email: user?.email },
+    { _id: 1 },
+  ).lean();
 
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
   }
 
-  const result = await Profile.findOneAndUpdate(
-    { email: user?.email },
-    payload,
-    { new: true },
-  );
+  const result = await Profile.updateOne({ userId: isUserExist?._id }, payload);
 
-  console.log(result);
+  if (result.modifiedCount === 0) {
+    throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update!');
+  }
 
   return true;
 };

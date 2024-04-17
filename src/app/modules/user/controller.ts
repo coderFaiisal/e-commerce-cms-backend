@@ -8,6 +8,7 @@ import { TAccessTokenResponse, TSignInResponse, TSignUpResponse } from './type';
 
 const signIn = catchAsync(async (req: Request, res: Response) => {
   const { ...signInData } = req.body;
+
   const result = await UserService.signIn(signInData);
 
   const { refreshToken, ...others } = result;

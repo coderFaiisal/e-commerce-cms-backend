@@ -7,7 +7,7 @@ import { TProfile, TUser, UserModel } from './type';
 const userSchema = new Schema<TUser, UserModel>(
   {
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true, select: 0 },
+    password: { type: String, required: true },
     role: { type: String, required: true },
   },
   {

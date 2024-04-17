@@ -1,6 +1,4 @@
 import express from 'express';
-import { ENUM_USER_ROLE } from '../../../enums/user';
-import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { MaterialController } from './material.controller';
 import { MaterialValidation } from './material.validation';
@@ -10,33 +8,19 @@ const router = express.Router();
 router.post(
   '/create-material',
   validateRequest(MaterialValidation.createMaterialZodSchema),
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   MaterialController.createMaterial,
 );
 
-router.get(
-  '/:storeId',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
-  MaterialController.getAllMaterials,
-);
+router.get('/:storeId', MaterialController.getAllMaterials);
 
-router.get(
-  '/single-material/:id',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
-  MaterialController.getSingleMaterial,
-);
+router.get('/single-material/:id', MaterialController.getSingleMaterial);
 
 router.patch(
   '/:id',
   validateRequest(MaterialValidation.updateMaterialZodSchema),
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   MaterialController.updateMaterial,
 );
 
-router.delete(
-  '/:id',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
-  MaterialController.deleteMaterial,
-);
+router.delete('/:id', MaterialController.deleteMaterial);
 
 export const MaterialRoutes = router;

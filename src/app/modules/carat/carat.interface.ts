@@ -1,5 +1,5 @@
 import { Model, Types } from 'mongoose';
-import { IStore } from '../store/store.interface';
+import { IStore } from '../store/type';
 
 export type ICarat = {
   name: string;

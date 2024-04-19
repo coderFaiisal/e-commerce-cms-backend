@@ -1,5 +1,4 @@
 import express from 'express';
-import { BannerRoutes } from '../modules/banner/banner.route';
 import { BillboardRoutes } from '../modules/billboard/billboard.route';
 import { CaratRoutes } from '../modules/carat/carat.route';
 import { CategoryRoutes } from '../modules/category/category.route';
@@ -7,7 +6,8 @@ import { MaterialRoutes } from '../modules/material/material.route';
 import { OrderRoutes } from '../modules/order/order.route';
 import { ProductRoutes } from '../modules/product/product.route';
 import { productReviewRoutes } from '../modules/productReview/productReview.route';
-import { StoreRoutes } from '../modules/store/store.route';
+import { StoreRoutes } from '../modules/store/route';
+import { SubscriptionRoutes } from '../modules/subscription/route';
 import { UserRoutes } from '../modules/user/route';
 
 const router = express.Router();
@@ -22,8 +22,8 @@ const moduleRoutes = [
     route: StoreRoutes,
   },
   {
-    path: '/banners',
-    route: BannerRoutes,
+    path: '/subscriptions',
+    route: SubscriptionRoutes,
   },
   {
     path: '/billboards',

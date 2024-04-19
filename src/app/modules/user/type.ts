@@ -49,6 +49,14 @@ export type TUser = {
   role?: roles;
 };
 
+export type UserModel = {
+  isUserExist(email: string): Promise<TUser | null>;
+  isPasswordMatched(
+    givenPassword: string,
+    savedPassword: string,
+  ): Promise<boolean>;
+} & Model<TUser>;
+
 export type TProfile = {
   name: string;
   image?: string;
@@ -58,10 +66,4 @@ export type TProfile = {
   userId: Types.ObjectId | TUser;
 };
 
-export type UserModel = {
-  isUserExist(email: string): Promise<TUser | null>;
-  isPasswordMatched(
-    givenPassword: string,
-    savedPassword: string,
-  ): Promise<boolean>;
-} & Model<TUser>;
+export type ProfileModel = Model<TProfile, Record<string, undefined>>;

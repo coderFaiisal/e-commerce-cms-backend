@@ -3,7 +3,7 @@ import { Model, Types } from 'mongoose';
 import { ICarat } from '../carat/carat.interface';
 import { ICategory } from '../category/category.interface';
 import { IMaterial } from '../material/material.interface';
-import { IStore } from '../store/store.interface';
+import { IStore } from '../store/type';
 
 export type IProduct = {
   storeId: Types.ObjectId | IStore;

@@ -1,6 +1,6 @@
 import { Model, Types } from 'mongoose';
 import { IProduct } from '../product/product.interface';
-import { IStore } from '../store/store.interface';
+import { IStore } from '../store/type';
 
 export type IOrder = {
   userEmail: string;

@@ -7,6 +7,18 @@ import { UserValidation } from './validation';
 
 const router = express.Router();
 
+const { user, store_owner, admin, super_admin } = USER_ROLE;
+
+const {
+  signInSchema,
+  signUpSchema,
+  accessTokenSchema,
+  changePasswordSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  updateSchema,
+} = UserValidation;
+
 const {
   signIn,
   signUp,
@@ -23,18 +35,6 @@ const {
   updateProfile,
   deleteAccount,
 } = UserController;
-
-const {
-  signInSchema,
-  signUpSchema,
-  accessTokenSchema,
-  changePasswordSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
-  updateSchema,
-} = UserValidation;
-
-const { user, store_owner, admin, super_admin } = USER_ROLE;
 
 router.post('/sign-in', validateRequest(signInSchema), signIn);
 
@@ -80,7 +80,7 @@ router.get(
   getProfile,
 );
 
-router.get('/:id', getSingleUser);
+router.get('/:id', auth(admin, super_admin), getSingleUser);
 
 router.patch(
   '/my-profile',

@@ -1,0 +1,19 @@
+import { Model, Types } from 'mongoose';
+import { TUser } from '../user/type';
+
+/* eslint-disable no-unused-vars */
+export enum plans {
+  Basic = 'basic',
+  Pro = 'pro',
+  Enterprise = 'enterprise',
+}
+
+export type TSubscription = {
+  plan: plans;
+  startTime: Date;
+  endTime: Date;
+  isActive: boolean;
+  userId: Types.ObjectId | TUser;
+};
+
+export type SubscriptionModel = Model<TSubscription, Record<string, undefined>>;

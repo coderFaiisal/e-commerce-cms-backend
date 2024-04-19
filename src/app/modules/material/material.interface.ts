@@ -1,6 +1,6 @@
 import { Model, Types } from 'mongoose';
 import { ICarat } from '../carat/carat.interface';
-import { IStore } from '../store/store.interface';
+import { IStore } from '../store/type';
 
 export type IMaterial = {
   name: string;

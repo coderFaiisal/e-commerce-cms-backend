@@ -2,7 +2,7 @@
 import bcrypt from 'bcrypt';
 import { Schema, Types, model } from 'mongoose';
 import config from '../../../config';
-import { TProfile, TUser, UserModel } from './type';
+import { ProfileModel, TProfile, TUser, UserModel } from './type';
 
 const userSchema = new Schema<TUser, UserModel>(
   {
@@ -39,7 +39,7 @@ userSchema.pre('save', async function (next) {
 
 const User = model<TUser, UserModel>('User', userSchema);
 
-const profileSchema = new Schema<TProfile>(
+const profileSchema = new Schema<TProfile, ProfileModel>(
   {
     name: { type: String, required: true },
     image: { type: String },
@@ -53,6 +53,6 @@ const profileSchema = new Schema<TProfile>(
   },
 );
 
-const Profile = model<TProfile>('Profile', profileSchema);
+const Profile = model<TProfile, ProfileModel>('Profile', profileSchema);
 
 export { Profile, User };

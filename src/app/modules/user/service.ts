@@ -293,6 +293,7 @@ const forgotPassword = async (payload: string): Promise<boolean> => {
                 margin: 20px auto;
                 background-color: #fff;
                 border-radius: 10px;
+                border-color: 1px #000000;
                 overflow: hidden;
             }
             .header {
@@ -303,7 +304,7 @@ const forgotPassword = async (payload: string): Promise<boolean> => {
             }
             .content {
                 padding: 30px;
-              min-height: 400px;
+              min-height: 150px;
             }
     
             h1 {
@@ -316,23 +317,23 @@ const forgotPassword = async (payload: string): Promise<boolean> => {
                 color: #000000;
             }
     
-            .button-style {
+            .link-style{
                 display: inline-block;
-                background-color: #007bff;
-                color: #fff;
-              font-size: 13px;
+                background-color: #dedcff;
+                font-size: 13px;
                 text-decoration: none;
                 padding: 2px 6px;
                 border-radius: 5px;
                 transition: background-color 0.3s;
             }
-            .button-style:hover {
+            .link-style:hover {
                 background-color: #0056b3;
             }
             .footer {
                 background-color: #eaeaea;
                 color: #fff;
                 text-align: center;
+                font-size: 12px;
                 padding: 20px;
             }
         </style>
@@ -344,7 +345,7 @@ const forgotPassword = async (payload: string): Promise<boolean> => {
             </div>
             <div class="content">
                 <p>Hello, ${profile.name}</p>
-                <p>Your password reset link is here: <a class="button-style" href=${passwordResetLink}>Click here...</a></p>
+                <p>Your password reset link is here: <a class="link-style" href=${passwordResetLink}>Click here...</a></p>
             </div>
             <div class="footer">
                 <p>&copy; 2024 E-commerce CMS. All rights reserved.</p>
@@ -499,6 +500,8 @@ const updateProfile = async (
 };
 
 const deleteAccount = async (userId: string): Promise<boolean> => {
+  //!have to add more logic here. Delete from subscription and other model
+
   const isUserExist = await User.findById(userId, { _id: 1 }).lean();
 
   if (!isUserExist) {

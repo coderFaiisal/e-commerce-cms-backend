@@ -6,7 +6,7 @@ import { ProductValidation } from './product.validation';
 const router = express.Router();
 
 router.post(
-  '/create-product',
+  '/create',
   validateRequest(ProductValidation.createProductZodSchema),
   ProductController.createProduct,
 );

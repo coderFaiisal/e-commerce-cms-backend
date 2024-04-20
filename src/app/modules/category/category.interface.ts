@@ -1,5 +1,5 @@
 import { Model, Types } from 'mongoose';
-import { IBillboard } from '../billboard/billboard.interface';
+import { IBillboard } from '../billboard/type';
 import { IStore } from '../store/type';
 
 export type ICategory = {

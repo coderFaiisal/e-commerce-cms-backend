@@ -21,7 +21,7 @@ const {
 } = StoreController;
 
 router.post(
-  '/create-store',
+  '/create',
   auth(store_owner),
   validateRequest(createSchema),
   createStore,

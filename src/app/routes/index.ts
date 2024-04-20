@@ -1,5 +1,5 @@
 import express from 'express';
-import { BillboardRoutes } from '../modules/billboard/billboard.route';
+import { BillboardRoutes } from '../modules/billboard/route';
 import { CaratRoutes } from '../modules/carat/carat.route';
 import { CategoryRoutes } from '../modules/category/category.route';
 import { MaterialRoutes } from '../modules/material/material.route';

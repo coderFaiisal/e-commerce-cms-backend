@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
-import { Billboard } from '../billboard/billboard.model';
+import { Billboard } from '../billboard/model';
 import { Carat } from '../carat/carat.model';
 import { Category } from '../category/category.model';
 import { Material } from '../material/material.model';
@@ -116,10 +116,10 @@ const updateStore = async (
     throw new ApiError(httpStatus.NOT_FOUND, "Store doesn't found.");
   }
 
-  const storeIdString = store.userId.toString();
   const userIdString = isUserExist._id.toString();
+  const storeUserIdString = store.userId.toString();
 
-  if (storeIdString !== userIdString) {
+  if (userIdString !== storeUserIdString) {
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden access.');
   }
 
@@ -144,10 +144,10 @@ const deleteStore = async (
     throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
   }
 
-  const storeIdString = store.userId.toString();
   const userIdString = isUserExist._id.toString();
+  const storeUserIdString = store.userId.toString();
 
-  if (storeIdString !== userIdString) {
+  if (userIdString !== storeUserIdString) {
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden access.');
   }
 

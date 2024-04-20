@@ -2,30 +2,33 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
-import { IBillboard } from './billboard.interface';
-import { BillboardService } from './billboard.service';
+import { BillboardService } from './service';
+import { TBillboard } from './type';
 
 const createBillboard = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
   const { ...billboardData } = req.body;
 
-  const result = await BillboardService.createBillboard(billboardData);
+  const result = await BillboardService.createBillboard(user, billboardData);
 
-  sendResponse<IBillboard>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Billboard created successfully',
+    message: 'Billboard created successfully.',
     data: result,
   });
 });
 
 const getAllBillboards = catchAsync(async (req: Request, res: Response) => {
-  const { storeId } = req.params;
+  const storeId = req.params.storeId;
+
   const result = await BillboardService.getAllBillboards(storeId);
 
-  sendResponse<IBillboard[]>(res, {
+  sendResponse<TBillboard[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Billboards retrieved successfully',
+    message: 'Billboards retrieved successfully.',
     data: result,
   });
 });
@@ -35,40 +38,46 @@ const getSingleBillboard = catchAsync(async (req: Request, res: Response) => {
 
   const result = await BillboardService.getSingleBillboard(billboardId);
 
-  sendResponse<IBillboard>(res, {
+  sendResponse<TBillboard>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Billboard retrieved successfully',
+    message: 'Billboard retrieved successfully.',
     data: result,
   });
 });
 
 const updateBillboard = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
   const billboardId = req.params.id;
+
   const { ...updatedData } = req.body;
 
   const result = await BillboardService.updateBillboard(
+    user,
     billboardId,
     updatedData,
   );
 
-  sendResponse<IBillboard>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Billboard updated successfully',
+    message: 'Billboard updated successfully.',
     data: result,
   });
 });
 
 const deleteBillboard = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
   const billboardId = req.params.id;
 
-  const result = await BillboardService.deleteBillboard(billboardId);
+  const result = await BillboardService.deleteBillboard(user, billboardId);
 
-  sendResponse<IBillboard>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Billboard deleted successfully',
+    message: 'Billboard deleted successfully.',
     data: result,
   });
 });

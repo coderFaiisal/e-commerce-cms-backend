@@ -6,7 +6,7 @@ import { MaterialValidation } from './material.validation';
 const router = express.Router();
 
 router.post(
-  '/create-material',
+  '/create',
   validateRequest(MaterialValidation.createMaterialZodSchema),
   MaterialController.createMaterial,
 );

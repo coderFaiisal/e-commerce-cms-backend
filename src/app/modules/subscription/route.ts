@@ -19,7 +19,7 @@ const {
 } = SubscriptionController;
 
 router.post(
-  '/create-subscription',
+  '/create',
   auth(store_owner),
   validateRequest(createSchema),
   createSubscription,

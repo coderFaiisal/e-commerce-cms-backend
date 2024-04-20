@@ -6,7 +6,7 @@ import { CaratValidation } from './carat.validation';
 const router = express.Router();
 
 router.post(
-  '/create-carat',
+  '/create',
   validateRequest(CaratValidation.createCaratZodSchema),
   CaratController.createCarat,
 );

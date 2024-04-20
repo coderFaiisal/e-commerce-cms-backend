@@ -103,12 +103,12 @@ const signUp = async (payload: TSignUp): Promise<TSignUpResponse> => {
     await Profile.create([profileData], { session });
 
     await session.commitTransaction();
+    session.endSession();
   } catch (error) {
     await session.abortTransaction();
+    session.endSession();
 
     throw error;
-  } finally {
-    session.endSession();
   }
 
   //create jwt token
@@ -138,7 +138,7 @@ const signUp = async (payload: TSignUp): Promise<TSignUpResponse> => {
   };
 };
 
-const createAdmin = async (payload: TSignUp): Promise<string> => {
+const createAdmin = async (payload: TSignUp): Promise<boolean> => {
   if (!payload.role) {
     payload.role = 'super-admin';
   }
@@ -176,13 +176,15 @@ const createAdmin = async (payload: TSignUp): Promise<string> => {
     await Profile.create([profileData], { session });
 
     await session.commitTransaction();
+    session.endSession();
+
+    return true;
   } catch (error) {
     await session.abortTransaction();
-  } finally {
     session.endSession();
-  }
 
-  return '';
+    throw error;
+  }
 };
 
 const accessToken = async (
@@ -518,13 +520,14 @@ const deleteAccount = async (userId: string): Promise<boolean> => {
     await Profile.findOneAndDelete({ userId }).session(session);
 
     await session.commitTransaction();
+
+    return true;
   } catch (error) {
     await session.abortTransaction();
-  } finally {
     session.endSession();
-  }
 
-  return true;
+    throw error;
+  }
 };
 
 export const UserService = {

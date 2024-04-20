@@ -11,6 +11,9 @@ const createSchema = z.object({
     storeId: z.string({
       required_error: 'Store id is required.',
     }),
+    categoryId: z.string({
+      required_error: 'Category id is required.',
+    }),
   }),
 });
 

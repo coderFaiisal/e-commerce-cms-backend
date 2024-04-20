@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Model, Types } from 'mongoose';
 import { ICarat } from '../carat/carat.interface';
-import { ICategory } from '../category/category.interface';
+import { ICategory } from '../category/type';
 import { IMaterial } from '../material/material.interface';
 import { IStore } from '../store/type';
 

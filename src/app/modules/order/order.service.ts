@@ -48,14 +48,14 @@ const createOrder = async (order: IOrder): Promise<IOrder> => {
     const result = await Order.create([order], { session });
 
     await session.commitTransaction();
+    session.endSession();
 
     return result[0];
   } catch (error) {
     await session.abortTransaction();
+    session.endSession();
 
     throw error;
-  } finally {
-    session.endSession();
   }
 };
 
@@ -190,14 +190,14 @@ const deleteOrder = async (
     }
 
     await session.commitTransaction();
+    session.endSession();
 
     return null;
   } catch (error) {
     await session.abortTransaction();
+    session.endSession();
 
     throw error;
-  } finally {
-    session.endSession();
   }
 };
 

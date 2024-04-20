@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
 import { Billboard } from '../billboard/model';
 import { Carat } from '../carat/carat.model';
-import { Category } from '../category/category.model';
+import { Category } from '../category/model';
 import { Material } from '../material/material.model';
 import { Order } from '../order/order.model';
 import { Product } from '../product/product.model';
@@ -173,14 +173,14 @@ const deleteStore = async (
     await Store.findByIdAndDelete(storeId).session(session);
 
     await session.commitTransaction();
+    session.endSession();
 
     return true;
   } catch (error) {
     await session.abortTransaction();
-
-    return false;
-  } finally {
     session.endSession();
+
+    throw error;
   }
 };
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import { BillboardRoutes } from '../modules/billboard/route';
 import { CaratRoutes } from '../modules/carat/carat.route';
-import { CategoryRoutes } from '../modules/category/category.route';
+import { CategoryRoutes } from '../modules/category/route';
 import { MaterialRoutes } from '../modules/material/material.route';
 import { OrderRoutes } from '../modules/order/order.route';
 import { ProductRoutes } from '../modules/product/product.route';

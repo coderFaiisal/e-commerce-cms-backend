@@ -4,7 +4,7 @@ import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../types/common';
 import { IPaginationOptions } from '../../../types/pagination';
-import { Category } from './../category/category.model';
+import { Category } from '../category/model';
 import { productSearchableFields } from './product.constant';
 import { IProduct, IProductFilter } from './product.interface';
 import { Product } from './product.model';

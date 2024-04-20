@@ -1,6 +1,7 @@
 import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
 import ApiError from '../../../errors/ApiError';
+import { Category } from '../category/model';
 import { Store } from '../store/model';
 import { User } from '../user/model';
 import { Billboard } from './model';
@@ -22,6 +23,12 @@ const createBillboard = async (
     throw new ApiError(httpStatus.NOT_FOUND, "Store doesn't exist!");
   }
 
+  const isCategoryExist = await Category.findById(payload.categoryId).lean();
+
+  if (!isCategoryExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Categoryt doesn't exist!");
+  }
+
   const userIdString = isUserExist._id.toString();
   const storeUserIdString = isStoreExist.userId.toString();
 
@@ -31,6 +38,7 @@ const createBillboard = async (
 
   const isBillboardExist = await Billboard.findOne({
     label: payload.label,
+    storeId: payload.storeId,
   }).lean();
 
   if (isBillboardExist) {
@@ -53,7 +61,7 @@ const getAllBillboards = async (
 const getSingleBillboard = async (
   billboardId: string,
 ): Promise<TBillboard | null> => {
-  const result = await Billboard.findById(billboardId).populate('storeId');
+  const result = await Billboard.findById(billboardId).populate('categoryId');
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, "Billboard doesn't found.");

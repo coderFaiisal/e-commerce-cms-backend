@@ -53,12 +53,13 @@ const signUp = catchAsync(async (req: Request, res: Response) => {
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
   const { ...data } = req.body;
 
-  await UserService.createAdmin(data);
+  const result = await UserService.createAdmin(data);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Admin created successfully.',
+    data: result,
   });
 });
 

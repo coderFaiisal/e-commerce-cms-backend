@@ -6,6 +6,11 @@ const billboardSchema = new Schema<TBillboard, BillboardModel>(
     label: { type: String, required: true },
     imageUrl: { type: String, required: true },
     storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
+      required: true,
+    },
   },
   {
     timestamps: true,

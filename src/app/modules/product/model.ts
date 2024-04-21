@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { IProduct, ProductModel } from './product.interface';
+import { IProduct, ProductModel } from './type';
 
 const productSchema = new Schema<IProduct, ProductModel>(
   {
@@ -9,12 +9,12 @@ const productSchema = new Schema<IProduct, ProductModel>(
       ref: 'Category',
       required: true,
     },
-    materialId: {
+    attributeId: {
       type: Schema.Types.ObjectId,
-      ref: 'Material',
+      ref: 'Attribute',
       required: true,
     },
-    caratId: { type: Schema.Types.ObjectId, ref: 'Carat', required: true },
+
     name: { type: String, required: true, unique: true },
     price: { type: Number, required: true },
     productCode: { type: String },

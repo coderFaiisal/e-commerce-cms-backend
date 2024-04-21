@@ -1,8 +1,8 @@
 import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
 import ApiError from '../../../errors/ApiError';
-import { IProduct, IProductReview } from '../product/product.interface';
-import { Product } from '../product/product.model';
+import { Product } from '../product/model';
+import { IProduct, IProductReview } from '../product/type';
 import { User } from '../user/model';
 
 const createProductReview = async (

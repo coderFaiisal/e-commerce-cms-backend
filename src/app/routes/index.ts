@@ -1,10 +1,8 @@
 import express from 'express';
+import { AttributeRoutes } from '../modules/attribute/route';
 import { BillboardRoutes } from '../modules/billboard/route';
-import { CaratRoutes } from '../modules/carat/carat.route';
 import { CategoryRoutes } from '../modules/category/route';
-import { MaterialRoutes } from '../modules/material/material.route';
-import { OrderRoutes } from '../modules/order/order.route';
-import { ProductRoutes } from '../modules/product/product.route';
+import { ProductRoutes } from '../modules/product/route';
 import { productReviewRoutes } from '../modules/productReview/productReview.route';
 import { StoreRoutes } from '../modules/store/route';
 import { SubscriptionRoutes } from '../modules/subscription/route';
@@ -34,24 +32,16 @@ const moduleRoutes = [
     route: CategoryRoutes,
   },
   {
+    path: '/attributes',
+    route: AttributeRoutes,
+  },
+  {
     path: '/products',
     route: ProductRoutes,
   },
   {
     path: '/productReviews',
     route: productReviewRoutes,
-  },
-  {
-    path: '/carats',
-    route: CaratRoutes,
-  },
-  {
-    path: '/materials',
-    route: MaterialRoutes,
-  },
-  {
-    path: '/orders',
-    route: OrderRoutes,
   },
 ];
 

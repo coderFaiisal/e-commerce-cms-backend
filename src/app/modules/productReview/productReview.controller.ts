@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
-import { IProduct } from '../product/product.interface';
+import { IProduct } from '../product/type';
 import { ProductReviewService } from './productReview.service';
 
 const createProductReview = catchAsync(async (req: Request, res: Response) => {

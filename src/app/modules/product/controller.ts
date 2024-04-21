@@ -4,9 +4,9 @@ import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
 import { paginationFields } from '../../constant/pagination';
-import { productFilterableFields } from './product.constant';
-import { IProduct } from './product.interface';
-import { ProductService } from './product.service';
+import { productFilterableFields } from './constant';
+import { ProductService } from './service';
+import { IProduct } from './type';
 
 const createProduct = catchAsync(async (req: Request, res: Response) => {
   const { ...productData } = req.body;

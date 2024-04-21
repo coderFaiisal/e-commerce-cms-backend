@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
-import { Product } from '../product/product.model';
+import { Product } from '../product/model';
 import { IOrder } from './order.interface';
 import { Order } from './order.model';
 import { generateTrackingNumber } from './order.utils';

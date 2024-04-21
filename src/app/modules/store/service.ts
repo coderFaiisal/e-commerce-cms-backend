@@ -2,12 +2,11 @@ import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
+import { Attribute } from '../attribute/model';
 import { Billboard } from '../billboard/model';
-import { Carat } from '../carat/carat.model';
 import { Category } from '../category/model';
-import { Material } from '../material/material.model';
 import { Order } from '../order/order.model';
-import { Product } from '../product/product.model';
+import { Product } from '../product/model';
 import { Subscription } from '../subscription/model';
 import { plans } from '../subscription/type';
 import { User } from '../user/model';
@@ -162,9 +161,7 @@ const deleteStore = async (
 
     await Category.deleteMany({ storeId: storeId }).session(session);
 
-    await Carat.deleteMany({ storeId: storeId }).session(session);
-
-    await Material.deleteMany({ storeId: storeId }).session(session);
+    await Attribute.deleteMany({ storeId: storeId }).session(session);
 
     await Product.deleteMany({ storeId: storeId }).session(session);
 

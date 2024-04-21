@@ -1,15 +1,14 @@
 /* eslint-disable no-unused-vars */
 import { Model, Types } from 'mongoose';
-import { ICarat } from '../carat/carat.interface';
-import { ICategory } from '../category/type';
-import { IMaterial } from '../material/material.interface';
-import { IStore } from '../store/type';
+import { TAttribute } from '../attribute/type';
+import { TCategory } from '../category/type';
+import { TStore } from '../store/type';
 
 export type IProduct = {
-  storeId: Types.ObjectId | IStore;
-  categoryId: Types.ObjectId | ICategory;
-  materialId: Types.ObjectId | IMaterial;
-  caratId: Types.ObjectId | ICarat;
+  storeId: Types.ObjectId | TStore;
+  categoryId: Types.ObjectId | TCategory;
+  attributeId: Types.ObjectId | TAttribute;
+
   name: string;
   price: number;
   productCode?: string;

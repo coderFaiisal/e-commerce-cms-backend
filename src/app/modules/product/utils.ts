@@ -1,4 +1,4 @@
-import { Product } from './product.model';
+import { Product } from './model';
 
 const findLastProductCode = async (): Promise<string | undefined> => {
   const lastProduct = await Product.findOne({}, { productCode: 1, _id: -1 })

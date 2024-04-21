@@ -5,12 +5,12 @@ import ApiError from '../../../errors/ApiError';
 import { Product } from '../product/model';
 import { Store } from '../store/model';
 import { User } from '../user/model';
-import { Category } from './model';
-import { TCategory } from './type';
+import { Attribute } from './model';
+import { TAttribute } from './type';
 
-const createCategory = async (
+const createAttribute = async (
   user: JwtPayload | null,
-  payload: TCategory,
+  payload: TAttribute,
 ): Promise<boolean> => {
   const isUserExist = await User.findOne({ email: user?.email }).lean();
 
@@ -31,50 +31,55 @@ const createCategory = async (
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden access.');
   }
 
-  const isCategoryExist = await Category.findOne({
+  const isAttributeExist = await Attribute.findOne({
+    type: payload.type,
     name: payload.name,
     storeId: payload.storeId,
-  }).lean();
+  })
+    .populate('storeId')
+    .lean();
 
-  if (isCategoryExist) {
-    throw new ApiError(httpStatus.CONFLICT, 'Category already exist!');
+  if (isAttributeExist) {
+    throw new ApiError(httpStatus.CONFLICT, 'Attribute already exist!');
   }
 
-  await Category.create(payload);
+  await Attribute.create(payload);
 
   return true;
 };
 
-const getAllCategories = async (
+const getAllAttributes = async (
   storeId: string,
-): Promise<TCategory[] | null> => {
-  const result = await Category.find({ storeId }).populate('storeId').lean();
+): Promise<TAttribute[] | null> => {
+  const result = await Attribute.find({ storeId }).populate('storeId').lean();
 
   return result;
 };
 
-const getSingleCategory = async (
-  categoryId: string,
-): Promise<TCategory | null> => {
-  const result = await Category.findById(categoryId).populate('storeId').lean();
+const getSingleAttribute = async (
+  attributeId: string,
+): Promise<TAttribute | null> => {
+  const result = await Attribute.findById(attributeId)
+    .populate('storeId')
+    .lean();
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Category doesn't found.");
+    throw new ApiError(httpStatus.NOT_FOUND, "Attribute doesn't found.");
   }
 
   return result;
 };
 
-const updateCategory = async (
+const updateAttribute = async (
   user: JwtPayload | null,
-  categoryId: string,
-  updatedData: Partial<TCategory>,
+  attributeId: string,
+  updatedData: Partial<TAttribute>,
 ): Promise<boolean> => {
-  const isCategoryExist =
-    await Category.findById(categoryId).populate('storeId');
+  const isAttributeExist =
+    await Attribute.findById(attributeId).populate('storeId');
 
-  if (!isCategoryExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Category doesn't exist!");
+  if (!isAttributeExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Attribute doesn't exist!");
   }
 
   const isUserExist = await User.findOne({ email: user?.email }).lean();
@@ -84,26 +89,26 @@ const updateCategory = async (
   }
 
   const userIdString = isUserExist._id.toString();
-  const storeUserIdString = isCategoryExist.storeId?.userId.toString();
+  const storeUserIdString = isAttributeExist.storeId?.userId.toString();
 
   if (userIdString !== storeUserIdString) {
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden access.');
   }
 
-  await Category.findByIdAndUpdate(categoryId, updatedData);
+  await Attribute.findByIdAndUpdate(attributeId, updatedData);
 
   return true;
 };
 
-const deleteCategory = async (
+const deleteAttribute = async (
   user: JwtPayload | null,
-  categoryId: string,
+  attributeId: string,
 ): Promise<boolean> => {
-  const isCategoryExist =
-    await Category.findById(categoryId).populate('storeId');
+  const isAttributeExist =
+    await Attribute.findById(attributeId).populate('storeId');
 
-  if (!isCategoryExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Category doesn't exist!");
+  if (!isAttributeExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Attribute doesn't exist!");
   }
 
   const isUserExist = await User.findOne({ email: user?.email }).lean();
@@ -113,7 +118,7 @@ const deleteCategory = async (
   }
 
   const userIdString = isUserExist._id.toString();
-  const storeUserIdString = isCategoryExist.storeId?.userId.toString();
+  const storeUserIdString = isAttributeExist.storeId?.userId.toString();
 
   if (userIdString !== storeUserIdString) {
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden access.');
@@ -124,9 +129,11 @@ const deleteCategory = async (
   try {
     session.startTransaction();
 
-    await Product.deleteMany({ categoryId }).session(session);
+    //! have to recheck this logic
 
-    await Category.findByIdAndDelete(categoryId).session(session);
+    await Product.updateMany({ attributeId }, { attributeId: null });
+
+    await Attribute.findByIdAndDelete(attributeId).session(session);
 
     await session.commitTransaction();
     session.endSession();
@@ -140,10 +147,10 @@ const deleteCategory = async (
   }
 };
 
-export const CategoryService = {
-  createCategory,
-  getAllCategories,
-  getSingleCategory,
-  updateCategory,
-  deleteCategory,
+export const AttributeService = {
+  createAttribute,
+  getAllAttributes,
+  getSingleAttribute,
+  updateAttribute,
+  deleteAttribute,
 };

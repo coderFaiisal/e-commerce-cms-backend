@@ -3,7 +3,7 @@ import { AttributeModel, TAttribute } from './type';
 
 const attributeSchema = new Schema<TAttribute, AttributeModel>(
   {
-    type: { type: String, required: true, unique: true },
+    type: { type: String, required: true },
     name: { type: String, required: true },
     value: { type: String, required: true },
     storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },

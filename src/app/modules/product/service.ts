@@ -1,93 +1,121 @@
 import httpStatus from 'http-status';
-import { SortOrder } from 'mongoose';
+import { JwtPayload } from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
-import { paginationHelpers } from '../../../helpers/paginationHelper';
-import { IGenericResponse } from '../../../types/common';
-import { IPaginationOptions } from '../../../types/pagination';
+import { asyncForEach } from '../../../shared/asyncForEach';
+import { TGenericResponse } from '../../../types/common';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { Attribute } from '../attribute/model';
 import { Category } from '../category/model';
+import { ProductReview } from '../productReview/model';
+import { Store } from '../store/model';
+import { User } from '../user/model';
 import { productSearchableFields } from './constant';
-import { Product } from './model';
+import { Product, ProductImage } from './model';
+import { TProduct } from './type';
 import { generateProductCode } from './utils';
-import { IProduct, IProductFilter } from './type';
 
-const createProduct = async (productData: IProduct): Promise<IProduct> => {
-  const { name } = productData;
-
-  const isProductExist = await Product.findOne({ name }).lean();
+const createProduct = async (
+  user: JwtPayload | null,
+  payload: Partial<TProduct> & { productImages: string[] },
+): Promise<boolean> => {
+  const isProductExist = await Product.findOne({
+    name: payload.name,
+    storeId: payload.storeId,
+  }).lean();
 
   if (isProductExist) {
-    throw new ApiError(httpStatus.CONFLICT, 'Product already exist');
+    throw new ApiError(httpStatus.CONFLICT, 'Product already exist!');
   }
 
-  const productCategory = await Category.findById(productData.categoryId);
+  const isUserExist = await User.findOne({ email: user?.email }).lean();
 
-  if (!productCategory) {
-    throw new ApiError(httpStatus.CONFLICT, 'Product category does not found');
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
+  }
+
+  const isStoreExist = await Store.findById(payload.storeId).lean();
+
+  if (!isStoreExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Store doesn't exist!");
+  }
+
+  const userIdString = isUserExist._id.toString();
+  const storeUserIdString = isStoreExist.userId.toString();
+
+  if (userIdString !== storeUserIdString) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden access.');
+  }
+
+  const isCategoryExist = await Category.findById(payload.categoryId).lean();
+
+  if (!isCategoryExist) {
+    throw new ApiError(httpStatus.CONFLICT, "Category doesn't exist!");
+  }
+
+  if (payload.attributeIds && payload.attributeIds.length > 0) {
+    await asyncForEach(payload.attributeIds, async (attributeId: string) => {
+      const isAttributeExist = await Attribute.findById(attributeId).lean();
+
+      if (!isAttributeExist) {
+        throw new ApiError(
+          httpStatus.NOT_FOUND,
+          `This ${attributeId} attribute id is invalid.`,
+        );
+      }
+    });
   }
 
   //generate product code
-  productData.productCode = await generateProductCode(
-    productCategory?.code as string,
-  );
+  payload.productCode = await generateProductCode(isCategoryExist);
 
-  const result = await Product.create(productData);
+  const { productImages, ...productData } = payload;
 
-  return result;
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const product = await Product.create([productData], { session });
+
+    await asyncForEach(productImages, async (productImage: { url: string }) => {
+      await ProductImage.create(
+        [
+          {
+            url: productImage.url,
+            productId: product[0]._id,
+          },
+        ],
+        { session },
+      );
+    });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return true;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+
+    throw error;
+  }
 };
 
 const getAllProducts = async (
   storeId: string,
-  filters: IProductFilter,
-  paginationOptions: IPaginationOptions,
-): Promise<IGenericResponse<IProduct[]>> => {
-  const andConditions = [];
+  query: Record<string, unknown>,
+): Promise<TGenericResponse<TProduct[]>> => {
+  const productQuery = new QueryBuilder(Product.find({ storeId }), query)
+    .search(productSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  //search logic
-  const { searchTerm, ...filtersData } = filters;
+  const result = await productQuery.modelQuery;
 
-  if (searchTerm) {
-    andConditions.push({
-      $or: productSearchableFields.map(field => ({
-        [field]: {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      })),
-    });
-  }
-
-  //filter logic
-  if (Object.keys(filtersData).length) {
-    andConditions.push({
-      $and: Object.entries(filtersData).map(([field, value]) => ({
-        [field]: value,
-      })),
-    });
-  }
-
-  //pagination logic
-  const { page, limit, skip, sortBy, sortOrder } =
-    paginationHelpers.calculatePagination(paginationOptions);
-
-  const sortConditions: { [key: string]: SortOrder } = {};
-
-  if (sortBy && sortOrder) {
-    sortConditions[sortBy] = sortOrder;
-  }
-
-  //conditional query
-  const whereConditions =
-    andConditions.length > 0 ? { $and: andConditions, storeId } : { storeId };
-
-  const result = await Product.find(whereConditions)
-    .populate('categoryId')
-    .populate('caratId')
-    .populate('materialId')
-    .sort(sortConditions)
-    .skip(skip)
-    .limit(limit);
-
-  const total = await Product.countDocuments();
+  const { page, limit, total } = await productQuery.countTotal();
 
   return {
     meta: {
@@ -101,70 +129,111 @@ const getAllProducts = async (
 
 const getSingleProduct = async (
   productId: string,
-): Promise<IProduct | null> => {
+): Promise<TProduct | null> => {
   const result = await Product.findById(productId)
     .populate('storeId')
     .populate('categoryId')
-    .populate('materialId')
-    .populate('caratId')
+    .populate('attributeIds')
     .lean();
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Product doesn't found.");
   }
 
   return result;
 };
 
 const updateProduct = async (
+  user: JwtPayload | null,
   productId: string,
-  updatedData: Partial<IProduct>,
-): Promise<IProduct | null> => {
-  const isProductExist = await Product.isProductExist(productId);
+  payload: Partial<TProduct>,
+): Promise<boolean> => {
+  const isProductExist = await Product.findById(productId)
+    .populate('storeId')
+    .lean();
 
   if (!isProductExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not exist');
+    throw new ApiError(httpStatus.NOT_FOUND, "Product doesn't exist!");
   }
 
-  if (updatedData?.stockQuantity) {
-    updatedData.stockQuantity += isProductExist?.stockQuantity;
+  const isUserExist = await User.findOne({ email: user?.email }).lean();
+
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
   }
 
-  if ((updatedData.stockQuantity as number) > 0) {
-    updatedData.status = 'stock';
+  const userIdString = isUserExist._id.toString();
+  const storeUserIdString = isProductExist.storeId.userId.toString();
+
+  if (userIdString !== storeUserIdString) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden access.');
   }
 
-  const result = await Product.findByIdAndUpdate(productId, updatedData, {
-    new: true,
-  })
-    .populate('storeId')
-    .populate('categoryId')
-    .populate('materialId')
-    .populate('caratId');
-
-  if (!result) {
-    throw new ApiError(httpStatus.NOT_MODIFIED, 'Failed to update product');
+  if (payload?.stockQuantity) {
+    payload.stockQuantity += isProductExist?.stockQuantity;
   }
 
-  return result;
+  if ((payload.stockQuantity as number) > 0) {
+    payload.status = 'stock';
+  }
+
+  await Product.findByIdAndUpdate(productId, payload);
+
+  return true;
 };
 
-const deleteProduct = async (productId: string): Promise<IProduct | null> => {
-  const isProductExist = await Product.isProductExist(productId);
+const deleteProduct = async (
+  user: JwtPayload | null,
+  productId: string,
+): Promise<boolean> => {
+  const isProductExist = await Product.findById(productId)
+    .populate('storeId')
+    .lean();
 
   if (!isProductExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product does not exist');
+    throw new ApiError(httpStatus.NOT_FOUND, "Product doesn't exist!");
   }
 
-  const result = await Product.findByIdAndDelete(productId);
+  const isUserExist = await User.findOne({ email: user?.email }).lean();
 
-  return result;
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
+  }
+
+  const userIdString = isUserExist._id.toString();
+  const storeUserIdString = isProductExist.storeId.userId.toString();
+
+  if (userIdString !== storeUserIdString) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden access.');
+  }
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    await ProductImage.deleteMany({ productId }).session(session);
+
+    await ProductReview.deleteMany({ productId }).session(session);
+
+    await Product.findByIdAndDelete(productId).session(session);
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return true;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+
+    throw error;
+  }
 };
 
 export const ProductService = {
   createProduct,
-  getSingleProduct,
   getAllProducts,
+  getSingleProduct,
   updateProduct,
   deleteProduct,
 };

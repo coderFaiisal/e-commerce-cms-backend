@@ -3,7 +3,6 @@ import { AttributeRoutes } from '../modules/attribute/route';
 import { BillboardRoutes } from '../modules/billboard/route';
 import { CategoryRoutes } from '../modules/category/route';
 import { ProductRoutes } from '../modules/product/route';
-import { productReviewRoutes } from '../modules/productReview/productReview.route';
 import { StoreRoutes } from '../modules/store/route';
 import { SubscriptionRoutes } from '../modules/subscription/route';
 import { UserRoutes } from '../modules/user/route';
@@ -38,10 +37,6 @@ const moduleRoutes = [
   {
     path: '/products',
     route: ProductRoutes,
-  },
-  {
-    path: '/productReviews',
-    route: productReviewRoutes,
   },
 ];
 

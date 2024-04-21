@@ -1,41 +1,36 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
-import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
-import { paginationFields } from '../../constant/pagination';
-import { productFilterableFields } from './constant';
 import { ProductService } from './service';
-import { IProduct } from './type';
+import { TProduct } from './type';
 
 const createProduct = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
   const { ...productData } = req.body;
 
-  const result = await ProductService.createProduct(productData);
+  const result = await ProductService.createProduct(user, productData);
 
-  sendResponse<IProduct>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Product created successfully',
+    message: 'Product created successfully.',
     data: result,
   });
 });
 
 const getAllProducts = catchAsync(async (req: Request, res: Response) => {
-  const { storeId } = req.params;
-  const filters = pick(req.query, productFilterableFields);
-  const paginationOptions = pick(req.query, paginationFields);
+  const storeId = req.params.storeId;
 
-  const result = await ProductService.getAllProducts(
-    storeId,
-    filters,
-    paginationOptions,
-  );
+  const query = req.query;
 
-  sendResponse<IProduct[]>(res, {
+  const result = await ProductService.getAllProducts(storeId, query);
+
+  sendResponse<TProduct[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Products retrieved successfully',
+    message: 'Products retrieved successfully.',
     meta: result.meta,
     data: result.data,
   });
@@ -46,37 +41,46 @@ const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
 
   const result = await ProductService.getSingleProduct(productId);
 
-  sendResponse<IProduct>(res, {
+  sendResponse<TProduct>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Product retrieved successfully',
+    message: 'Product retrieved successfully.',
     data: result,
   });
 });
 
 const updateProduct = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
   const productId = req.params.id;
+
   const { ...updatedData } = req.body;
 
-  const result = await ProductService.updateProduct(productId, updatedData);
+  const result = await ProductService.updateProduct(
+    user,
+    productId,
+    updatedData,
+  );
 
-  sendResponse<IProduct>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Product updated successfully',
+    message: 'Product updated successfully.',
     data: result,
   });
 });
 
 const deleteProduct = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
   const productId = req.params.id;
 
-  const result = await ProductService.deleteProduct(productId);
+  const result = await ProductService.deleteProduct(user, productId);
 
-  sendResponse<IProduct>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Product deleted successfully',
+    message: 'Product deleted successfully.',
     data: result,
   });
 });

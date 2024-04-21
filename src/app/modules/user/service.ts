@@ -7,7 +7,7 @@ import ApiError from '../../../errors/ApiError';
 import { jwtHelper } from '../../../helpers/jwtHelper';
 import { sendEmail } from '../../../shared/sendEmail';
 import QueryBuilder from '../../builder/QueryBuilder';
-import { UserSearchableFields } from './constant';
+import { userSearchableFields } from './constant';
 import { Profile, User } from './model';
 import {
   TAccessTokenResponse,
@@ -391,7 +391,7 @@ const resetPassword = async (
 
 const getAllUsers = async (query: Record<string, unknown>) => {
   const userQuery = new QueryBuilder(User.find({ role: 'user' }), query)
-    .search(UserSearchableFields)
+    .search(userSearchableFields)
     .filter()
     .sort()
     .paginate()
@@ -415,7 +415,7 @@ const getAllStoreOwners = async (query: Record<string, unknown>) => {
     User.find({ role: 'store-owner' }),
     query,
   )
-    .search(UserSearchableFields)
+    .search(userSearchableFields)
     .filter()
     .sort()
     .paginate()
@@ -436,7 +436,7 @@ const getAllStoreOwners = async (query: Record<string, unknown>) => {
 
 const getAllAdmins = async (query: Record<string, unknown>) => {
   const adminQuery = new QueryBuilder(User.find({ role: 'admin' }), query)
-    .search(UserSearchableFields)
+    .search(userSearchableFields)
     .filter()
     .sort()
     .paginate()

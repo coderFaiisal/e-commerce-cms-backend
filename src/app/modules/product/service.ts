@@ -7,12 +7,17 @@ import { TGenericResponse } from '../../../types/common';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { Attribute } from '../attribute/model';
 import { Category } from '../category/model';
-import { ProductReview } from '../productReview/model';
 import { Store } from '../store/model';
 import { User } from '../user/model';
+import { ProductReview } from './../productReview/model';
 import { productSearchableFields } from './constant';
 import { Product, ProductImage } from './model';
-import { TProduct } from './type';
+import {
+  TGetAllProductsResponse,
+  TProduct,
+  TProductImageUpdateData,
+  TUpdateProductData,
+} from './type';
 import { generateProductCode } from './utils';
 
 const createProduct = async (
@@ -105,7 +110,7 @@ const createProduct = async (
 const getAllProducts = async (
   storeId: string,
   query: Record<string, unknown>,
-): Promise<TGenericResponse<TProduct[]>> => {
+): Promise<TGenericResponse<TGetAllProductsResponse>> => {
   const productQuery = new QueryBuilder(Product.find({ storeId }), query)
     .search(productSearchableFields)
     .filter()
@@ -113,7 +118,26 @@ const getAllProducts = async (
     .paginate()
     .fields();
 
-  const result = await productQuery.modelQuery;
+  const products = await productQuery.modelQuery;
+
+  const result: TGetAllProductsResponse = [];
+
+  await asyncForEach(
+    products.map(product => product),
+    async (product: TProduct & { _id: string }) => {
+      const images = await ProductImage.find({ productId: product._id }).lean();
+
+      const reviews = await ProductReview.find({
+        productId: product._id,
+      }).lean();
+
+      result.push({
+        product,
+        images,
+        reviews,
+      });
+    },
+  );
 
   const { page, limit, total } = await productQuery.countTotal();
 
@@ -129,24 +153,33 @@ const getAllProducts = async (
 
 const getSingleProduct = async (
   productId: string,
-): Promise<TProduct | null> => {
-  const result = await Product.findById(productId)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any> => {
+  const product = await Product.findById(productId)
     .populate('storeId')
     .populate('categoryId')
     .populate('attributeIds')
     .lean();
 
-  if (!result) {
+  if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, "Product doesn't found.");
   }
 
-  return result;
+  const images = await ProductImage.find({ productId }).lean();
+
+  const reviews = await ProductReview.find({ productId }).lean();
+
+  return {
+    product,
+    images,
+    reviews,
+  };
 };
 
 const updateProduct = async (
   user: JwtPayload | null,
   productId: string,
-  payload: Partial<TProduct>,
+  payload: TUpdateProductData,
 ): Promise<boolean> => {
   const isProductExist = await Product.findById(productId)
     .populate('storeId')
@@ -177,7 +210,33 @@ const updateProduct = async (
     payload.status = 'stock';
   }
 
-  await Product.findByIdAndUpdate(productId, payload);
+  const { productImages, ...updatedData } = payload;
+
+  if (productImages && productImages.length > 0) {
+    const deleteImages = productImages.filter(
+      pdImage => pdImage.productImageId && pdImage.isDeleted,
+    );
+
+    const newImages = productImages.filter(
+      pdImage => pdImage.url && !pdImage.isDeleted,
+    );
+
+    asyncForEach(
+      deleteImages,
+      async (item: Partial<TProductImageUpdateData>) => {
+        await ProductImage.deleteOne({ _id: item.productImageId, productId });
+      },
+    );
+
+    asyncForEach(newImages, async (item: Partial<TProductImageUpdateData>) => {
+      await ProductImage.create({
+        url: item.url,
+        productId,
+      });
+    });
+  }
+
+  await Product.findByIdAndUpdate(productId, updatedData);
 
   return true;
 };

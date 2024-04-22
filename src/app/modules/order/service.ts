@@ -3,9 +3,9 @@ import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
 import { Product } from '../product/model';
-import { IOrder } from './order.interface';
-import { Order } from './order.model';
-import { generateTrackingNumber } from './order.utils';
+import { Order } from './model';
+import { IOrder } from './type';
+import { generateTrackingNumber } from './utils';
 
 const createOrder = async (order: IOrder): Promise<IOrder> => {
   const session = await mongoose.startSession();

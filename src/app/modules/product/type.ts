@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
-import { Model, Types } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { TAttribute } from '../attribute/type';
 import { TCategory } from '../category/type';
+import { TProductReview } from '../productReview/type';
 import { TStore } from '../store/type';
 
 export type TProduct = {
@@ -35,4 +36,26 @@ export type TProductFilter = {
   price?: string;
   status?: string;
   discounts?: string;
+};
+
+export type TGetAllProductsResponse = {
+  product: TProduct & { _id: string };
+  images: (mongoose.FlattenMaps<TProductImage> & {
+    _id: mongoose.Types.ObjectId;
+  })[];
+  reviews: (mongoose.FlattenMaps<TProductReview> & {
+    _id: mongoose.Types.ObjectId;
+  })[];
+}[];
+
+export type TUpdateProductData = Partial<
+  TProduct & {
+    productImages: TProductImageUpdateData[];
+  }
+>;
+
+export type TProductImageUpdateData = {
+  productImageId: string;
+  url?: string;
+  isDeleted: boolean;
 };

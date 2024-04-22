@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
-import { IOrder } from './order.interface';
-import { OrderService } from './order.service';
+import { OrderService } from './service';
+import { IOrder } from './type';
 
 const createOrder = catchAsync(async (req: Request, res: Response) => {
   const { ...orderData } = req.body;

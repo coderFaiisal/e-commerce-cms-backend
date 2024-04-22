@@ -1,13 +1,13 @@
 import { Model, Types } from 'mongoose';
-import { IProduct } from '../product/type';
-import { IStore } from '../store/type';
+import { TProduct } from '../product/type';
+import { TStore } from '../store/type';
 
-export type IOrder = {
+export type TOrder = {
   userEmail: string;
-  storeId: Types.ObjectId | IStore;
+  storeId: Types.ObjectId | TStore;
   orderItems: [
     {
-      productId: Types.ObjectId | IProduct;
+      productId: Types.ObjectId | TProduct;
       quantity: number;
     },
   ];
@@ -31,4 +31,4 @@ export type IOrder = {
   returnPolicy?: string;
 };
 
-export type OrderModel = Model<IOrder, Record<string, undefined>>;
+export type OrderModel = Model<TOrder, Record<string, undefined>>;

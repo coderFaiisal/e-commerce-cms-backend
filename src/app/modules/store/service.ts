@@ -5,7 +5,7 @@ import ApiError from '../../../errors/ApiError';
 import { Attribute } from '../attribute/model';
 import { Billboard } from '../billboard/model';
 import { Category } from '../category/model';
-import { Order } from '../order/order.model';
+import { Order } from '../order/model';
 import { Product } from '../product/model';
 import { Subscription } from '../subscription/model';
 import { plans } from '../subscription/type';

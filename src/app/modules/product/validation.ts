@@ -53,6 +53,13 @@ const updateSchema = z.object({
     stockQuantity: z.number().optional(),
     discounts: z.number().optional(),
     returnPolicy: z.string().optional(),
+    productImages: z.array(
+      z.object({
+        productImageId: z.string().optional(),
+        url: z.string().optional(),
+        isDeleted: z.boolean().optional(),
+      }),
+    ),
     attributeIds: z.array(z.string().optional()).optional(),
   }),
 });

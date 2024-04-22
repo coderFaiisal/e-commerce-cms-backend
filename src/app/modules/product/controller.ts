@@ -3,7 +3,6 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { ProductService } from './service';
-import { TProduct } from './type';
 
 const createProduct = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
@@ -27,7 +26,7 @@ const getAllProducts = catchAsync(async (req: Request, res: Response) => {
 
   const result = await ProductService.getAllProducts(storeId, query);
 
-  sendResponse<TProduct[]>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Products retrieved successfully.',
@@ -41,7 +40,7 @@ const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
 
   const result = await ProductService.getSingleProduct(productId);
 
-  sendResponse<TProduct>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Product retrieved successfully.',

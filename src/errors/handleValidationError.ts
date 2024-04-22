@@ -1,12 +1,12 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
-import { IGenericErrorResponse } from '../types/common';
-import { IGenericErrorMessage } from '../types/error';
+import { TGenericErrorResponse } from '../types/common';
+import { TGenericErrorMessage } from '../types/error';
 
 const handleValidationError = (
   error: mongoose.Error.ValidationError,
-): IGenericErrorResponse => {
-  const errors: IGenericErrorMessage[] = Object.values(error?.errors).map(
+): TGenericErrorResponse => {
+  const errors: TGenericErrorMessage[] = Object.values(error?.errors).map(
     (element: mongoose.Error.ValidatorError | mongoose.Error.CastError) => {
       return {
         path: element?.path,

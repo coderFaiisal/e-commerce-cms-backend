@@ -10,7 +10,7 @@ import handleCastError from '../../errors/handleCastError';
 import handleDuplicateError from '../../errors/handleDuplicateError';
 import handleValidationError from '../../errors/handleValidationError';
 import handleZodError from '../../errors/handleZodError';
-import { IGenericErrorMessage } from '../../types/error';
+import { TGenericErrorMessage } from '../../types/error';
 
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   //checking is server on development or production
@@ -20,7 +20,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
 
   let statusCode = 500;
   let message = 'Something went wrong!';
-  let errorMessages: IGenericErrorMessage[] = [];
+  let errorMessages: TGenericErrorMessage[] = [];
 
   //check mongoose validation error
   if (error?.name === 'ValidationError') {

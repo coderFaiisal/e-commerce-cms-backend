@@ -1,10 +1,10 @@
 import httpStatus from 'http-status';
 import { ZodError, ZodIssue } from 'zod';
-import { IGenericErrorResponse } from '../types/common';
-import { IGenericErrorMessage } from '../types/error';
+import { TGenericErrorResponse } from '../types/common';
+import { TGenericErrorMessage } from '../types/error';
 
-const handleZodError = (error: ZodError): IGenericErrorResponse => {
-  const errors: IGenericErrorMessage[] = error?.issues?.map(
+const handleZodError = (error: ZodError): TGenericErrorResponse => {
+  const errors: TGenericErrorMessage[] = error?.issues?.map(
     (issue: ZodIssue) => {
       return {
         path: issue?.path[issue?.path?.length - 1],

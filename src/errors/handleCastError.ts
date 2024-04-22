@@ -1,12 +1,12 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
-import { IGenericErrorResponse } from '../types/common';
-import { IGenericErrorMessage } from '../types/error';
+import { TGenericErrorResponse } from '../types/common';
+import { TGenericErrorMessage } from '../types/error';
 
 const handleCastError = (
   error: mongoose.Error.CastError,
-): IGenericErrorResponse => {
-  const errors: IGenericErrorMessage[] = [
+): TGenericErrorResponse => {
+  const errors: TGenericErrorMessage[] = [
     {
       path: error?.path,
       message: 'Invalid Id',

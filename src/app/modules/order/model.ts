@@ -1,42 +1,38 @@
 import { Schema, model } from 'mongoose';
-import { IOrder, OrderModel } from './type';
+import { OrderItemModel, OrderModel, TOrder, TOrderItem } from './type';
 
-const orderSchema = new Schema<IOrder, OrderModel>(
+const orderSchema = new Schema<TOrder, OrderModel>(
   {
-    userEmail: { type: String, required: true },
-    storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
-    orderItems: [
-      {
-        productId: {
-          type: Schema.Types.ObjectId,
-          ref: 'Product',
-          required: true,
-        },
-        quantity: { type: Number, required: true },
-      },
-    ],
     isPaid: { type: Boolean, required: true },
+    phoneNumber: { type: String, required: true },
     orderStatus: { type: String, default: 'pending' },
+    discounts: { type: Number, default: 0 },
     totalCost: { type: Number, required: true },
     shippingCharge: { type: Number, required: true },
-    paymentMethod: { type: String, required: true },
-    contactInformation: {
-      name: { type: String, required: true },
-      email: { type: String, required: true },
-      address: { type: String, required: true },
-      phoneNumber: { type: String, required: true },
-    },
     shippingAddress: { type: String, required: true },
+    paymentMethod: { type: String, required: true },
     deliveryMethod: { type: String, required: true },
-    trackingNumber: { type: String },
-    discounts: { type: String },
+    trackingNumber: { type: String, required: true },
     giftMessage: { type: String },
-    giftWrapping: { type: String },
-    returnPolicy: { type: String },
+
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
   },
   {
     timestamps: true,
   },
 );
 
-export const Order = model<IOrder, OrderModel>('Order', orderSchema);
+const orderItemSchema = new Schema<TOrderItem, OrderItemModel>({
+  quantity: { type: Number, required: true },
+
+  productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+  orderId: { type: Schema.Types.ObjectId, ref: 'Order', required: true },
+});
+
+export const Order = model<TOrder, OrderModel>('Order', orderSchema);
+
+export const OrderItem = model<TOrderItem, OrderItemModel>(
+  'OrderItem',
+  orderItemSchema,
+);

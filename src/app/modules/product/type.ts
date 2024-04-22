@@ -46,16 +46,16 @@ export type TGetAllProductsResponse = {
   reviews: (mongoose.FlattenMaps<TProductReview> & {
     _id: mongoose.Types.ObjectId;
   })[];
-}[];
+};
 
 export type TUpdateProductData = Partial<
   TProduct & {
-    productImages: TProductImageUpdateData[];
+    productImages?: TProductImageUpdateData[];
   }
 >;
 
 export type TProductImageUpdateData = {
-  productImageId: string;
+  productImageId?: string;
   url?: string;
   isDeleted: boolean;
 };

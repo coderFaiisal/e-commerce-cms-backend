@@ -7,5 +7,5 @@ export const generateTrackingNumber = (): string => {
 
   const randomPart = Math.random().toString(36).substring(2, 9).toUpperCase();
 
-  return `TN-${formattedDate}-TJ${randomPart}`;
+  return `TXN-${formattedDate}-P${randomPart}`;
 };

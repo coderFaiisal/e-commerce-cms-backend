@@ -157,15 +157,17 @@ const deleteStore = async (
 
     //! have to update delete models and logic.
 
-    await Billboard.deleteMany({ storeId: storeId }).session(session);
+    await Billboard.deleteMany({ storeId }).session(session);
 
-    await Category.deleteMany({ storeId: storeId }).session(session);
+    await Category.deleteMany({ storeId }).session(session);
 
-    await Attribute.deleteMany({ storeId: storeId }).session(session);
+    await Attribute.deleteMany({ storeId }).session(session);
 
-    await Product.deleteMany({ storeId: storeId }).session(session);
+    //! Have to delete product images and reviews before product deletion
+    await Product.deleteMany({ storeId }).session(session);
 
-    await Order.deleteMany({ storeId: storeId }).session(session);
+    //! Have to delete order items before order deletion
+    await Order.deleteMany({ storeId }).session(session);
 
     await Store.findByIdAndDelete(storeId).session(session);
 

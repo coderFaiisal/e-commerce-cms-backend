@@ -71,10 +71,15 @@ const createProduct = async (
     });
   }
 
-  //generate product code
-  payload.productCode = await generateProductCode(isCategoryExist);
-
   const { productImages, ...productData } = payload;
+
+  //generate product code
+  productData.productCode = await generateProductCode(isCategoryExist);
+
+  if (!productData.returnPolicy) {
+    productData.returnPolicy =
+      'This item is eligible for free replacement, within 7 days of delivery, in an unlikely event of damaged, defective or different item delivered to you.';
+  }
 
   const session = await mongoose.startSession();
 
@@ -110,7 +115,7 @@ const createProduct = async (
 const getAllProducts = async (
   storeId: string,
   query: Record<string, unknown>,
-): Promise<TGenericResponse<TGetAllProductsResponse>> => {
+): Promise<TGenericResponse<TGetAllProductsResponse[]>> => {
   const productQuery = new QueryBuilder(Product.find({ storeId }), query)
     .search(productSearchableFields)
     .filter()
@@ -120,24 +125,21 @@ const getAllProducts = async (
 
   const products = await productQuery.modelQuery;
 
-  const result: TGetAllProductsResponse = [];
+  const result: TGetAllProductsResponse[] = [];
 
-  await asyncForEach(
-    products.map(product => product),
-    async (product: TProduct & { _id: string }) => {
-      const images = await ProductImage.find({ productId: product._id }).lean();
+  await asyncForEach(products, async (product: TProduct & { _id: string }) => {
+    const images = await ProductImage.find({ productId: product._id }).lean();
 
-      const reviews = await ProductReview.find({
-        productId: product._id,
-      }).lean();
+    const reviews = await ProductReview.find({
+      productId: product._id,
+    }).lean();
 
-      result.push({
-        product,
-        images,
-        reviews,
-      });
-    },
-  );
+    result.push({
+      product,
+      images,
+      reviews,
+    });
+  });
 
   const { page, limit, total } = await productQuery.countTotal();
 
@@ -221,19 +223,22 @@ const updateProduct = async (
       pdImage => pdImage.url && !pdImage.isDeleted,
     );
 
-    asyncForEach(
+    await asyncForEach(
       deleteImages,
       async (item: Partial<TProductImageUpdateData>) => {
         await ProductImage.deleteOne({ _id: item.productImageId, productId });
       },
     );
 
-    asyncForEach(newImages, async (item: Partial<TProductImageUpdateData>) => {
-      await ProductImage.create({
-        url: item.url,
-        productId,
-      });
-    });
+    await asyncForEach(
+      newImages,
+      async (item: Partial<TProductImageUpdateData>) => {
+        await ProductImage.create({
+          url: item.url,
+          productId,
+        });
+      },
+    );
   }
 
   await Product.findByIdAndUpdate(productId, updatedData);

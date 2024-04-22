@@ -2,6 +2,7 @@ import express from 'express';
 import { AttributeRoutes } from '../modules/attribute/route';
 import { BillboardRoutes } from '../modules/billboard/route';
 import { CategoryRoutes } from '../modules/category/route';
+import { OrderRoutes } from '../modules/order/route';
 import { ProductRoutes } from '../modules/product/route';
 import { ProductReviewRoutes } from '../modules/productReview/route';
 import { StoreRoutes } from '../modules/store/route';
@@ -42,6 +43,10 @@ const moduleRoutes = [
   {
     path: '/product-reviews',
     route: ProductReviewRoutes,
+  },
+  {
+    path: '/orders',
+    route: OrderRoutes,
   },
 ];
 

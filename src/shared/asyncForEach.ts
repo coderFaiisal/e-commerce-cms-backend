@@ -8,6 +8,6 @@ export const asyncForEach = async (array: any[], callback: any) => {
   }
 };
 
-// for (const index of array) {
+// for (const index in array) {
 //   await callback(array[index], parseInt(index), array);
 // }

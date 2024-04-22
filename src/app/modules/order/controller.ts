@@ -3,74 +3,83 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { OrderService } from './service';
-import { IOrder } from './type';
 
 const createOrder = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
   const { ...orderData } = req.body;
 
-  const result = await OrderService.createOrder(orderData);
+  const result = await OrderService.createOrder(user, orderData);
 
-  sendResponse<IOrder>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Order completed successfully',
+    message: 'Order create successfully.',
     data: result,
   });
 });
 
 const getAllOrders = catchAsync(async (req: Request, res: Response) => {
-  const { storeId } = req.params;
   const user = req.user;
 
-  const result = await OrderService.getAllOrders(storeId, user);
+  const storeId = req.params.storeId;
 
-  sendResponse<IOrder[]>(res, {
+  const query = req.query;
+
+  const result = await OrderService.getAllOrders(user, storeId, query);
+
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Orders retrieved successfully',
-    data: result,
+    message: 'Orders retrieved successfully.',
+    meta: result.meta,
+    data: result.data,
   });
 });
 
 const getSingleOrder = catchAsync(async (req: Request, res: Response) => {
-  const orderId = req.params.id;
   const user = req.user;
 
-  const result = await OrderService.getSingleOrder(orderId, user);
+  const orderId = req.params.id;
 
-  sendResponse<IOrder>(res, {
+  const result = await OrderService.getSingleOrder(user, orderId);
+
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Order retrieved successfully',
+    message: 'Order retrieved successfully.',
     data: result,
   });
 });
 
 const updateOrder = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
+
   const orderId = req.params.id;
+
   const { ...updatedData } = req.body;
 
-  const result = await OrderService.updateOrder(orderId, user, updatedData);
+  const result = await OrderService.updateOrder(user, orderId, updatedData);
 
-  sendResponse<IOrder>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Order updated successfully',
+    message: 'Order updated successfully.',
     data: result,
   });
 });
 
-const deleteOrder = catchAsync(async (req: Request, res: Response) => {
+const cancelOrder = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
+
   const orderId = req.params.id;
 
-  const result = await OrderService.deleteOrder(orderId, user);
+  const result = await OrderService.cancelOrder(user, orderId);
 
-  sendResponse<IOrder>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Order deleted successfully',
+    message: 'Order canceled successfully.',
     data: result,
   });
 });
@@ -80,5 +89,5 @@ export const OrderController = {
   getAllOrders,
   getSingleOrder,
   updateOrder,
-  deleteOrder,
+  cancelOrder,
 };

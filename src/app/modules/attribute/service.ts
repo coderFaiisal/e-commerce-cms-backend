@@ -104,17 +104,17 @@ const deleteAttribute = async (
   user: JwtPayload | null,
   attributeId: string,
 ): Promise<boolean> => {
+  const isUserExist = await User.findOne({ email: user?.email }).lean();
+
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
+  }
+
   const isAttributeExist =
     await Attribute.findById(attributeId).populate('storeId');
 
   if (!isAttributeExist) {
     throw new ApiError(httpStatus.NOT_FOUND, "Attribute doesn't exist!");
-  }
-
-  const isUserExist = await User.findOne({ email: user?.email }).lean();
-
-  if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
   }
 
   const userIdString = isUserExist._id.toString();

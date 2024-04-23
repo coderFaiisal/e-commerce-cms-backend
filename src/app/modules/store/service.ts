@@ -2,11 +2,13 @@ import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
+import { asyncForEach } from '../../../shared/asyncForEach';
 import { Attribute } from '../attribute/model';
 import { Billboard } from '../billboard/model';
 import { Category } from '../category/model';
-import { Order } from '../order/model';
-import { Product } from '../product/model';
+import { Order, OrderItem } from '../order/model';
+import { Product, ProductImage } from '../product/model';
+import { ProductReview } from '../productReview/model';
 import { Subscription } from '../subscription/model';
 import { plans } from '../subscription/type';
 import { User } from '../user/model';
@@ -155,19 +157,43 @@ const deleteStore = async (
   try {
     session.startTransaction();
 
-    //! have to update delete models and logic.
+    const deleteProducts = await Product.find({ storeId }, { _id: 1 }).session(
+      session,
+    );
+
+    await asyncForEach(
+      deleteProducts,
+      async (product: { _id: mongoose.ObjectId }) => {
+        await ProductImage.deleteMany({ productId: product._id }).session(
+          session,
+        );
+
+        await ProductReview.deleteMany({ productId: product._id }).session(
+          session,
+        );
+
+        await Product.findByIdAndDelete(product._id).session(session);
+      },
+    );
+
+    const deleteOrders = await Order.find({ storeId }, { _id: 1 }).session(
+      session,
+    );
+
+    await asyncForEach(
+      deleteOrders,
+      async (order: { _id: mongoose.ObjectId }) => {
+        await OrderItem.deleteMany({ orderId: order._id }).session(session);
+
+        await Order.findByIdAndDelete(order._id).session(session);
+      },
+    );
 
     await Billboard.deleteMany({ storeId }).session(session);
 
     await Category.deleteMany({ storeId }).session(session);
 
     await Attribute.deleteMany({ storeId }).session(session);
-
-    //! Have to delete product images and reviews before product deletion
-    await Product.deleteMany({ storeId }).session(session);
-
-    //! Have to delete order items before order deletion
-    await Order.deleteMany({ storeId }).session(session);
 
     await Store.findByIdAndDelete(storeId).session(session);
 
@@ -178,7 +204,6 @@ const deleteStore = async (
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-
     throw error;
   }
 };

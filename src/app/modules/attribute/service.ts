@@ -2,6 +2,8 @@ import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
+import { TGenericResponse } from '../../../types/common';
+import QueryBuilder from '../../builder/QueryBuilder';
 import { Product } from '../product/model';
 import { Store } from '../store/model';
 import { User } from '../user/model';
@@ -35,9 +37,7 @@ const createAttribute = async (
     type: payload.type,
     name: payload.name,
     storeId: payload.storeId,
-  })
-    .populate('storeId')
-    .lean();
+  }).lean();
 
   if (isAttributeExist) {
     throw new ApiError(httpStatus.CONFLICT, 'Attribute already exist!');
@@ -50,10 +50,27 @@ const createAttribute = async (
 
 const getAllAttributes = async (
   storeId: string,
-): Promise<TAttribute[] | null> => {
-  const result = await Attribute.find({ storeId }).populate('storeId').lean();
+  query: Record<string, unknown>,
+): Promise<TGenericResponse<TAttribute[]>> => {
+  const attributeQuery = new QueryBuilder(Attribute.find({ storeId }), query)
+    .search(['type', 'name'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  return result;
+  const result = await attributeQuery.modelQuery;
+
+  const { page, limit, total } = await attributeQuery.countTotal();
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  };
 };
 
 const getSingleAttribute = async (
@@ -129,9 +146,14 @@ const deleteAttribute = async (
   try {
     session.startTransaction();
 
-    //! have to recheck this logic
-
-    await Product.updateMany({ attributeId }, { attributeId: null });
+    await Product.updateMany(
+      {},
+      {
+        $pull: {
+          attributeIds: attributeId,
+        },
+      },
+    ).session(session);
 
     await Attribute.findByIdAndDelete(attributeId).session(session);
 

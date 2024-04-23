@@ -22,13 +22,16 @@ const createAttribute = catchAsync(async (req: Request, res: Response) => {
 const getAllAttributes = catchAsync(async (req: Request, res: Response) => {
   const storeId = req.params.storeId;
 
-  const result = await AttributeService.getAllAttributes(storeId);
+  const query = req.query;
+
+  const result = await AttributeService.getAllAttributes(storeId, query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Attributes retrieved successfully.',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 

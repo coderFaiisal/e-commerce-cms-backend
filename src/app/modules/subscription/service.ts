@@ -8,7 +8,7 @@ import { TSubscription } from './type';
 const createSubscription = async (
   user: JwtPayload | null,
   payload: TSubscription,
-) => {
+): Promise<boolean> => {
   const isUserExist = await User.findOne(
     { email: user?.email },
     { email: 1, role: 1 },
@@ -28,9 +28,9 @@ const createSubscription = async (
 
   payload.userId = isUserExist._id;
 
-  const result = (await Subscription.create(payload)).populate('userId');
+  await Subscription.create(payload);
 
-  return result;
+  return true;
 };
 
 const getSingleSubscription = async (id: string): Promise<TSubscription> => {
@@ -46,7 +46,7 @@ const getSingleSubscription = async (id: string): Promise<TSubscription> => {
 const renewOrUpgradeSubscription = async (
   id: string,
   payload: Partial<TSubscription>,
-) => {
+): Promise<boolean> => {
   const subscription = await Subscription.findById(id);
 
   if (!subscription) {
@@ -63,7 +63,7 @@ const renewOrUpgradeSubscription = async (
 
   await subscription.save();
 
-  return subscription;
+  return true;
 };
 
 const cancelSubscription = async (id: string): Promise<boolean> => {

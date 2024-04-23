@@ -18,7 +18,7 @@ import { TStore } from './type';
 const createStore = async (
   user: JwtPayload | null,
   payload: Partial<TStore>,
-): Promise<TStore> => {
+): Promise<boolean> => {
   const isUserExist = await User.findOne({ email: user?.email }).lean();
 
   if (!isUserExist) {
@@ -55,9 +55,9 @@ const createStore = async (
 
   payload.userId = isUserExist._id;
 
-  const result = await Store.create(payload);
+  await Store.create(payload);
 
-  return result;
+  return true;
 };
 
 const isStoreExist = async (

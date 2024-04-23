@@ -1,4 +1,5 @@
 import express from 'express';
+import { AnalyticsRoutes } from '../modules/analytics/route';
 import { AttributeRoutes } from '../modules/attribute/route';
 import { BillboardRoutes } from '../modules/billboard/route';
 import { CategoryRoutes } from '../modules/category/route';
@@ -47,6 +48,10 @@ const moduleRoutes = [
   {
     path: '/orders',
     route: OrderRoutes,
+  },
+  {
+    path: '/analytics',
+    route: AnalyticsRoutes,
   },
 ];
 

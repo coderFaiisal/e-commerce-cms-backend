@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
+import { Billboard } from '../billboard/model';
 import { Product } from '../product/model';
 import { Store } from '../store/model';
 import { User } from '../user/model';
@@ -125,6 +126,8 @@ const deleteCategory = async (
     session.startTransaction();
 
     await Product.deleteMany({ categoryId }).session(session);
+
+    await Billboard.deleteMany({ categoryId }).session(session);
 
     await Category.findByIdAndDelete(categoryId).session(session);
 

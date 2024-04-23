@@ -89,6 +89,6 @@ router.patch(
   updateProfile,
 );
 
-router.delete('/:id', auth(admin, super_admin), deleteAccount);
+router.delete('/:id', auth(super_admin), deleteAccount);
 
 export const UserRoutes = router;

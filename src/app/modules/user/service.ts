@@ -502,7 +502,11 @@ const updateProfile = async (
 };
 
 const deleteAccount = async (userId: string): Promise<boolean> => {
-  //!have to add more logic here. Delete from subscription and other model
+  //  Can add more logic here.
+  //  Like: 1. Add user status in model.
+  //        2. Then inActive subscription, store and other model data
+  //           related to userId.
+  //        3. Add conditional operation based on user role.
 
   const isUserExist = await User.findById(userId, { _id: 1 }).lean();
 
@@ -520,6 +524,7 @@ const deleteAccount = async (userId: string): Promise<boolean> => {
     await Profile.findOneAndDelete({ userId }).session(session);
 
     await session.commitTransaction();
+    session.endSession();
 
     return true;
   } catch (error) {

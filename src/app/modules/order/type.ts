@@ -4,14 +4,13 @@ import { TStore } from '../store/type';
 import { TUser } from '../user/type';
 
 export type TOrder = {
-  isPaid: boolean;
+  isPaid?: boolean;
   phoneNumber: string;
   orderStatus?: 'pending' | 'processing' | 'delivered' | 'cancel';
   discounts?: number;
   totalCost: number;
   shippingCharge: number;
   shippingAddress: string;
-  paymentMethod: string;
   deliveryMethod: string;
   trackingNumber: string;
   giftMessage?: string;

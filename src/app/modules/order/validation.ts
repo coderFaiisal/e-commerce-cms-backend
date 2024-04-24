@@ -2,9 +2,6 @@ import { z } from 'zod';
 
 const createSchema = z.object({
   body: z.object({
-    isPaid: z.boolean({
-      required_error: 'Payment status required.',
-    }),
     phoneNumber: z.string({
       required_error: 'Phone number is required.',
     }),
@@ -23,9 +20,6 @@ const createSchema = z.object({
     }),
     shippingAddress: z.string({
       required_error: 'Shipping address is required.',
-    }),
-    paymentMethod: z.string({
-      required_error: 'Payment method is required.',
     }),
     deliveryMethod: z.string({
       required_error: 'Delivery method is required.',

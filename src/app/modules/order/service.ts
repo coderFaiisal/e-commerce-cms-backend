@@ -1,14 +1,17 @@
+import axios from 'axios';
 import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import config from '../../../config';
 import { USER_ROLE } from '../../../constant/user';
 import ApiError from '../../../errors/ApiError';
 import { asyncForEach } from '../../../shared/asyncForEach';
 import { TGenericResponse } from '../../../types/common';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { Payment } from '../payment/model';
 import { Product } from '../product/model';
 import { Store } from '../store/model';
-import { User } from '../user/model';
+import { Profile, User } from '../user/model';
 import { Order, OrderItem } from './model';
 import { TOrder, TOrderItem, TOrdersResponse } from './type';
 import { generateTrackingNumber } from './utils';
@@ -16,15 +19,19 @@ import { generateTrackingNumber } from './utils';
 const createOrder = async (
   user: JwtPayload | null,
   payload: TOrder & { orderItems: TOrderItem[] },
-): Promise<boolean> => {
+): Promise<Record<string, unknown>> => {
   const isUserExist = await User.findOne({ email: user?.email }).lean();
 
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
   }
 
-  if (!payload.isPaid) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Please, complete payment.');
+  const isUserProfileExist = await Profile.findOne({
+    userId: isUserExist._id,
+  }).lean();
+
+  if (!isUserProfileExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Profile doesn't exist!");
   }
 
   const { orderItems, ...orderData } = payload;
@@ -37,6 +44,8 @@ const createOrder = async (
 
   try {
     session.startTransaction();
+
+    let productName = '';
 
     // Update product quantity
     await asyncForEach(orderItems, async (item: TOrderItem) => {
@@ -62,6 +71,10 @@ const createOrder = async (
       }
 
       await product.save({ session });
+
+      productName =
+        productName +
+        `Product Name: ${product?.name}, Quantity: ${item.quantity}`;
     });
 
     const order = await Order.create([orderData], { session });
@@ -72,12 +85,48 @@ const createOrder = async (
       await OrderItem.create([orderItem], { session });
     });
 
+    const today = new Date();
+
+    const transactionId =
+      order[0].trackingNumber +
+      today.getFullYear() +
+      today.getMonth() +
+      today.getDay() +
+      today.getHours() +
+      today.getMinutes();
+
+    const paymentData = {
+      amount: order[0].totalCost,
+      transactionId,
+      paymentFor: 'order',
+      paymentForId: order[0]._id,
+      userId: isUserExist._id,
+    };
+
+    await Payment.create([paymentData], { session });
+
+    const initPaymentData = {
+      amount: order[0].totalCost,
+      transactionId,
+      name: isUserProfileExist.name,
+      email: isUserExist.email,
+      phoneNumber: isUserProfileExist.phoneNumber,
+      shippingAddress: order[0].shippingAddress,
+      deliveryMethod: order[0].deliveryMethod,
+      productName: productName,
+    };
+
     const commitResult = await session.commitTransaction();
 
     if (commitResult && commitResult.ok === 1) {
       await session.endSession();
 
-      return true;
+      const initPayment = await axios.post(
+        config.init_order_payment_api_end_point as string,
+        initPaymentData,
+      );
+
+      return initPayment.data.data;
     } else {
       throw new ApiError(httpStatus.NOT_MODIFIED, 'Transaction commit failed!');
     }

@@ -4,6 +4,7 @@ import { AttributeRoutes } from '../modules/attribute/route';
 import { BillboardRoutes } from '../modules/billboard/route';
 import { CategoryRoutes } from '../modules/category/route';
 import { OrderRoutes } from '../modules/order/route';
+import { PaymentRoutes } from '../modules/payment/route';
 import { ProductRoutes } from '../modules/product/route';
 import { ProductReviewRoutes } from '../modules/productReview/route';
 import { StoreRoutes } from '../modules/store/route';
@@ -52,6 +53,10 @@ const moduleRoutes = [
   {
     path: '/analytics',
     route: AnalyticsRoutes,
+  },
+  {
+    path: '/payments',
+    route: PaymentRoutes,
   },
 ];
 

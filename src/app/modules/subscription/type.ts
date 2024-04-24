@@ -13,6 +13,7 @@ export type TSubscription = {
   startTime: Date;
   endTime: Date;
   isActive: boolean;
+  isPaid: boolean;
   userId: Types.ObjectId | TUser;
 };
 

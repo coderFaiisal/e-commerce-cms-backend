@@ -3,14 +3,13 @@ import { OrderItemModel, OrderModel, TOrder, TOrderItem } from './type';
 
 const orderSchema = new Schema<TOrder, OrderModel>(
   {
-    isPaid: { type: Boolean, required: true },
+    isPaid: { type: Boolean, default: false },
     phoneNumber: { type: String, required: true },
     orderStatus: { type: String, default: 'pending' },
     discounts: { type: Number, default: 0 },
     totalCost: { type: Number, required: true },
     shippingCharge: { type: Number, required: true },
     shippingAddress: { type: String, required: true },
-    paymentMethod: { type: String, required: true },
     deliveryMethod: { type: String, required: true },
     trackingNumber: { type: String, required: true },
     giftMessage: { type: String },

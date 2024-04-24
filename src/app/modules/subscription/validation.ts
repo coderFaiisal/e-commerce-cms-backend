@@ -8,6 +8,9 @@ const createSchema = z.object({
     endTime: z.coerce.date({
       required_error: 'End time is required.',
     }),
+    totalCost: z.number({
+      required_error: 'Total cost required.',
+    }),
   }),
 });
 

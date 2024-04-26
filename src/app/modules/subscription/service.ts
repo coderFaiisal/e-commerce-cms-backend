@@ -1,17 +1,25 @@
 import axios from 'axios';
 import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
 import { Payment } from '../payment/model';
 import { Profile, User } from '../user/model';
 import { Subscription } from './model';
-import { TSubscription } from './type';
+import { TSubscription, plans } from './type';
 
 const createSubscription = async (
   user: JwtPayload | null,
-  payload: TSubscription & { totalCost: number },
+  payload: {
+    plan: plans;
+    startTime: Date;
+    endTime: Date;
+    isActive: boolean;
+    isPaid: boolean;
+    userId: Types.ObjectId;
+    totalCost: number;
+  },
 ): Promise<Record<string, unknown>> => {
   const isUserExist = await User.findOne({ email: user?.email }).lean();
 

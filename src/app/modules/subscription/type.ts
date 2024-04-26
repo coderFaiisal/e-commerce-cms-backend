@@ -1,4 +1,4 @@
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { TUser } from '../user/type';
 
 /* eslint-disable no-unused-vars */
@@ -14,7 +14,7 @@ export type TSubscription = {
   endTime: Date;
   isActive: boolean;
   isPaid: boolean;
-  userId: Types.ObjectId | TUser;
+  userId: TUser;
 };
 
 export type SubscriptionModel = Model<TSubscription, Record<string, undefined>>;

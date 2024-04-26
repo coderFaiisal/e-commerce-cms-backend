@@ -43,4 +43,6 @@ export default {
     process.env.INIT_ORDER_PAYMENT_API_END_POINT,
   init_subscription_payment_api_end_point:
     process.env.INIT_SUBSCRIPTION_PAYMENT_API_END_POINT,
+
+  redis_url: process.env.REDIS_URL,
 };

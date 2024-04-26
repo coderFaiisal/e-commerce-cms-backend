@@ -3,6 +3,7 @@ import { AnalyticsRoutes } from '../modules/analytics/route';
 import { AttributeRoutes } from '../modules/attribute/route';
 import { BillboardRoutes } from '../modules/billboard/route';
 import { CategoryRoutes } from '../modules/category/route';
+import { NotificationRoutes } from '../modules/notification/route';
 import { OrderRoutes } from '../modules/order/route';
 import { PaymentRoutes } from '../modules/payment/route';
 import { ProductRoutes } from '../modules/product/route';
@@ -49,6 +50,10 @@ const moduleRoutes = [
   {
     path: '/orders',
     route: OrderRoutes,
+  },
+  {
+    path: '/notifications',
+    route: NotificationRoutes,
   },
   {
     path: '/analytics',

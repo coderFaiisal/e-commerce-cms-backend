@@ -1,10 +1,12 @@
 import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
 import { TGenericResponse } from '../../../types/common';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { Notification } from '../notification/model';
 import { Product } from '../product/model';
-import { User } from '../user/model';
+import { Profile, User } from '../user/model';
 import { ProductReview } from './model';
 import { TProductReview } from './type';
 
@@ -24,6 +26,14 @@ const createProductReview = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Sign in please.');
   }
 
+  const isProfileExist = await Profile.findOne({
+    userId: isUserExist?._id,
+  }).lean();
+
+  if (!isProfileExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Profile doesn't found!");
+  }
+
   const isAlreadyReviewed = await ProductReview.findOne({
     rating: payload.rating,
     productId: payload.productId,
@@ -36,7 +46,30 @@ const createProductReview = async (
 
   payload.userId = isUserExist._id;
 
-  await ProductReview.create(payload);
+  const notificationData = {
+    title: 'New Product Review',
+    message: `You received new product review from ${isProfileExist.name}`,
+    notificationFor: 'order',
+    userId: isUserExist._id,
+  };
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    await ProductReview.create([payload], { session });
+
+    await Notification.create([notificationData], { session });
+
+    await session.commitTransaction();
+    session.endSession();
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+
+    throw error;
+  }
 
   return true;
 };

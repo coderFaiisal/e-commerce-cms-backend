@@ -26,7 +26,7 @@ cron.schedule('0 10 * * *', async () => {
       <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Password Reset Link</title>
+          <title>Subscription Time Expired</title>
           <style>
               body {
                   font-family: Arial, sans-serif;
@@ -88,7 +88,7 @@ cron.schedule('0 10 * * *', async () => {
       <body>
           <div class="container">
               <div class="header">
-                  <h1>Password Reset</h1>
+                  <h1>Subscription Expiration Time</h1>
               </div>
               <div class="content">
                   <p>Hi,</p>
@@ -134,7 +134,7 @@ cron.schedule('0 10 * * *', async () => {
       <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Password Reset Link</title>
+          <title>Renew Subscription</title>
           <style>
               body {
                   font-family: Arial, sans-serif;
@@ -196,7 +196,7 @@ cron.schedule('0 10 * * *', async () => {
       <body>
           <div class="container">
               <div class="header">
-                  <h1>Password Reset</h1>
+                  <h1>Subscription Expiration</h1>
               </div>
               <div class="content">
                   <p>Hi,</p>

@@ -8,6 +8,7 @@ import ApiError from '../../../errors/ApiError';
 import { asyncForEach } from '../../../shared/asyncForEach';
 import { TGenericResponse } from '../../../types/common';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { Notification } from '../notification/model';
 import { Payment } from '../payment/model';
 import { Product } from '../product/model';
 import { Store } from '../store/model';
@@ -26,11 +27,11 @@ const createOrder = async (
     throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
   }
 
-  const isUserProfileExist = await Profile.findOne({
+  const isProfileExist = await Profile.findOne({
     userId: isUserExist._id,
   }).lean();
 
-  if (!isUserProfileExist) {
+  if (!isProfileExist) {
     throw new ApiError(httpStatus.NOT_FOUND, "Profile doesn't exist!");
   }
 
@@ -105,12 +106,21 @@ const createOrder = async (
 
     await Payment.create([paymentData], { session });
 
+    const notificationData = {
+      title: 'New Order',
+      message: `You received new order from - ${isProfileExist.name}`,
+      notificationFor: 'order',
+      userId: isUserExist._id,
+    };
+
+    await Notification.create([notificationData], { session });
+
     const initPaymentData = {
       amount: order[0].totalCost,
       transactionId,
-      name: isUserProfileExist.name,
+      name: isProfileExist.name,
       email: isUserExist.email,
-      phoneNumber: isUserProfileExist.phoneNumber,
+      phoneNumber: isProfileExist.phoneNumber,
       shippingAddress: order[0].shippingAddress,
       deliveryMethod: order[0].deliveryMethod,
       productName: productName,

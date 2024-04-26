@@ -4,6 +4,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import mongoose, { Types } from 'mongoose';
 import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
+import { Notification } from '../notification/model';
 import { Payment } from '../payment/model';
 import { Profile, User } from '../user/model';
 import { Subscription } from './model';
@@ -74,6 +75,15 @@ const createSubscription = async (
     };
 
     await Payment.create([paymentData], { session });
+
+    const notificationData = {
+      title: 'New Subscriber',
+      message: `You received new subscriber - ${isProfileExist.name}`,
+      notificationFor: 'subscription',
+      userId: isUserExist._id,
+    };
+
+    await Notification.create([notificationData], { session });
 
     const initPaymentData = {
       amount: payload.totalCost,
@@ -174,6 +184,15 @@ const renewOrUpgradeSubscription = async (
     };
 
     await Payment.create([paymentData], { session });
+
+    const notificationData = {
+      title: 'Renew Subscription',
+      message: `${isProfileExist.name} is renew his subscription.`,
+      notificationFor: 'subscription',
+      userId: isUserExist._id,
+    };
+
+    await Notification.create([notificationData], { session });
 
     const initPaymentData = {
       amount: payload.totalCost,

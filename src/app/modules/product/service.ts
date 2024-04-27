@@ -3,6 +3,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
 import { asyncForEach } from '../../../shared/asyncForEach';
+import { RedisClient } from '../../../shared/redis';
 import { TGenericResponse } from '../../../types/common';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { Attribute } from '../attribute/model';
@@ -157,6 +158,12 @@ const getSingleProduct = async (
   productId: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> => {
+  const isCacheExist = await RedisClient.get(productId);
+
+  if (isCacheExist) {
+    return isCacheExist;
+  }
+
   const product = await Product.findById(productId)
     .populate('storeId')
     .populate('categoryId')
@@ -171,11 +178,15 @@ const getSingleProduct = async (
 
   const reviews = await ProductReview.find({ productId }).lean();
 
-  return {
+  const result = {
     product,
     images,
     reviews,
   };
+
+  await RedisClient.set(productId, result, 'EX', 604800);
+
+  return result;
 };
 
 const updateProduct = async (
@@ -241,7 +252,21 @@ const updateProduct = async (
     );
   }
 
-  await Product.findByIdAndUpdate(productId, updatedData);
+  const product = await Product.findByIdAndUpdate(productId, updatedData, {
+    new: true,
+  });
+
+  const images = await ProductImage.find({ productId }).lean();
+
+  const reviews = await ProductReview.find({ productId }).lean();
+
+  const result = {
+    product,
+    images,
+    reviews,
+  };
+
+  await RedisClient.set(productId, result, 'EX', 604800);
 
   return true;
 };
@@ -284,6 +309,8 @@ const deleteProduct = async (
 
     await session.commitTransaction();
     session.endSession();
+
+    await RedisClient.del(productId);
 
     return true;
   } catch (error) {

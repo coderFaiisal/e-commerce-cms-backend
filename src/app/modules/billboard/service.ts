@@ -1,6 +1,7 @@
 import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
 import ApiError from '../../../errors/ApiError';
+import { RedisClient } from '../../../shared/redis';
 import { Category } from '../category/model';
 import { Store } from '../store/model';
 import { User } from '../user/model';
@@ -60,12 +61,20 @@ const getAllBillboards = async (
 
 const getSingleBillboard = async (
   billboardId: string,
-): Promise<TBillboard | null> => {
+): Promise<TBillboard | string | null> => {
+  const isCacheExist = await RedisClient.get(billboardId);
+
+  if (isCacheExist) {
+    return isCacheExist;
+  }
+
   const result = await Billboard.findById(billboardId).populate('categoryId');
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, "Billboard doesn't found.");
   }
+
+  await RedisClient.set(billboardId, result, 'EX', 604800);
 
   return result;
 };
@@ -95,7 +104,11 @@ const updateBillboard = async (
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden access.');
   }
 
-  await Billboard.findByIdAndUpdate(billboardId, updatedData);
+  const result = await Billboard.findByIdAndUpdate(billboardId, updatedData, {
+    new: true,
+  });
+
+  await RedisClient.set(billboardId, result, 'EX', 604800);
 
   return true;
 };
@@ -125,6 +138,8 @@ const deleteBillboard = async (
   }
 
   await Billboard.findByIdAndDelete(billboardId);
+
+  await RedisClient.del(billboardId);
 
   return true;
 };

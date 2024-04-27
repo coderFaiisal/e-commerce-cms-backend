@@ -14,7 +14,7 @@ const redis = new Redis(redisUri());
 
 const set = async (
   key: string,
-  value: string,
+  value: any,
   EX: any,
   expireTime: number,
 ): Promise<void> => {

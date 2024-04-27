@@ -6,6 +6,7 @@ import config from '../../../config';
 import { USER_ROLE } from '../../../constant/user';
 import ApiError from '../../../errors/ApiError';
 import { asyncForEach } from '../../../shared/asyncForEach';
+import { RedisClient } from '../../../shared/redis';
 import { TGenericResponse } from '../../../types/common';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { Notification } from '../notification/model';
@@ -247,10 +248,19 @@ const getAllOrders = async (
 const getSingleOrder = async (
   user: JwtPayload | null,
   orderId: string,
-): Promise<{
-  order: TOrder;
-  orderItems: TOrderItem[];
-}> => {
+): Promise<
+  | {
+      order: TOrder;
+      orderItems: TOrderItem[];
+    }
+  | string
+> => {
+  const isCacheExist = await RedisClient.get(orderId);
+
+  if (isCacheExist) {
+    return isCacheExist;
+  }
+
   const order = await Order.findById(orderId).lean();
 
   if (!order) {
@@ -273,18 +283,26 @@ const getSingleOrder = async (
 
     const orderItems = await OrderItem.find({ orderId });
 
-    return {
+    const result = {
       order,
       orderItems,
     };
+
+    await RedisClient.set(orderId, result, 'EX', 604800);
+
+    return result;
   }
 
   const orderItems = await OrderItem.find({ orderId });
 
-  return {
+  const result = {
     order,
     orderItems,
   };
+
+  await RedisClient.set(orderId, result, 'EX', 604800);
+
+  return result;
 };
 
 const updateOrder = async (
@@ -317,7 +335,16 @@ const updateOrder = async (
     return true;
   }
 
-  await Order.findByIdAndUpdate(orderId, payload);
+  const order = await Order.findByIdAndUpdate(orderId, payload, { new: true });
+
+  const orderItems = await OrderItem.find({ orderId });
+
+  const result = {
+    order,
+    orderItems,
+  };
+
+  await RedisClient.set(orderId, result, 'EX', 604800);
 
   return true;
 };
@@ -362,12 +389,21 @@ const cancelOrder = async (
       }
     });
 
-    await Order.findByIdAndUpdate(orderId, { orderStatus: 'cancel' }).session(
-      session,
-    );
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { orderStatus: 'cancel' },
+      { new: true },
+    ).session(session);
 
     await session.commitTransaction();
     session.endSession();
+
+    const result = {
+      order,
+      orderItems,
+    };
+
+    await RedisClient.set(orderId, result, 'EX', 604800);
 
     return true;
   } catch (error) {

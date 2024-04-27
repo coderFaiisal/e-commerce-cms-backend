@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
+import { RedisClient } from '../../../shared/redis';
 import { Billboard } from '../billboard/model';
 import { Product } from '../product/model';
 import { Store } from '../store/model';
@@ -56,12 +57,20 @@ const getAllCategories = async (
 
 const getSingleCategory = async (
   categoryId: string,
-): Promise<TCategory | null> => {
+): Promise<TCategory | string | null> => {
+  const isCacheExist = await RedisClient.get(categoryId);
+
+  if (isCacheExist) {
+    return isCacheExist;
+  }
+
   const result = await Category.findById(categoryId).populate('storeId').lean();
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, "Category doesn't found.");
   }
+
+  await RedisClient.set(categoryId, result, 'EX', 604800);
 
   return result;
 };
@@ -91,7 +100,11 @@ const updateCategory = async (
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden access.');
   }
 
-  await Category.findByIdAndUpdate(categoryId, updatedData);
+  const result = await Category.findByIdAndUpdate(categoryId, updatedData, {
+    new: true,
+  });
+
+  await RedisClient.set(categoryId, result, 'EX', 604800);
 
   return true;
 };
@@ -133,6 +146,8 @@ const deleteCategory = async (
 
     await session.commitTransaction();
     session.endSession();
+
+    await RedisClient.del(categoryId);
 
     return true;
   } catch (error) {

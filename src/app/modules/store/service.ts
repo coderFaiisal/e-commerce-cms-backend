@@ -3,6 +3,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import ApiError from '../../../errors/ApiError';
 import { asyncForEach } from '../../../shared/asyncForEach';
+import { RedisClient } from '../../../shared/redis';
 import { Attribute } from '../attribute/model';
 import { Billboard } from '../billboard/model';
 import { Category } from '../category/model';
@@ -90,12 +91,22 @@ const getAllStores = async (
   return result;
 };
 
-const getSingleStore = async (storeId: string): Promise<TStore | null> => {
+const getSingleStore = async (
+  storeId: string,
+): Promise<TStore | string | null> => {
+  const isCacheExist = await RedisClient.get(storeId);
+
+  if (isCacheExist) {
+    return isCacheExist;
+  }
+
   const result = await Store.findById(storeId).lean();
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Store doesn't foun");
+    throw new ApiError(httpStatus.NOT_FOUND, "Store doesn't found.");
   }
+
+  await RedisClient.set(storeId, result, 'EX', 604800);
 
   return result;
 };
@@ -124,7 +135,11 @@ const updateStore = async (
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden access.');
   }
 
-  await Store.findByIdAndUpdate(storeId, updatedData);
+  const result = await Store.findByIdAndUpdate(storeId, updatedData, {
+    new: true,
+  });
+
+  await RedisClient.set(storeId, result, 'EX', 604800);
 
   return true;
 };
@@ -133,9 +148,9 @@ const deleteStore = async (
   storeId: string,
   user: JwtPayload | null,
 ): Promise<boolean> => {
-  const store = await Store.findById(storeId).lean();
+  const isStoreExist = await Store.findById(storeId).lean();
 
-  if (!store) {
+  if (!isStoreExist) {
     throw new ApiError(httpStatus.NOT_FOUND, "Store doesn't found.");
   }
 
@@ -146,7 +161,7 @@ const deleteStore = async (
   }
 
   const userIdString = isUserExist._id.toString();
-  const storeUserIdString = store.userId.toString();
+  const storeUserIdString = isStoreExist.userId.toString();
 
   if (userIdString !== storeUserIdString) {
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden access.');
@@ -199,6 +214,8 @@ const deleteStore = async (
 
     await session.commitTransaction();
     session.endSession();
+
+    await RedisClient.del(storeId);
 
     return true;
   } catch (error) {

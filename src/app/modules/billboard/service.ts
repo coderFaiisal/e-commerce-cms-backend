@@ -54,7 +54,10 @@ const createBillboard = async (
 const getAllBillboards = async (
   storeId: string,
 ): Promise<TBillboard[] | null> => {
-  const result = await Billboard.find({ storeId }).populate('storeId').lean();
+  const result = await Billboard.find({ storeId })
+    .populate('storeId')
+    .populate('categoryId')
+    .lean();
 
   return result;
 };

@@ -12,9 +12,12 @@ const getAllNotifications = async (
 ) => {
   let notificationQuery: any;
 
-  if (user?.role === 'store_owner') {
+  if (user?.role === 'store-owner') {
     notificationQuery = new QueryBuilder(
-      Notification.find({ notificationFor: 'order' }),
+      Notification.find({ notificationFor: 'order' }).sort({
+        createdAt: -1,
+        status: -1,
+      }),
       query,
     )
       .search(['title'])
@@ -36,7 +39,8 @@ const getAllNotifications = async (
       .fields();
   }
 
-  const result = await notificationQuery.modelQuery;
+  const result = await notificationQuery?.modelQuery;
+
   const { page, limit, total } = await notificationQuery.countTotal();
 
   return {

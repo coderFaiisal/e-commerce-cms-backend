@@ -116,6 +116,22 @@ const createSubscription = async (
   }
 };
 
+const isSubscriptionExist = async (
+  user: JwtPayload | null,
+): Promise<TSubscription | null> => {
+  const isUserExist = await User.findOne({ email: user?.email }).lean();
+
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User doesn't exist!");
+  }
+
+  const result = await Subscription.find({ userId: isUserExist?._id }).sort({
+    createdAt: 1,
+  });
+
+  return result[0];
+};
+
 const getSingleSubscription = async (id: string): Promise<TSubscription> => {
   const result = await Subscription.findById(id).populate('userId').lean();
 
@@ -248,6 +264,7 @@ const cancelSubscription = async (id: string): Promise<boolean> => {
 
 export const SubscriptionService = {
   createSubscription,
+  isSubscriptionExist,
   getSingleSubscription,
   renewOrUpgradeSubscription,
   cancelSubscription,

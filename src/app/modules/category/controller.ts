@@ -38,7 +38,7 @@ const getSingleCategory = catchAsync(async (req: Request, res: Response) => {
 
   const result = await CategoryService.getSingleCategory(categoryId);
 
-  sendResponse<TCategory>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Category retrieved successfully.',

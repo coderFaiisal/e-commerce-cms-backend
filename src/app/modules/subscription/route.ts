@@ -13,6 +13,7 @@ const { createSchema } = SubscriptionValidation;
 
 const {
   createSubscription,
+  isSubscriptionExist,
   getSingleSubscription,
   renewOrUpgradeSubscription,
   cancelSubscription,
@@ -24,6 +25,8 @@ router.post(
   validateRequest(createSchema),
   createSubscription,
 );
+
+router.get('/isSubscriptionExist', auth(store_owner), isSubscriptionExist);
 
 router.get(
   '/:id',

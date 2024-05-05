@@ -19,7 +19,7 @@ import { TStore } from './type';
 const createStore = async (
   user: JwtPayload | null,
   payload: Partial<TStore>,
-): Promise<boolean> => {
+): Promise<TStore> => {
   const isUserExist = await User.findOne({ email: user?.email }).lean();
 
   if (!isUserExist) {
@@ -51,14 +51,14 @@ const createStore = async (
   }
 
   if (userStores.length >= 10 && userSubscription.plan === plans.Pro) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Pro plan limit was exceeded. ');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Pro plan limit was exceeded.');
   }
 
   payload.userId = isUserExist._id;
 
-  await Store.create(payload);
+  const result = await Store.create(payload);
 
-  return true;
+  return result;
 };
 
 const isStoreExist = async (

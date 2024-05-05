@@ -22,6 +22,19 @@ const createSubscription = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const isSubscriptionExist = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
+  const result = await SubscriptionService.isSubscriptionExist(user);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Subscription retrieved successfully.',
+    data: result,
+  });
+});
+
 const getSingleSubscription = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id;
@@ -75,4 +88,5 @@ export const SubscriptionController = {
   getSingleSubscription,
   renewOrUpgradeSubscription,
   cancelSubscription,
+  isSubscriptionExist,
 };

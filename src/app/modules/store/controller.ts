@@ -51,7 +51,7 @@ const getSingleStore = catchAsync(async (req: Request, res: Response) => {
 
   const result = await StoreService.getSingleStore(storeId);
 
-  sendResponse<TStore>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Store retrieved successfully.',

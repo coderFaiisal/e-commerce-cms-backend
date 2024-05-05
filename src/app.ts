@@ -12,10 +12,7 @@ const app: Application = express();
 //middlewares
 app.use(
   cors({
-    origin: [
-      'https://timeless-jewellery-admin.vercel.app',
-      'http://localhost:3000',
-    ],
+    origin: ['https://ecommerce-cms.vercel.app/', 'http://localhost:3000'],
     credentials: true,
   }),
 );
@@ -28,7 +25,7 @@ app.use('/api/v1', routes);
 //handling global error
 app.use(globalErrorHandler);
 
-// schedule task
+//schedule task
 Scheduler;
 
 //handle not found url

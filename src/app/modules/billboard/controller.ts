@@ -38,7 +38,7 @@ const getSingleBillboard = catchAsync(async (req: Request, res: Response) => {
 
   const result = await BillboardService.getSingleBillboard(billboardId);
 
-  sendResponse<TBillboard>(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Billboard retrieved successfully.',
